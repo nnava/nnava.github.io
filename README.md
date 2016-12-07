@@ -1,4 +1,4 @@
-# nnava-report
+# Nordnet/Avanza-report
 
 Upload CSV-files with transaction-data from Nordnet and Avanza, create
 graphs and enjoy!
