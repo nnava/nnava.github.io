@@ -32,6 +32,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
         resultYear.forEach(function(entry) {
 
+            if (entry.Ar == null) { return; }
+
             var year = entry.Ar;
             chartDataYears.push(year);
 
