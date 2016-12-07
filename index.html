@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+
+        <title>Avanza/Nordnet-rapport</title>
+
+        <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
+        <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
+        <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
+        <link rel="stylesheet" href="styles/kendo.rtl.min.css"/>
+
+        <style>
+
+            .inputMonth {
+                float: left;
+                margin: 5px;
+            }
+
+            .inputMonthNumber {
+                 width: 115px;
+            }
+
+            .hidden {
+                display: none;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <div id="upload-file-wrapper">
+            <input type="file" name="files" id="dataFiles" />
+        </div>
+
+        <input type="text" id="nordnetData" class="k-textbox hidden"></input>
+        <input type="text" id="avanzaData" class="k-textbox hidden"></input>
+       
+        <div class="box wide">
+            <div class="box-col">
+                <button id="btnLoadDividendGraph" class='k-button'>Skapa grafer</button>
+            </div>
+            <div class="box-col">
+                <button class='export-pdf k-button'>Export PDF</button>
+            </div>
+        </div>
+        <div class="content-wrapper">
+            <br/>
+            <p>Kostnader per månad</p>
+            <div>
+                <div class="inputMonth">
+                    <label for="inputJanuari">Januari</label><br/>
+                    <input id="inputJanuari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputFebruari">Februari</label><br/>
+                    <input id="inputFebruari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputMars">Mars</label><br/>
+                    <input id="inputMars" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputApril">April</label><br/>
+                    <input id="inputApril" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputMaj">Maj</label><br/>
+                    <input id="inputMaj" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputJuni">Juni</label><br/>
+                    <input id="inputJuni" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputJuli">Juli</label><br/>
+                    <input id="inputJuli" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputAugusti">Augusti</label><br/>
+                    <input id="inputAugusti" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputSeptember">September</label><br/>
+                    <input id="inputSeptember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputOktober">Oktober</label><br/>
+                    <input id="inputOktober" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputNovember">November</label><br/>
+                    <input id="inputNovember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+                <div class="inputMonth">
+                    <label for="inputDecember">December</label><br/>
+                    <input id="inputDecember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div id="chartDividendExpensesMonth"></div>
+            <br/>
+            <div id="chartDividendYearGrowth"></div>
+            <br/>
+            <div id="chartDonutDividendTotal"></div>
+            <br/>
+            <div id="chartDividendYearMonth"></div>
+            <br/>
+            <div id="treeMapDividend"></div>
+        </div>
+
+        <script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+        <script src="/scripts/jquery.min.js"></script>
+        <script src="/scripts/kendo.all.min.js"></script>
+        <script src="/js/kendo.culture.se-SE.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2016.3.1028/js/pako_deflate.min.js"></script>
+        <script data-main="js/app" src="node_modules/requirejs/require.js"></script>
+
+        <script>
+
+            var maxFiles = 2;
+
+            $("#dataFiles").kendoUpload({
+                async: {
+                    autoUpload: true
+                },
+                select: onSelect,
+                remove: onRemove,
+                validation: {
+                    allowedExtensions: [".csv"]
+                },
+                showFileList: true,
+                localization: {
+                    select: 'Välj filer',
+                    remove: 'Ta bort',
+                    cancel: 'Avbryt'
+                }
+            });
+
+            function onRemove(e) {
+                
+                $.each(e.files, function (index, value) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var isFileAvanza = reader.result.startsWith("Datum");
+
+                        if(isFileAvanza)
+                            $('#avanzaData').val('');
+                        else
+                            $('#nordnetData').val('');
+                    }
+
+                    reader.readAsText(value.rawFile);
+                });
+            }
+
+            var ALLOWED_EXTENSIONS = [".csv"];
+
+            function onSelect(e) {
+
+                if($('#dataFiles').parent().children('input[type=file]:not(#uploader)').length > maxFiles) {
+                    e.preventDefault();
+                    alert("Max antal filer är två och då en Avanza och en Nordnet");
+                }
+
+                $.each(e.files, function (index, value) {
+                    
+                    var extension = value.extension.toLowerCase();
+                    if (ALLOWED_EXTENSIONS.indexOf(extension) == -1) {
+                        alert("Endast fil med filformat CSV");
+                        e.preventDefault();
+                    }
+
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        var isFileAvanza = reader.result.startsWith("Datum");
+                        var fixedResult = reader.result.replace(/\r/g, ";;");
+
+                        if(isFileAvanza)
+                            $('#avanzaData').val(fixedResult);
+                        else
+                            $('#nordnetData').val(fixedResult);
+                    }
+
+                    reader.readAsText(value.rawFile, 'ISO-8859-1');
+                });
+            };
+
+            $(".export-pdf").click(function() {
+        
+               kendo.drawing.drawDOM($(".content-wrapper"))
+                .then(function(group) {
+                    return kendo.drawing.exportPDF(group, {
+                        paperSize: "auto",
+                        margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                    });
+                })
+                .done(function(data) {
+                    kendo.saveAs({
+                        dataURI: data,
+                        fileName: "Aktierapport.pdf"
+                    });
+                });
+            });
+
+        </script
+    </body>
+</html>
