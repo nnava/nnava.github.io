@@ -14,9 +14,7 @@ define(['./chartdonutexpenses',
         alasql.options.cache = false;
         kendo.culture("se-SE");
 
-        $(".inputMonthNumber").kendoNumericTextBox({
-            format: "#,0 kr"
-        });
+
     });
     
     $(window).on("resize", function() {

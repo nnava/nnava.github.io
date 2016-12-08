@@ -8,8 +8,6 @@
 
         <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
         <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
-        <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
-        <link rel="stylesheet" href="styles/kendo.rtl.min.css"/>
 
         <style>
 
@@ -37,6 +35,7 @@
         <input type="text" id="nordnetData" class="k-textbox hidden"></input>
         <input type="text" id="avanzaData" class="k-textbox hidden"></input>
        
+        <br />
         <div class="box wide">
             <div class="box-col">
                 <button id="btnLoadDividendGraph" class='k-button'>Skapa grafer</button>
@@ -113,16 +112,14 @@
             <div id="treeMapDividend"></div>
         </div>
 
-        <script src="/js/alasql.min.js"></script>
         <script src="/js/jquery.min.js"></script>
         <script src="/js/kendo.all.min.js"></script>
-        <script src="/js/kendo.culture.se-SE.min.js"></script>
-        <script src="/js/pako_deflate.min.js"></script>
-        <script data-main="js/app" src="js/require.js"></script>
 
         <script>
 
-            var maxFiles = 2;
+            $(".inputMonthNumber").kendoNumericTextBox({
+                format: "#,0 kr"
+            });
 
             $("#dataFiles").kendoUpload({
                 async: {
@@ -160,6 +157,7 @@
             }
 
             var ALLOWED_EXTENSIONS = [".csv"];
+            var maxFiles = 2;
 
             function onSelect(e) {
 
@@ -210,5 +208,11 @@
             });
 
         </script>
+
+        <script src="/js/alasql.min.js"></script>
+        <script src="/js/kendo.culture.se-SE.min.js"></script>
+        <script src="/js/pako_deflate.min.js"></script>
+        <script data-main="js/app" src="js/require.js"></script>
+
     </body>
 </html>

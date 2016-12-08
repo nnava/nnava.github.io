@@ -85,7 +85,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                     visible: false
                 },
                 labels: {
-                    template: kendo.template("#: value # kr")
+                    format: "#,0 kr"
                 }
             },  
             categoryAxis: {
@@ -96,7 +96,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             tooltip: {
                 visible: true,
-                format: "{0}"
+                format: "#,0 kr"
             },
             theme: "bootstrap"
         });

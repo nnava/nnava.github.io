@@ -84,6 +84,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             valueAxis: {
                 line: {
                     visible: false
+                },
+                labels: {
+                    format: "#,0 kr"
                 }
             },
             categoryAxis: {
@@ -94,7 +97,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             tooltip: {
                 visible: true,
-                format: "{0}"
+                format: "#,0 kr"
             },
             theme: "bootstrap"
         });

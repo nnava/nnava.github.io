@@ -6,11 +6,19 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     var chartId;
     var months = monthstaticvalues.getMonthValues();
 
+    function resetArrayValues() {
+        chartDataDividendGrowth = [];
+        chartDataSumYearDividend = [];
+        chartDataYears = [];
+    }
+
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
     function setChartData(avanzaValue, nordnetValue) {
+
+        resetArrayValues();
 
         alasqlnordnet.setSourceData(nordnetValue);
         alasqlavanza.setSourceData(avanzaValue);
@@ -89,7 +97,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 axis: "utdtillvaxt"
             }],
             valueAxes: [{
-                title: { text: "kr" }
+                title: { text: "kr" },
+                labels: {
+                    format: "#,0 kr"
+                }
             }, {
                 labels: {
                     format: "{0} %"

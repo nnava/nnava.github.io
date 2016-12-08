@@ -24,8 +24,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend();
         var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend();
 
-        var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + parseInt(beloppAvanza["0"].Belopp), value: parseInt(beloppAvanza["0"].Belopp), items: resultAvanzaDividend }]
-        var nordnetDividendDataItems = [ { name: 'Nordnet totalt: ' + parseInt(beloppNordnet["0"].Belopp), value: parseInt(beloppNordnet["0"].Belopp), items: resultNordnetDividend }]
+        var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + kendo.toString(parseInt(beloppAvanza["0"].Belopp), "#,0 kr"), value: parseInt(beloppAvanza["0"].Belopp), items: resultAvanzaDividend }]
+        var nordnetDividendDataItems = [ { name: 'Nordnet totalt: ' + kendo.toString(parseInt(beloppNordnet["0"].Belopp), "#,0 kr"), value: parseInt(beloppNordnet["0"].Belopp), items: resultNordnetDividend }]
 
         chartData = avanzaDividendDataItems.concat(nordnetDividendDataItems);
     }
@@ -34,8 +34,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         $(chartId).kendoTreeMap({
             dataSource: {
                 data: [{
-                    name: 'Utdelningar totalt: ' + totalBelopp,
-                    value: totalBelopp,
+                    name: 'Utdelningar totalt: ' + kendo.toString(totalBelopp, "#,0 kr"),
+                    value: kendo.toString(totalBelopp, "#,0 kr"),
                     items: chartData
                 }]
             },
@@ -50,7 +50,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             content: function (e) {
                 var treemap = $(chartId).data("kendoTreeMap");
                 var item = treemap.dataItem(e.target.closest(".k-treemap-tile"));
-                return item.name + ": " + item.value;
+                return item.name + ": " + kendo.toString(item.value, "#,0 kr");
             }
         });
     }
