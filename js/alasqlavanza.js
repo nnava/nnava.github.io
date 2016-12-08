@@ -48,6 +48,30 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
         return parseInt(belopp["0"].Belopp);
     }
 
+    function getTaxYearSumBelopp(year) {
+        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' \
+                       AND [Typ av transaktion] = "Utdelning" \
+                       GROUP BY YEAR(Datum)', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+
+        return parseInt(belopp["0"].Belopp);
+    }
+
+    function getDepositsYearSumBelopp(year) {
+        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' \
+                       AND [Typ av transaktion] = "Insattning" AND [Typ av transaktion] = "Uttag" \
+                       GROUP BY YEAR(Datum)', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+
+        return parseInt(belopp["0"].Belopp);
+    }
+
     function getTotalDividend() {
         return alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
@@ -58,7 +82,7 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
         return alasql('SELECT FIRST(Vardepapperbeskrivning) AS [name], ROUND(SUM(Belopp::NUMBER), 2) AS [value] \
                        FROM ? \
                        WHERE [Typ av transaktion] = "Utdelning" \
-                       GROUP BY Vardepapperbeskrivning',[sourceData]);
+                       GROUP BY Vardepapperbeskrivning', [sourceData]);
     }
 
     return {
@@ -69,6 +93,8 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
         getDividendMonthSumBelopp: getDividendMonthSumBelopp,
         getDividendYearSumBelopp: getDividendYearSumBelopp,
         getTotalDividend: getTotalDividend,
-        getVardepapperTotalDividend: getVardepapperTotalDividend
+        getVardepapperTotalDividend: getVardepapperTotalDividend,
+        getTaxYearSumBelopp: getTaxYearSumBelopp,
+        getDepositsYearSumBelopp: getDepositsYearSumBelopp
     };
 });

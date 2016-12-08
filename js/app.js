@@ -13,8 +13,6 @@ define(['./chartdonutexpenses',
 
         alasql.options.cache = false;
         kendo.culture("se-SE");
-
-
     });
     
     $(window).on("resize", function() {
@@ -63,4 +61,24 @@ define(['./chartdonutexpenses',
         chartDividendExpenses.setChartData($('#avanzaData').val(), $('#nordnetData').val());
         chartDividendExpenses.loadChart();
     };
+
+    document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
+        
+        var newValue = $("#inputMonthParent").data("kendoNumericTextBox").value();
+        
+        $("#inputJanuari").data("kendoNumericTextBox").value(newValue);
+        $("#inputFebruari").data("kendoNumericTextBox").value(newValue);
+        $("#inputMars").data("kendoNumericTextBox").value(newValue);
+        $("#inputApril").data("kendoNumericTextBox").value(newValue);
+        $("#inputMaj").data("kendoNumericTextBox").value(newValue);
+        $("#inputJuni").data("kendoNumericTextBox").value(newValue);
+        $("#inputJuli").data("kendoNumericTextBox").value(newValue);
+        $("#inputAugusti").data("kendoNumericTextBox").value(newValue);
+        $("#inputSeptember").data("kendoNumericTextBox").value(newValue);
+        $("#inputOktober").data("kendoNumericTextBox").value(newValue);
+        $("#inputNovember").data("kendoNumericTextBox").value(newValue);
+        $("#inputDecember").data("kendoNumericTextBox").value(newValue);
+        
+    });
+
 });

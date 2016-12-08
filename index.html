@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
         <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
+        <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
 
         <style>
 
@@ -17,6 +18,10 @@
             }
 
             .inputMonthNumber {
+                 width: 115px;
+            }
+
+            .inputMonthNumberParent {
                  width: 115px;
             }
 
@@ -44,6 +49,21 @@
                 <button class='export-pdf k-button'>Export PDF</button>
             </div>
         </div>
+        <div id="taxBox">
+            <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
+            <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
+        </div>
+        <br/>
+        
+        <div>
+            <div>
+                <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
+            </div>
+            <div>
+                <button id="btnSetInputMonthValues" class='k-button'>Sätt kostnad för alla månader</button>
+            </div>
+        </div>
+
         <div class="content-wrapper">
             <br/>
             <p>Kostnader per månad</p>
@@ -116,6 +136,10 @@
         <script src="/js/kendo.all.min.js"></script>
 
         <script>
+
+            $(".inputMonthNumberParent").kendoNumericTextBox({
+                format: "#,0 kr"
+            });
 
             $(".inputMonthNumber").kendoNumericTextBox({
                 format: "#,0 kr"
