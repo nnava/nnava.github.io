@@ -2,6 +2,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
     var chartDataDividendGrowth = [];
     var chartDataSumYearDividend = [];
+    var chartDataSumYearTax = [];
     var chartDataYears = [];
     var chartId;
     var months = monthstaticvalues.getMonthValues();
@@ -9,6 +10,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     function resetArrayValues() {
         chartDataDividendGrowth = [];
         chartDataSumYearDividend = [];
+        chartDataSumYearTax = [];
         chartDataYears = [];
     }
 
@@ -45,12 +47,17 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var year = entry.Ar;
             chartDataYears.push(year);
 
-            var nordnetSumBelopp = alasqlnordnet.getDividendYearSumBelopp(year);
-            var avanzaSumBelopp = alasqlavanza.getDividendYearSumBelopp(year);
+            var nordnetDividendSumBelopp = alasqlnordnet.getDividendYearSumBelopp(year);
+            var avanzaDividendSumBelopp = alasqlavanza.getDividendYearSumBelopp(year);
 
-            var totalBelopp = nordnetSumBelopp + avanzaSumBelopp;
+            var nordnetTaxSumBelopp = alasqlnordnet.getTaxYearSumBelopp(year);
+            var avanzaTaxSumBelopp = alasqlavanza.getTaxYearSumBelopp(year);
+            var totalTaxBelopp = nordnetTaxSumBelopp + avanzaTaxSumBelopp;
+
+            var totalBelopp = nordnetDividendSumBelopp + avanzaDividendSumBelopp + totalTaxBelopp;
 
             chartDataSumYearDividend.push(totalBelopp);
+            chartDataSumYearTax.push(totalTaxBelopp);
 
             var yearBefore = year-1;
             var foundLastYear = false;
@@ -86,6 +93,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             legend: {
                 position: "top"
             },
+            seriesDefaults: {
+                type: "column",
+                stack: true
+            },
             series: [{
                 type: "column",
                 data: chartDataSumYearDividend,
@@ -94,7 +105,17 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                     visible: true,
                     format: "#,0 kr"
                 }
-            }, {
+            }
+            ,{
+                type: "column",
+                data: chartDataSumYearTax,
+                name: "Källskatt kr",
+                tooltip: {
+                    visible: true,
+                    format: "#,0 kr"
+                }
+            }
+            , {
                 type: "line",
                 data: chartDataDividendGrowth,
                 name: "Utdelningstillväxt",

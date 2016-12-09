@@ -52,7 +52,7 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' \
-                       AND [Typ av transaktion] = "Utdelning" \
+                       AND [Vardepapperbeskrivning] = "Utlandsk kallskatt" \
                        GROUP BY YEAR(Datum)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
