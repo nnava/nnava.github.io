@@ -89,12 +89,20 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             series: [{
                 type: "column",
                 data: chartDataSumYearDividend,
-                name: "Utdelning kr"
+                name: "Utdelning kr",
+                tooltip: {
+                    visible: true,
+                    format: "#,0 kr"
+                }
             }, {
                 type: "line",
                 data: chartDataDividendGrowth,
                 name: "Utdelningstillväxt",
-                axis: "utdtillvaxt"
+                axis: "utdtillvaxt",
+                tooltip: {
+                    visible: true,
+                    format: "{0} %"
+                }
             }],
             valueAxes: [{
                 title: { text: "kr" },
@@ -110,10 +118,6 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             }],
             categoryAxis: {
                 categories: chartDataYears,
-            },
-            tooltip: {
-                visible: true,
-                template: "#= series.name #: #= value #"
             },
             theme: "bootstrap"
         });      

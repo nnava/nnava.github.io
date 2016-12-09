@@ -40,33 +40,24 @@
         <input type="text" id="nordnetData" class="k-textbox hidden"></input>
         <input type="text" id="avanzaData" class="k-textbox hidden"></input>
        
-        <br />
         <div class="box wide">
-            <div class="box-col">
+            <p>
                 <button id="btnLoadDividendGraph" class='k-button'>Skapa grafer</button>
-            </div>
-            <div class="box-col">
                 <button class='export-pdf k-button'>Export PDF</button>
-            </div>
+                <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
+                <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
+            </p>
         </div>
-        <div id="taxBox">
-            <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
-            <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
-        </div>
-        <br/>
-        
         <div>
-            <div>
+            <p>Kostnader per månad</p>
+            <p>
                 <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
-            </div>
-            <div>
                 <button id="btnSetInputMonthValues" class='k-button'>Sätt kostnad för alla månader</button>
-            </div>
+            </p>
         </div>
 
+        <br/>
         <div class="content-wrapper">
-            <br/>
-            <p>Kostnader per månad</p>
             <div>
                 <div class="inputMonth">
                     <label for="inputJanuari">Januari</label><br/>
