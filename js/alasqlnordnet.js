@@ -1,9 +1,12 @@
-define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) {
+define(['./alasql.min'], function(alasqlhelper) {
     
     var sourceData;
 
     function setSourceData(fieldValue) {
-        sourceData = strfunctions.getBankSourceJsonData(fieldValue);
+        if(fieldValue.length == 0)
+            sourceData = [];
+        else 
+            sourceData = JSON.parse(fieldValue);
     }
 
     function getDividendSumBelopp(year, month) {
@@ -24,6 +27,14 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
         return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING" \
+                       GROUP BY YEAR(Bokforingsdag) \
+                       ORDER BY 1', [sourceData]);
+    }
+
+    function getDepositYears() {
+        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
+                       FROM ? \
+                       WHERE Transaktionstyp = "UTTAG" AND Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING" \
                        GROUP BY YEAR(Bokforingsdag) \
                        ORDER BY 1', [sourceData]);
     }
@@ -61,11 +72,12 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
     }
 
     function getDepositsYearSumBelopp(year) {
+
+        console.log(sourceData);
+
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' \
-                       AND Transaktionstyp = "UTTAG" AND Transaktionstyp = "INSATTNING" AND Transaktionstyp = "PREMIEINBETALNING" \
-                       GROUP BY YEAR(Bokforingsdag)', [sourceData]);
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTTAG" AND Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
 
@@ -95,6 +107,7 @@ define(['./alasql.min', './strfunctions'], function(alasqlhelper, strfunctions) 
         getTotalDividend: getTotalDividend,
         getVardepapperTotalDividend: getVardepapperTotalDividend,
         getTaxYearSumBelopp: getTaxYearSumBelopp,
-        getDepositsYearSumBelopp: getDepositsYearSumBelopp
+        getDepositsYearSumBelopp: getDepositsYearSumBelopp,
+        getDepositYears: getDepositYears
     };
 });

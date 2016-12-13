@@ -6,9 +6,10 @@
 
         <title>Avanza/Nordnet-rapport</title>
 
-        <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
+        <link rel="stylesheet" href="styles/kendo.common.min.css" />
         <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
         <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
+        <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
 
         <style>
 
@@ -42,8 +43,8 @@
        
         <div class="box wide">
             <p>
-                <button id="btnLoadDividendGraph" class='k-button'>Skapa grafer</button>
-                <button class='export-pdf k-button'>Export PDF</button>
+                <button id="btnLoadDividendGraph" class='k-primary'>Skapa grafer</button>
+                <button id="btnExportToPdf" class='export-pdf k-button'>Export PDF</button>
                 <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
                 <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
             </p>
@@ -110,7 +111,8 @@
             </div>
             <br/>
             <br/>
-            <br/>
+            <br/>            
+            <div id="chartYearDeposit"></div>
             <br/>
             <div id="chartDividendExpensesMonth"></div>
             <br/>
@@ -125,105 +127,6 @@
 
         <script src="/js/jquery.min.js"></script>
         <script src="/js/kendo.all.min.js"></script>
-
-        <script>
-
-            $(".inputMonthNumberParent").kendoNumericTextBox({
-                format: "#,0 kr"
-            });
-
-            $(".inputMonthNumber").kendoNumericTextBox({
-                format: "#,0 kr"
-            });
-
-            $("#dataFiles").kendoUpload({
-                async: {
-                    autoUpload: true
-                },
-                select: onSelect,
-                remove: onRemove,
-                validation: {
-                    allowedExtensions: [".csv"]
-                },
-                showFileList: true,
-                localization: {
-                    select: 'Välj filer',
-                    remove: 'Ta bort',
-                    cancel: 'Avbryt'
-                }
-            });
-
-            function onRemove(e) {
-                
-                $.each(e.files, function (index, value) {
-                    var reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        var isFileAvanza = reader.result.startsWith("Datum");
-
-                        if(isFileAvanza)
-                            $('#avanzaData').val('');
-                        else
-                            $('#nordnetData').val('');
-                    }
-
-                    reader.readAsText(value.rawFile);
-                });
-            }
-
-            var ALLOWED_EXTENSIONS = [".csv"];
-            var maxFiles = 2;
-
-            function onSelect(e) {
-
-                if($('#dataFiles').parent().children('input[type=file]:not(#uploader)').length > maxFiles) {
-                    e.preventDefault();
-                    alert("Max antal filer är två och då en Avanza och en Nordnet");
-                }
-
-                $.each(e.files, function (index, value) {
-                    
-                    var extension = value.extension.toLowerCase();
-                    if (ALLOWED_EXTENSIONS.indexOf(extension) == -1) {
-                        alert("Endast fil med filformat CSV");
-                        e.preventDefault();
-                    }
-
-                    var reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        var isFileAvanza = reader.result.startsWith("Datum");
-                        var fixedResult = reader.result.replace(/\r/g, ";;");
-
-                        if(isFileAvanza)
-                            $('#avanzaData').val(fixedResult);
-                        else
-                            $('#nordnetData').val(fixedResult);
-                    }
-
-                    reader.readAsText(value.rawFile, 'ISO-8859-1');
-                });
-            };
-
-            $(".export-pdf").click(function() {
-        
-               kendo.drawing.drawDOM($(".content-wrapper"))
-                .then(function(group) {
-                    return kendo.drawing.exportPDF(group, {
-                        paperSize: "auto",
-                        margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
-                    });
-                })
-                .done(function(data) {
-                    kendo.saveAs({
-                        dataURI: data,
-                        fileName: "Aktierapport.pdf"
-                    });
-                });
-            });
-
-        </script>
-
         <script src="/js/alasql.min.js"></script>
         <script src="/js/kendo.culture.se-SE.min.js"></script>
         <script src="/js/pako_deflate.min.js"></script>

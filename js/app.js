@@ -2,17 +2,36 @@ define(['./chartdonutexpenses',
      './chartdividendexpenses', 
      './chartdividendyearmonth', 
      './chartdividendtreemap',
-     './chartdividendyeargrowth'], 
+     './chartdividendyeargrowth',
+     './chartyeardeposit',
+     './uploadcontrol'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
      chartDividendTreemap,
-     chartDividendYearGrowth) {
+     chartDividendYearGrowth,
+     chartYearDeposit,
+     uploadControl) {
 
     $(document).ready(function() {
 
+        $(".inputMonthNumberParent").kendoNumericTextBox({
+            format: "#,0 kr"
+        });
+
+        $(".inputMonthNumber").kendoNumericTextBox({
+            format: "#,0 kr"
+        });
+
+        uploadControl.setControlId('#dataFiles');
+        uploadControl.load();
+                
         alasql.options.cache = false;
         kendo.culture("se-SE");
+
+        $("#btnLoadDividendGraph").kendoButton({
+            enable: true
+        });
     });
     
     $(window).on("resize", function() {
@@ -25,12 +44,19 @@ define(['./chartdonutexpenses',
 
     document.getElementById('btnLoadDividendGraph').addEventListener('click', function() {
 
+        //loadChartYearDeposit();
         loadChartDividendYearGrowth();
         loadChartDividendTreemap();
         loadChartDividendYearMonth();
         loadChartDividendExpenses();
         loadChartDonutExpenses();
     });
+
+    function loadChartYearDeposit() {
+        chartYearDeposit.setChartId('#chartYearDeposit');
+        chartYearDeposit.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartYearDeposit.loadChart();
+    }
 
     function loadChartDividendYearGrowth() {
         chartDividendYearGrowth.setChartId('#chartDividendYearGrowth');
@@ -79,6 +105,23 @@ define(['./chartdonutexpenses',
         $("#inputNovember").data("kendoNumericTextBox").value(newValue);
         $("#inputDecember").data("kendoNumericTextBox").value(newValue);
         
+    });
+
+    document.getElementById('btnExportToPdf').addEventListener('click', function() {
+
+        kendo.drawing.drawDOM($(".content-wrapper"))
+        .then(function(group) {
+            return kendo.drawing.exportPDF(group, {
+                paperSize: "auto",
+                margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+            });
+        })
+        .done(function(data) {
+            kendo.saveAs({
+                dataURI: data,
+                fileName: "Aktierapport.pdf"
+            });
+        });
     });
 
 });
