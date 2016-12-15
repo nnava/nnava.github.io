@@ -49,10 +49,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(entry.Ar, month);
                 var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(entry.Ar, month);
 
-                var beloppNordnet = JSON.parse(JSON.stringify(resultNordnet));
                 var beloppAvanza = JSON.parse(JSON.stringify(resultAvanza));
 
-                var totalBelopp = parseInt(beloppNordnet["0"].Belopp) + parseInt(beloppAvanza["0"].Belopp);
+                var totalBelopp = resultNordnet + parseInt(beloppAvanza["0"].Belopp);
                 monthDataValues[i] = totalBelopp;
             }
 

@@ -10,11 +10,16 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendSumBelopp(year, month) {
-        return alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Likviddag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
                        AND Transaktionstyp = "UTDELNING" \
                        GROUP BY YEAR(Likviddag), MONTH(Likviddag)', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return parseInt(belopp["0"].Belopp);
     }
 
     function getDividendMaxYear() {
@@ -40,11 +45,16 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendMonthSumBelopp(year, month) {
-        return alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
                        AND Transaktionstyp = "UTDELNING" \
                        GROUP BY YEAR(Bokforingsdag), MONTH(Bokforingsdag)', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return parseInt(belopp["0"].Belopp);
     }
 
     function getDividendYearSumBelopp(year) {
@@ -55,6 +65,7 @@ define(['./alasql.min'], function(alasqlhelper) {
                        GROUP BY YEAR(Bokforingsdag)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
 
         return parseInt(belopp["0"].Belopp);
     }
@@ -67,6 +78,7 @@ define(['./alasql.min'], function(alasqlhelper) {
                        GROUP BY YEAR(Bokforingsdag)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
 
         return parseInt(belopp["0"].Belopp);
     }
@@ -78,14 +90,19 @@ define(['./alasql.min'], function(alasqlhelper) {
                        WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
         
         var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
 
         return parseInt(belopp["0"].Belopp);
     }
 
     function getTotalDividend() {
-        return alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING"', [sourceData]);
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return parseInt(belopp["0"].Belopp);               
     }
 
     function getVardepapperTotalDividend() {

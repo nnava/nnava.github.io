@@ -40,10 +40,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var resultNordnet = alasqlnordnet.getDividendSumBelopp(year, month);
             var resultAvanza = alasqlavanza.getDividendSumBelopp(year, month);
 
-            var beloppNordnet = JSON.parse(JSON.stringify(resultNordnet));
             var beloppAvanza = JSON.parse(JSON.stringify(resultAvanza));
 
-            var totalBelopp = parseInt(beloppNordnet["0"].Belopp) + parseInt(beloppAvanza["0"].Belopp);
+            var totalBelopp = resultNordnet + parseInt(beloppAvanza["0"].Belopp);
             totalYearDividends = totalYearDividends + totalBelopp;
 
             var monthValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();
