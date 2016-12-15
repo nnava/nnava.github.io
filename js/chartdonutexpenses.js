@@ -73,10 +73,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             seriesDefaults: {
                 labels: {
-                    template: "#= category # - #= kendo.format('{0:P}', percentage)#",
-                    position: "outsideEnd",
                     visible: true,
-                    background: "transparent"
+                    background: "transparent",
+                    template: "#= category # - #= kendo.format('{0:P}', percentage)#",
+                    position: "outsideEnd"
                 }
             },
             series: [{

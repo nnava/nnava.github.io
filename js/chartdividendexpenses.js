@@ -30,8 +30,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         alasql('TRUNCATE TABLE ArTable');
 
         var monthNumber = 11;
-        var monthDataValues = [];
+        var monthDividendDataValues = [];
         var monthExpensesDataValues = [];
+        var monthMarginDataValues = [];
 
         var year = resultYear["0"].Ar;
         for(var i=0; i <= monthNumber; i++)
@@ -43,24 +44,41 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
             var beloppAvanza = JSON.parse(JSON.stringify(resultAvanza));
 
-            var totalBelopp = resultNordnet + parseInt(beloppAvanza["0"].Belopp);
-            monthDataValues[i] = totalBelopp;
+            var totalDividendBelopp = resultNordnet + parseInt(beloppAvanza["0"].Belopp);
+            monthDividendDataValues[i] = totalDividendBelopp;
 
-            var monthValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();
-            
-            monthExpensesDataValues[i] = monthValue - totalBelopp;
+            var monthExpenseTextboxValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();
+
+            var monthValue = monthExpenseTextboxValue - totalDividendBelopp;
+            var marginValue = 0;
+            if(totalDividendBelopp > monthExpenseTextboxValue) {
+                monthValue = 0;
+                marginValue = totalDividendBelopp - monthExpenseTextboxValue;
+            } 
+            else {
+                marginValue = 0;
+            }
+
+            monthExpensesDataValues[i] = monthValue;
+            monthMarginDataValues[i] = marginValue;
         }
 
         var monthExpensesDividendData = [];
         monthExpensesDividendData.push({
             name: "Utdelningar",
-            data: monthDataValues,
+            data: monthDividendDataValues,
         });
 
         monthExpensesDividendData.push({
             name: "Utgifter",
             data: monthExpensesDataValues,
-            color: "#c9d2db"
+            color: "#C9D2DB"
+        });
+
+        monthExpensesDividendData.push({
+            name: "Överskott",
+            data: monthMarginDataValues,
+            color: "#5CB85C"
         });
 
         chartData = monthExpensesDividendData;
@@ -79,7 +97,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 stack: true,
                 labels: {
                     visible: true,
-                    background: "transparent"
+                    background: "transparent",
+                    template: "#= chartDividendExpensesSerieLabels(value) #"
                 }
             },
             series: chartData,
@@ -103,6 +122,13 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             theme: "bootstrap"
         });
+    }
+
+    window.chartDividendExpensesSerieLabels = function chartDividendExpensesSerieLabels(value) {
+        if (value == 0) 
+            return "";
+        else
+            return value;
     }
 
     return {
