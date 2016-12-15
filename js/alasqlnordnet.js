@@ -10,7 +10,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendSumBelopp(year, month) {
-        return alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        return alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Likviddag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
                        AND Transaktionstyp = "UTDELNING" \
@@ -40,7 +40,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendMonthSumBelopp(year, month) {
-        return alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        return alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
                        AND Transaktionstyp = "UTDELNING" \
@@ -48,7 +48,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendYearSumBelopp(year) {
-        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Bokforingsdag) = ' + year + ' \
                        AND Transaktionstyp = "UTDELNING" \
@@ -60,7 +60,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getTaxYearSumBelopp(year) {
-        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Bokforingsdag) = ' + year + ' \
                        AND Transaktionstyp = "UTL KUPSKATT" \
@@ -73,21 +73,23 @@ define(['./alasql.min'], function(alasqlhelper) {
 
     function getDepositsYearSumBelopp(year) {
 
-        var result = alasql('SELECT TRIM(Belopp) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
+        
+        var belopp = JSON.parse(JSON.stringify(result));
 
-        return SumValues(result);
+        return parseInt(belopp["0"].Belopp);
     }
 
     function getTotalDividend() {
-        return alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        return alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING"', [sourceData]);
     }
 
     function getVardepapperTotalDividend() {
-        return alasql('SELECT FIRST(Vardepapper) AS [name], ROUND(SUM(Belopp::NUMBER), 2) AS [value] \
+        return alasql('SELECT FIRST(Vardepapper) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING" \
                        GROUP BY Vardepapper', [sourceData]);
