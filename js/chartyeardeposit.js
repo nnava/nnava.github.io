@@ -3,6 +3,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     var chartData;
     var chartId;
     var chartYearValues = [];
+    var total = [];
 
     function resetArrayValues() {
         chartYearValues = [];
@@ -34,37 +35,59 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable');
         alasql('TRUNCATE TABLE ArTable');
 
-        var yearDepositValues = [];
-        var entryId = 0;
+        var yearDepositData = [];
         var addedYear = [];
-        
+        var nordnetValues = [];
+        var avanzaValues = [];
+        total = [];
+
         resultYear.forEach(function(entry) {
 
             if (entry.Ar == null) { return; }
-            if(addedYear.includes(entry.Ar)) return;
+            if (addedYear.includes(entry.Ar)) return;
 
             addedYear.push(entry.Ar);
 
-            console.log(entry.Ar);
+            var nordnetBelopp = alasqlnordnet.getDepositsYearSumBelopp(entry.Ar);
+            var avanzaBelopp = alasqlavanza.getDepositsYearSumBelopp(entry.Ar);
+            var totalBelopp = nordnetBelopp + avanzaBelopp;
+            total[entry.Ar] = totalBelopp;
 
-            var resultNordnet = alasqlnordnet.getDepositsYearSumBelopp(entry.Ar);
-            var resultAvanza = alasqlavanza.getDepositsYearSumBelopp(entry.Ar);
-
-            console.log(resultNordnet);
-            console.log(resultAvanza);
-
-            var totalBelopp = resultNordnet + resultAvanza;
-
-            yearDepositValues.push({
-                    name: entry.Ar,
-                    data: totalBelopp,
-                    gap: parseFloat(0.4, 10),
-                    spacing: parseFloat(0.3, 10)
-            });
+            nordnetValues.push(nordnetBelopp);
+            avanzaValues.push(avanzaBelopp);          
         });
 
+        if(avanzaValues.some(isBiggerThan0)) {
+            yearDepositData.push({
+                field: "ava",
+                name: "Avanza",
+                data: avanzaValues
+            });
+        }
+
+        if(nordnetValues.some(isBiggerThan0)) {
+            yearDepositData.push({
+                field: "nn",
+                name: "Nordnet",
+                data: nordnetValues,
+                labels: {
+                    visible: true,
+                    template: "#= window.getChartDepositLabelText(category) #",                
+                    position: "outsideEnd"
+                }      
+            });
+        }
+
         chartYearValues = addedYear; 
-        chartData = yearDepositValues;
+        chartData = yearDepositData;
+    }
+
+    window.getChartDepositLabelText = function getChartDepositLabelText(category) {
+        return kendo.toString(total[category], 'n0') + ' kr';
+    }
+
+    function isBiggerThan0(element, index, array) {
+        return element > 0;
     }
 
     function loadChart() {
@@ -76,7 +99,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 position: "bottom"
             },
             seriesDefaults: {
-                type: "column"
+                type: "column",
+                stack: true
             },
             series: chartData,
             valueAxis: {
@@ -95,7 +119,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             tooltip: {
                 visible: true,
-                format: "#,0 kr"
+                template: "${series.name} - #= kendo.toString(value, 'n0') # kr"
             },
             theme: "bootstrap"
         });

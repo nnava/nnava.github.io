@@ -34,7 +34,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
                        FROM ? \
-                       WHERE Transaktionstyp = "UTTAG" AND Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING" \
+                       WHERE Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING" \
                        GROUP BY YEAR(Bokforingsdag) \
                        ORDER BY 1', [sourceData]);
     }
@@ -73,15 +73,11 @@ define(['./alasql.min'], function(alasqlhelper) {
 
     function getDepositsYearSumBelopp(year) {
 
-        console.log(sourceData);
-
-        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        var result = alasql('SELECT TRIM(Belopp) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTTAG" AND Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
 
-        var belopp = JSON.parse(JSON.stringify(result));
-
-        return parseInt(belopp["0"].Belopp);
+        return SumValues(result);
     }
 
     function getTotalDividend() {
@@ -95,6 +91,17 @@ define(['./alasql.min'], function(alasqlhelper) {
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING" \
                        GROUP BY Vardepapper', [sourceData]);
+    }
+
+    function SumValues(result) {
+        var total = 0;
+
+        result.forEach(function(value) {
+            if(typeof value !== "undefined" && typeof value.Belopp !== "undefined")
+                total += parseInt(value.Belopp.replace(/ /g,''));
+        });
+
+        return total;
     }
 
     return {

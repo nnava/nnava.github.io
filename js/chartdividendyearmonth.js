@@ -78,7 +78,11 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 position: "bottom"
             },
             seriesDefaults: {
-                type: "column"
+                type: "column",
+                labels: {
+                    visible: true,
+                    background: "transparent"
+                }
             },
             series: chartData,
             valueAxis: {

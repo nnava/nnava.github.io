@@ -74,7 +74,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositsYearSumBelopp(year) {
         var result = alasql('SELECT FIRST(YEAR(Datum)) AS Ar, SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Insattning" OR [Typ av transaktion] = "Uttag" \
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Insattning" OR [Typ av transaktion] = "Uttag") \
                        GROUP BY YEAR(Datum)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));

@@ -35,6 +35,7 @@ define(['./chartdonutexpenses',
     });
     
     $(window).on("resize", function() {
+        kendo.resize($("#chartYearDeposit"));
         kendo.resize($("#chartDividendYearGrowth"));
         kendo.resize($("#chartDividendYearMonth"));
         kendo.resize($("#chartDividendExpensesMonth"));
@@ -44,7 +45,7 @@ define(['./chartdonutexpenses',
 
     document.getElementById('btnLoadDividendGraph').addEventListener('click', function() {
 
-        //loadChartYearDeposit();
+        loadChartYearDeposit();
         loadChartDividendYearGrowth();
         loadChartDividendTreemap();
         loadChartDividendYearMonth();

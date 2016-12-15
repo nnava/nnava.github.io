@@ -78,10 +78,6 @@ define(['./papaparse.min'], function(Papa) {
         });
     };
 
-    function trim(x) {
-        return x.replace(/^\s+|\s+$/gm,'');
-    }
-
     function replaceAll(str, find, replace) {
         return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
     }
@@ -98,7 +94,8 @@ define(['./papaparse.min'], function(Papa) {
         stringValue = replaceAll(stringValue, "/", "");
 
         var config = {
-            header: true
+            header: true,
+            skipEmtyLines: true
         };
 
         var parsedResult = Papa.parse(stringValue, config);
