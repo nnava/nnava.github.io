@@ -131,6 +131,13 @@
         <script src="/js/kendo.all.min.js"></script>
         <script src="/js/kendo.culture.se-SE.min.js"></script>
         <script src="/js/pako_deflate.min.js"></script>
+        <script type="text/javascript">
+            var versionNumber = 1;
+            var require = {
+                waitSeconds: 15,
+                urlArgs : "bust="+ versionNumber
+            };
+        </script>
         <script data-main="js/app" src="js/require.js"></script>
 
     </body>
