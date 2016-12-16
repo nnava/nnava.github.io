@@ -16,14 +16,12 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var resultNordnetTotal = alasqlnordnet.getTotalDividend();
         var resultAvanzaTotal = alasqlavanza.getTotalDividend();
 
-        var beloppAvanza = JSON.parse(JSON.stringify(resultAvanzaTotal));
-
-        totalBelopp = resultNordnetTotal + parseInt(beloppAvanza["0"].Belopp);
+        totalBelopp = resultNordnetTotal + resultAvanzaTotal;
 
         var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend();
         var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend();
 
-        var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + kendo.toString(parseInt(beloppAvanza["0"].Belopp), "#,0 kr"), value: parseInt(beloppAvanza["0"].Belopp), items: resultAvanzaDividend }]
+        var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + kendo.toString(resultAvanzaTotal, "#,0 kr"), value: resultAvanzaTotal, items: resultAvanzaDividend }]
         var nordnetDividendDataItems = [ { name: 'Nordnet totalt: ' + kendo.toString(resultNordnetTotal, "#,0 kr"), value: resultNordnetTotal, items: resultNordnetDividend }]
 
         chartData = avanzaDividendDataItems.concat(nordnetDividendDataItems);

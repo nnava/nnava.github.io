@@ -10,11 +10,16 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendSumBelopp(year, month) {
-        return alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
                        AND [Typ av transaktion] = "Utdelning" \
                        GROUP BY YEAR(Datum), MONTH(Datum)', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return parseInt(belopp["0"].Belopp);
     }
 
     function getDividendMaxYear() {
@@ -83,9 +88,14 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getTotalDividend() {
-        return alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE [Typ av transaktion] = "Utdelning"', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return parseInt(belopp["0"].Belopp); 
     }
 
     function getVardepapperTotalDividend() {

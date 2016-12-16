@@ -99,6 +99,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING"', [sourceData]);
+                       
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
