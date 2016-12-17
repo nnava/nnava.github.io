@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
         <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
         <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
+        <link rel="stylesheet" href="styles/bootstrap.min.css" />
 
         <style>
 
@@ -19,11 +20,11 @@
             }
 
             .inputMonthNumber {
-                 width: 115px;
+                 width: 110px;
             }
 
             .inputMonthNumberParent {
-                 width: 115px;
+                 width: 110px;
             }
 
             .hidden {
@@ -44,96 +45,131 @@
         </script>
     </head>
     <body>
-        <div id="upload-file-wrapper">
-            <input type="file" name="files" id="dataFiles" />
-        </div>
-
         <input type="text" id="nordnetData" class="k-textbox hidden"></input>
         <input type="text" id="avanzaData" class="k-textbox hidden"></input>
-       
-        <div class="box wide">
-            <p>
-                <button id="btnLoadDividendGraph" class='k-primary'>Skapa grafer</button>
-                <button id="btnExportToPdf" class='export-pdf k-button'>Export PDF</button>
-                <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
-                <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
-            </p>
-        </div>
-        <div>
-            <p>Kostnader per månad</p>
-            <p>
-                <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
-                <button id="btnSetInputMonthValues" class='k-button'>Sätt kostnad för alla månader</button>
-            </p>
-        </div>
-
-        <br/>
-        <div class="content-wrapper">
-            <div>
-                <div class="inputMonth">
-                    <label for="inputJanuari">Januari</label><br/>
-                    <input id="inputJanuari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+        
+        <div id="mainContent">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="col-lg6">
+                        <p>
+                            <input type="file" name="files" id="dataFiles" />
+                        </p>
+                    </div>
+                    <div class="col-lg6">
+                        <p>
+                            <button id="btnLoadDividendGraph" class='k-primary'>Skapa grafer</button>
+                            <button id="btnExportToPdf" class='export-pdf k-button'>Export PDF</button>
+                            <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
+                            <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
+                        </p>
+                    </div>
                 </div>
-                <div class="inputMonth">
-                    <label for="inputFebruari">Februari</label><br/>
-                    <input id="inputFebruari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputMars">Mars</label><br/>
-                    <input id="inputMars" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputApril">April</label><br/>
-                    <input id="inputApril" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputMaj">Maj</label><br/>
-                    <input id="inputMaj" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputJuni">Juni</label><br/>
-                    <input id="inputJuni" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputJuli">Juli</label><br/>
-                    <input id="inputJuli" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputAugusti">Augusti</label><br/>
-                    <input id="inputAugusti" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputSeptember">September</label><br/>
-                    <input id="inputSeptember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputOktober">Oktober</label><br/>
-                    <input id="inputOktober" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputNovember">November</label><br/>
-                    <input id="inputNovember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
-                </div>
-                <div class="inputMonth">
-                    <label for="inputDecember">December</label><br/>
-                    <input id="inputDecember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                <div class="row-fluid">
+                    <div class="col-lg12">
+                        <div>
+                            <h4>Kostnader per månad</h4>
+                            <p>
+                                <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
+                                <button id="btnSetInputMonthValues" class='k-button'>Sätt kostnad för alla månader</button>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <br/>
-            <br/>           
-            <br/>
-            <div id="chartDividendExpensesMonth"></div>
-            <br/>
-            <div id="chartDividendYearGrowth"></div>
-            <br/>
-            <div id="chartDonutDividendTotal"></div>
-            <br/>
-            <div id="chartDividendYearMonth"></div>
-            <br/>
-            <div id="treeMapDividend"></div>
-            <br/>
-            <div id="chartYearDeposit"></div>
-            <br/>
+            <div class="content-wrapper">
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="inputMonth">
+                            <label for="inputJanuari">Januari</label><br/>
+                            <input id="inputJanuari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputFebruari">Februari</label><br/>
+                            <input id="inputFebruari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputMars">Mars</label><br/>
+                            <input id="inputMars" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputApril">April</label><br/>
+                            <input id="inputApril" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputMaj">Maj</label><br/>
+                            <input id="inputMaj" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputJuni">Juni</label><br/>
+                            <input id="inputJuni" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputJuli">Juli</label><br/>
+                            <input id="inputJuli" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputAugusti">Augusti</label><br/>
+                            <input id="inputAugusti" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputSeptember">September</label><br/>
+                            <input id="inputSeptember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputOktober">Oktober</label><br/>
+                            <input id="inputOktober" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputNovember">November</label><br/>
+                            <input id="inputNovember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                        <div class="inputMonth">
+                            <label for="inputDecember">December</label><br/>
+                            <input id="inputDecember" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="chartDividendExpensesMonth"></div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="chartDividendYearGrowth"></div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="chartDonutDividendTotal"></div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="chartDividendYearMonth"></div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="chartDividendExpensesMonth"></div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="treeMapDividend"></div>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-lg12">
+                            <div id="chartYearDeposit"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="/js/jquery.min.js"></script>
@@ -141,14 +177,14 @@
         <script src="/js/kendo.all.min.js"></script>
         <script src="/js/kendo.culture.se-SE.min.js"></script>
         <script src="/js/pako_deflate.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 2;
+            var versionNumber = 3;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
             };
         </script>
         <script data-main="js/app" src="js/require.js"></script>
-
     </body>
 </html>

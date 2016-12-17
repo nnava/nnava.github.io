@@ -18,7 +18,7 @@ define(['./papaparse.min'], function(Papa) {
             },
             showFileList: true,
             localization: {
-                select: 'Välj filer',
+                select: 'Välj fil(er)',
                 remove: 'Ta bort',
                 cancel: 'Avbryt'
             }
