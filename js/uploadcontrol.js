@@ -1,4 +1,4 @@
-define(['./papaparse.min'], function(Papa) {
+define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoader) {
   
     var controlId;
 
@@ -37,6 +37,8 @@ define(['./papaparse.min'], function(Papa) {
                     $('#avanzaData').val('');
                 else
                     $('#nordnetData').val('');
+
+                appControlLoader.loadControls();
             }
 
             reader.readAsText(value.rawFile);
@@ -72,10 +74,13 @@ define(['./papaparse.min'], function(Papa) {
                     $('#avanzaData').val(jsonResultString);
                 else
                     $('#nordnetData').val(jsonResultString);
+
+                appControlLoader.loadControls();
             }
 
             reader.readAsText(value.rawFile, 'ISO-8859-1');
         });
+
     };
 
     function replaceAll(str, find, replace) {
