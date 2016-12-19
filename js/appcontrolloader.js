@@ -57,6 +57,8 @@ define(['./chartdonutexpenses',
     };
 
     return {
-        loadControls: loadControls
+        loadControls: loadControls,
+        loadChartDividendExpenses: loadChartDividendExpenses,
+        loadChartDonutExpenses: loadChartDonutExpenses
     }
 });

@@ -1,5 +1,5 @@
-define(['./uploadcontrol'], 
-     function(uploadControl) {
+define(['./uploadcontrol', './appcontrolloader'], 
+     function(uploadControl, appControlLoader) {
 
     $(document).ready(function() {
 
@@ -8,7 +8,11 @@ define(['./uploadcontrol'],
         });
 
         $(".inputMonthNumber").kendoNumericTextBox({
-            format: "#,0 kr"
+            format: "#,0 kr",
+            change: function() {
+                appControlLoader.loadChartDonutExpenses();
+                appControlLoader.loadChartDividendExpenses();
+            }
         });
 
         uploadControl.setControlId('#dataFiles');
