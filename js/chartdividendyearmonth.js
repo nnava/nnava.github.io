@@ -1,8 +1,9 @@
-define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlhelper, alasqlavanza, alasqlnordnet, monthstaticvalues) {
+define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'], function(alasqlhelper, alasqlavanza, alasqlnordnet, monthstaticvalues, colors) {
 
     var chartData;
     var chartId;
     var months = monthstaticvalues.getMonthValues();
+    var colorArray = colors.getColorArray();
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -69,6 +70,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     }
 
     function loadChart() {
+        var rotation = 0;
+        if(chartData.length > 4) rotation = 310;
+        
         $(chartId).kendoChart({
             title: {
                 text: "Utdelningar månad/år"
@@ -76,11 +80,21 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             legend: {
                 position: "bottom"
             },
+            seriesColors: colorArray,
             seriesDefaults: {
                 type: "column",
                 labels: {
-                    visible: true,
-                    background: "transparent"
+                    visible: function(e) {
+                        if(e.value < 1) {
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    },
+                    rotation: rotation,
+                    format: "#,0 kr",
+                    background: "none"
                 }
             },
             series: chartData,

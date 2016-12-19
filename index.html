@@ -9,33 +9,13 @@
         <meta name="author" content="lillaekonomen">
 
         <title>Avanza/Nordnet-rapport</title>
-
+        <link rel="stylesheet" href="styles/bootstrap.min.css" />
         <link rel="stylesheet" href="styles/kendo.common.min.css" />
+
         <link rel="stylesheet" href="styles/kendo.bootstrap.min.css" />
         <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
         <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
-        <link rel="stylesheet" href="styles/bootstrap.min.css" />
-
-        <style>
-
-            .inputMonth {
-                float: left;
-                margin: 5px;
-            }
-
-            .inputMonthNumber {
-                 width: 110px;
-            }
-
-            .inputMonthNumberParent {
-                 width: 110px;
-            }
-
-            .hidden {
-                display: none;
-            }
-
-        </style>
+        <link rel="stylesheet" href="styles/styles.css" />
 
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -62,7 +42,7 @@
                     </div>
                     <div class="col-lg6">
                         <p>
-                            <button id="btnExportToPdf" class='export-pdf k-primary'>Exportera till PDF</button>
+                            <button id="btnExportToPdf" class='export-pdf k-primary k-button'>Exportera till PDF</button>
                             <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
                             <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt (ej klar)</label>
                         </p>
@@ -182,7 +162,7 @@
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 6;
+            var versionNumber = 7;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

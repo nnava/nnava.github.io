@@ -15,6 +15,10 @@ define(['./uploadcontrol', './appcontrolloader'],
             }
         });
 
+        $("#btnExportToPdf").kendoButton({
+            enable: false
+        });
+
         uploadControl.setControlId('#dataFiles');
         uploadControl.load();
                 

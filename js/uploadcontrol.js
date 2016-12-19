@@ -76,6 +76,8 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                     $('#nordnetData').val(jsonResultString);
 
                 appControlLoader.loadControls();
+
+                $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
             }
 
             reader.readAsText(value.rawFile, 'ISO-8859-1');

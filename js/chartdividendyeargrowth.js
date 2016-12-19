@@ -165,12 +165,17 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                     format: "#,0 kr"
                 }
             }
-            , {
+            ,{
                 type: "line",
                 data: chartDataDividendGrowth,
                 name: "Utdelningstillväxt",
                 axis: "utdtillvaxt",
                 tooltip: {
+                    visible: true,
+                    format: "{0} %"
+                },
+                labels: {
+                    rotation: 0,
                     visible: true,
                     format: "{0} %"
                 }

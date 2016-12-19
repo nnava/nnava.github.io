@@ -1,0 +1,16 @@
+.inputMonth {
+    float: left;
+    margin: 5px;
+}
+
+.inputMonthNumber {
+        width: 110px;
+}
+
+.inputMonthNumberParent {
+        width: 110px;
+}
+
+.hidden {
+    display: none;
+}
