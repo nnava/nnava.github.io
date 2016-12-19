@@ -3,6 +3,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     var chartDataDividendGrowth = [];
     var chartDataSumYearDividend = [];
     var chartDataSumYearTax = [];
+    var chartDataSumReturnYearTax = [];
     var chartDataYears = [];
     var chartId;
     var months = monthstaticvalues.getMonthValues();
@@ -11,6 +12,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         chartDataDividendGrowth = [];
         chartDataSumYearDividend = [];
         chartDataSumYearTax = [];
+        chartDataSumReturnYearTax = [];
         chartDataYears = [];
     }
 
@@ -40,21 +42,25 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable ORDER BY Ar');
         alasql('TRUNCATE TABLE ArTable');
 
-        resultYear.forEach(function(entry) {
+        var resultYearArray = yearToArray(resultYear);
 
-            if (entry.Ar == null) { return; }
+        var futureTaxReturnYears = [];
+        resultYearArray.forEach(function(year) {
 
-            var year = entry.Ar;
             chartDataYears.push(year);
+            
+            var totalDividend = getTotalDividendForYear(year);
+            var totalTaxBelopp = getTotalTaxForYear(year);
 
-            var nordnetDividendSumBelopp = alasqlnordnet.getDividendYearSumBelopp(year);
-            var avanzaDividendSumBelopp = alasqlavanza.getDividendYearSumBelopp(year);
+            var totalTaxReturnBelopp = getTotalTaxReturnForYear(year -3);
+            chartDataSumReturnYearTax.push(totalTaxReturnBelopp);
 
-            var nordnetTaxSumBelopp = alasqlnordnet.getTaxYearSumBelopp(year);
-            var avanzaTaxSumBelopp = alasqlavanza.getTaxYearSumBelopp(year);
-            var totalTaxBelopp = nordnetTaxSumBelopp + avanzaTaxSumBelopp;
+            //if taxbelopp < 0, och finns värde i årsarray? lägg till annars lägg till år i ny årsarray (framtid)
+            if(totalTaxBelopp < 0 && !resultYearArray.includes(year + 3)) {
+                futureTaxReturnYears.push(year);
+            }
 
-            var totalBelopp = nordnetDividendSumBelopp + avanzaDividendSumBelopp + totalTaxBelopp;
+            var totalBelopp = totalDividend + totalTaxBelopp;
 
             chartDataSumYearDividend.push(totalBelopp);
             chartDataSumYearTax.push(totalTaxBelopp);
@@ -63,10 +69,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var foundLastYear = false;
             resultYear.forEach(function(entryLast) {
                 if(entryLast.Ar == yearBefore) {
-                    var nordnetSumBeloppLastYear = alasqlnordnet.getDividendYearSumBelopp(yearBefore);
-                    var avanzaSumBeloppLastYear = alasqlavanza.getDividendYearSumBelopp(yearBefore);
-
-                    var totalBeloppLastYear = nordnetSumBeloppLastYear + avanzaSumBeloppLastYear;
+                    var totalBeloppLastYear = getTotalDividendForYear(yearBefore);
 
                     var changeValue = totalBelopp - totalBeloppLastYear;
                     var growthValue = ((changeValue / totalBeloppLastYear) * 100).toFixed(2);
@@ -83,8 +86,46 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             }
 
         });
+
+        addFutureTaxReturnData(futureTaxReturnYears);
     }
 
+    function getTotalDividendForYear(year) {
+        var nordnetSumBeloppLastYear = alasqlnordnet.getDividendYearSumBelopp(year);
+        var avanzaSumBeloppLastYear = alasqlavanza.getDividendYearSumBelopp(year);
+        return nordnetSumBeloppLastYear + avanzaSumBeloppLastYear;
+    }
+
+    function getTotalTaxForYear(year) {
+        var nordnetTaxSumBelopp = alasqlnordnet.getTaxYearSumBelopp(year);
+        var avanzaTaxSumBelopp = alasqlavanza.getTaxYearSumBelopp(year);
+        return nordnetTaxSumBelopp + avanzaTaxSumBelopp;    
+    }
+
+    function getTotalTaxReturnForYear(year) {
+        var nordnetTaxReturnSumBelopp = alasqlnordnet.getTaxYearSumBelopp(year);
+        var avanzaTaxReturnSumBelopp = alasqlavanza.getTaxYearSumBelopp(year);
+        return - (nordnetTaxReturnSumBelopp + avanzaTaxReturnSumBelopp);
+    }
+
+    function addFutureTaxReturnData(futureTaxReturnYears) {
+        futureTaxReturnYears.forEach(function(year) {
+            var totalTaxReturnBelopp = getTotalTaxReturnForYear(year);
+            chartDataSumReturnYearTax.push(totalTaxReturnBelopp);
+            chartDataYears.push(year + 3);
+        });        
+    }
+    
+    function yearToArray(resultYear) {
+        var resultYearArray = [];
+        resultYear.forEach(function(entry) {
+            if (entry.Ar == null) { return; }
+
+            resultYearArray.push(entry.Ar);
+        });
+
+        return resultYearArray;
+    }
     function loadChart() {
         $(chartId).kendoChart({
             title: {
@@ -109,7 +150,16 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             ,{
                 type: "column",
                 data: chartDataSumYearTax,
-                name: "Källskatt kr",
+                name: "Debiterad källskatt kr",
+                tooltip: {
+                    visible: true,
+                    format: "#,0 kr"
+                }
+            }
+            ,{
+                type: "column",
+                data: chartDataSumReturnYearTax,
+                name: "Återbetald källskatt kr",
                 tooltip: {
                     visible: true,
                     format: "#,0 kr"
