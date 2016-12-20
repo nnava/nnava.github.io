@@ -27,6 +27,7 @@ define(['./chartdonutexpenses',
         dropdownDividendYear.setDropdownId('#dropdownDividendYear');
         dropdownDividendYear.setDropdownData($('#avanzaData').val(), $('#nordnetData').val());
         dropdownDividendYear.loadDropdown();
+        $('#divDividendYear').attr("class", "row-fluid");
 
         $("#dropdownDividendYear").data("kendoDropDownList").bind("change", dropDownListDividendYear_Change);
     }

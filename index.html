@@ -168,7 +168,7 @@
                                     <div id="chartDividendExpensesMonth"></div>
                                 </div>
                             </div>
-                            <div class="row-fluid">
+                            <div id="divDividendYear" class="row-fluid hidden">
                                 <div class="col-lg-6">
                                     <h4>Välj år</h4>
                                     <p>
@@ -307,7 +307,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 10;
+            var versionNumber = 11;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
