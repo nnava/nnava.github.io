@@ -3,21 +3,36 @@ define(['./chartdonutexpenses',
      './chartdividendyearmonth', 
      './chartdividendtreemap',
      './chartdividendyeargrowth',
-     './chartyeardeposit'], 
+     './chartyeardeposit',
+     './dropdowndividendyear'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
      chartDividendTreemap,
      chartDividendYearGrowth,
-     chartYearDeposit) {
+     chartYearDeposit,
+     dropdownDividendYear) {
 
     function loadControls() {
+        loadDropdownDividendYear();
         loadChartYearDeposit();
         loadChartDividendYearGrowth();
         loadChartDividendTreemap();
         loadChartDividendYearMonth();
         loadChartDividendExpenses();
         loadChartDonutExpenses();
+    }
+
+    function loadDropdownDividendYear() {
+        dropdownDividendYear.setDropdownId('#dropdownDividendYear');
+        dropdownDividendYear.setDropdownData($('#avanzaData').val(), $('#nordnetData').val());
+        dropdownDividendYear.loadDropdown();
+
+        $("#dropdownDividendYear").data("kendoDropDownList").bind("change", dropDownListDividendYear_Change);
+    }
+
+    function dropDownListDividendYear_Change(e) {
+        loadChartDividendTreemap();
     }
 
     function loadChartYearDeposit() {
@@ -34,7 +49,7 @@ define(['./chartdonutexpenses',
 
     function loadChartDividendTreemap() {
         chartDividendTreemap.setChartId('#treeMapDividend');
-        chartDividendTreemap.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartDividendTreemap.setChartData($('#avanzaData').val(), $('#nordnetData').val(), dropdownDividendYear.getValue());
         chartDividendTreemap.loadChart();
     };
 

@@ -8,18 +8,18 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue) {
+    function setChartData(avanzaValue, nordnetValue, year) {
 
         alasqlnordnet.setSourceData(nordnetValue);
         alasqlavanza.setSourceData(avanzaValue);
 
-        var resultNordnetTotal = alasqlnordnet.getTotalDividend();
-        var resultAvanzaTotal = alasqlavanza.getTotalDividend();
+        var resultNordnetTotal = alasqlnordnet.getTotalDividend(year);
+        var resultAvanzaTotal = alasqlavanza.getTotalDividend(year);
 
         totalBelopp = resultNordnetTotal + resultAvanzaTotal;
 
-        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend();
-        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend();
+        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year);
+        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(year);
 
         var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + kendo.toString(resultAvanzaTotal, "#,0 kr"), value: resultAvanzaTotal, items: resultAvanzaDividend }]
         var nordnetDividendDataItems = [ { name: 'Nordnet totalt: ' + kendo.toString(resultNordnetTotal, "#,0 kr"), value: resultNordnetTotal, items: resultNordnetDividend }]

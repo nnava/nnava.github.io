@@ -92,10 +92,10 @@ define(['./alasql.min'], function(alasqlhelper) {
         return parseInt(belopp["0"].Belopp);
     }
 
-    function getTotalDividend() {
+    function getTotalDividend(year) {
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE [Typ av transaktion] = "Utdelning"', [sourceData]);
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -103,10 +103,10 @@ define(['./alasql.min'], function(alasqlhelper) {
         return parseInt(belopp["0"].Belopp); 
     }
 
-    function getVardepapperTotalDividend() {
+    function getVardepapperTotalDividend(year) {
         return alasql('SELECT FIRST(Vardepapperbeskrivning) AS [name], ROUND(SUM(Belopp::NUMBER), 2) AS [value] \
                        FROM ? \
-                       WHERE [Typ av transaktion] = "Utdelning" \
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning" \
                        GROUP BY Vardepapperbeskrivning', [sourceData]);
     }
 
