@@ -35,6 +35,12 @@ define(['./uploadcontrol', './appcontrolloader'],
         kendo.resize($("#treeMapDividend"));
     });
 
+    document.getElementById('checkboxTax').addEventListener('change', function() {
+        appControlLoader.loadChartDividendExpenses();
+        appControlLoader.loadChartDonutExpenses();
+        appControlLoader.loadChartDividendYearMonth();
+    }, false);
+
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
         
         var newValue = $("#inputMonthParent").data("kendoNumericTextBox").value();

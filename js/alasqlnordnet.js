@@ -9,19 +9,6 @@ define(['./alasql.min'], function(alasqlhelper) {
             sourceData = JSON.parse(fieldValue);
     }
 
-    function getDividendSumBelopp(year, month) {
-        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
-                       WHERE YEAR(Likviddag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
-                       AND Transaktionstyp = "UTDELNING" \
-                       GROUP BY YEAR(Likviddag), MONTH(Likviddag)', [sourceData]);
-
-        var belopp = JSON.parse(JSON.stringify(result));
-        if(belopp["0"].Belopp == null) return 0;
-
-        return parseInt(belopp["0"].Belopp);
-    }
-
     function getDividendMaxYear() {
         return alasql('SELECT MAX(YEAR(Bokforingsdag)) AS Ar \
                        FROM ? \
@@ -49,6 +36,19 @@ define(['./alasql.min'], function(alasqlhelper) {
                        FROM ? \
                        WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
                        AND Transaktionstyp = "UTDELNING" \
+                       GROUP BY YEAR(Bokforingsdag), MONTH(Bokforingsdag)', [sourceData]);
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return parseInt(belopp["0"].Belopp);
+    }
+
+    function getTaxMonthSumBelopp(year, month) {
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+                       FROM ? \
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
+                       AND Transaktionstyp = "UTL KUPSKATT" \
                        GROUP BY YEAR(Bokforingsdag), MONTH(Bokforingsdag)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -126,10 +126,10 @@ define(['./alasql.min'], function(alasqlhelper) {
 
     return {
         setSourceData: setSourceData,
-        getDividendSumBelopp: getDividendSumBelopp,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,
         getDividendMonthSumBelopp: getDividendMonthSumBelopp,
+        getTaxMonthSumBelopp: getTaxMonthSumBelopp,
         getDividendYearSumBelopp: getDividendYearSumBelopp,
         getTotalDividend: getTotalDividend,
         getVardepapperTotalDividend: getVardepapperTotalDividend,

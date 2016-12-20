@@ -46,13 +46,19 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             for(var i=0; i <= monthNumber; i++)
             {
                 var month = i + 1;
+                var year = entry.Ar;
 
-                var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(entry.Ar, month);
-                var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(entry.Ar, month);
+                var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
+                var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
 
-                var beloppAvanza = JSON.parse(JSON.stringify(resultAvanza));
+                if ($('#checkboxTax').is(":checked")) {
+                    var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, month);
+                    var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, month);
+                    resultNordnet = resultNordnet + taxNordnet;
+                    resultAvanza = resultAvanza + taxAvanza;
+                }
 
-                var totalBelopp = resultNordnet + parseInt(beloppAvanza["0"].Belopp);
+                var totalBelopp = resultNordnet + resultAvanza;
                 monthDataValues[i] = totalBelopp;
             }
 

@@ -39,8 +39,15 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         {
             var month = i + 1;
 
-            var resultNordnet = alasqlnordnet.getDividendSumBelopp(year, month);
-            var resultAvanza = alasqlavanza.getDividendSumBelopp(year, month);
+            var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
+            var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
+
+            if ($('#checkboxTax').is(":checked")) {
+                var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, month);
+                var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, month);
+                resultNordnet = resultNordnet + taxNordnet;
+                resultAvanza = resultAvanza + taxAvanza;
+            }
 
             var totalDividendBelopp = resultNordnet + resultAvanza;
             monthDividendDataValues[i] = totalDividendBelopp;
