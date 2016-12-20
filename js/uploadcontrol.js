@@ -13,6 +13,7 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
             },
             select: onSelect,
             remove: onRemove,
+            complete: function(files) { console.log('complete');  },
             validation: {
                 allowedExtensions: [".csv"]
             },
@@ -55,6 +56,12 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
             alert("Max antal filer är två och då en Avanza och en Nordnet");
         }
 
+        var addedFilesCount = e.files.length;
+        
+        var loadControlsWaiter = 0;
+        if(addedFilesCount > 1)
+            loadControlsWaiter = 1;
+
         $.each(e.files, function (index, value) {
             
             var extension = value.extension.toLowerCase();
@@ -73,14 +80,16 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                 else
                     $('#nordnetData').val(jsonResultString);
 
-                appControlLoader.loadControls();
-
                 $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
+
+                if(loadControlsWaiter == 0)
+                    appControlLoader.loadControls();
+
+                loadControlsWaiter--;
             }
 
             reader.readAsText(value.rawFile, 'ISO-8859-1');
-        });
-
+        });     
     };
 
     function replaceAll(str, find, replace) {
