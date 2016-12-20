@@ -4,13 +4,21 @@
 }
 
 .inputMonthNumber {
-        width: 110px;
+    width: 110px;
 }
 
 .inputMonthNumberParent {
-        width: 110px;
+    width: 110px;
 }
 
 .hidden {
     display: none;
+}
+
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 5px 10px 10px 10px;
+    font-size: 18px;
+    line-height: 20px;
 }

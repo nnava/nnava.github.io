@@ -64,10 +64,8 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
             }
 
             var reader = new FileReader();
-
             reader.onload = function(e) {
-                var jsonResultString = getBankSourceJsonData(reader.result);                        
-
+                var jsonResultString = getBankSourceJsonData(reader.result);                  
                 var isFileAvanza = reader.result.startsWith("Datum");
 
                 if(isFileAvanza)
