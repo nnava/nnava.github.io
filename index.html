@@ -253,6 +253,7 @@
                                         <br/>
                                         <pre>
 $.each(e.files, function (index, value) {
+    
     var extension = value.extension.toLowerCase();
     if (ALLOWED_EXTENSIONS.indexOf(extension) == -1) {
         alert("Endast fil med filformat CSV");
@@ -261,7 +262,7 @@ $.each(e.files, function (index, value) {
 
     var reader = new FileReader();
     reader.onload = function(e) {
-        var jsonResultString = getBankSourceJsonData(reader.result);                     
+        var jsonResultString = getBankSourceJsonData(reader.result);                  
         var isFileAvanza = reader.result.startsWith("Datum");
 
         if(isFileAvanza)
@@ -269,9 +270,12 @@ $.each(e.files, function (index, value) {
         else
             $('#nordnetData').val(jsonResultString);
 
-        appControlLoader.loadControls();
-
         $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
+
+        if(loadControlsWaiter == 0)
+            appControlLoader.loadControls();
+
+        loadControlsWaiter--;
     }
 
     reader.readAsText(value.rawFile, 'ISO-8859-1');
