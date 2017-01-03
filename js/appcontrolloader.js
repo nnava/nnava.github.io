@@ -16,11 +16,11 @@ define(['./chartdonutexpenses',
     function loadControls() {
         loadDropdownDividendYear();
         loadChartYearDeposit();
-        loadChartDividendYearGrowth();
-        loadChartDividendTreemap();
+        loadChartDividendYearGrowth();        
         loadChartDividendYearMonth();
         loadChartDividendExpenses();
         loadChartDonutExpenses();
+        loadChartDividendTreemap();
     }
 
     function loadDropdownDividendYear() {
@@ -49,8 +49,12 @@ define(['./chartdonutexpenses',
     }
 
     function loadChartDividendTreemap() {
+        var year = dropdownDividendYear.getValue();
+        if(year == null || year == '')
+            year = 0;
+
         chartDividendTreemap.setChartId('#treeMapDividend');
-        chartDividendTreemap.setChartData($('#avanzaData').val(), $('#nordnetData').val(), dropdownDividendYear.getValue());
+        chartDividendTreemap.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
         chartDividendTreemap.loadChart();
     };
 

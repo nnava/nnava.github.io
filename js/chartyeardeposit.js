@@ -62,7 +62,6 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         });
 
         if(avanzaValues.some(isBiggerThan0)) {
-
             if(isNordnetNotAdded) {
                 yearDepositData.push({
                     field: "ava",

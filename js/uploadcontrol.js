@@ -27,7 +27,7 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
     }
 
     function onRemove(e) {
-        
+
         $.each(e.files, function (index, value) {
             var reader = new FileReader();
 
