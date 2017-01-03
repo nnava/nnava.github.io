@@ -58,6 +58,9 @@ define(['./uploadcontrol', './appcontrolloader'],
         $("#inputOktober").data("kendoNumericTextBox").value(newValue);
         $("#inputNovember").data("kendoNumericTextBox").value(newValue);
         $("#inputDecember").data("kendoNumericTextBox").value(newValue);
+
+        appControlLoader.loadChartDonutExpenses();
+        appControlLoader.loadChartDividendExpenses();
         
     });
 
