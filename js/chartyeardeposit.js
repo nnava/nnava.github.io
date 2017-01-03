@@ -39,6 +39,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var addedYear = [];
         var nordnetValues = [];
         var avanzaValues = [];
+        var isNordnetNotAdded = true;
         total = [];
 
         resultYear.forEach(function(entry) {
@@ -55,15 +56,34 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
             nordnetValues.push(nordnetBelopp);
             avanzaValues.push(avanzaBelopp);          
+
+            if(nordnetBelopp !== 0) 
+                isNordnetNotAdded = false;
         });
 
         if(avanzaValues.some(isBiggerThan0)) {
-            yearDepositData.push({
-                field: "ava",
-                name: "Avanza",
-                data: avanzaValues,
-                color: "#009640"
-            });
+
+            if(isNordnetNotAdded) {
+                yearDepositData.push({
+                    field: "ava",
+                    name: "Avanza",
+                    data: avanzaValues,
+                    color: "#009640",
+                    labels: {
+                        visible: true,
+                        template: "#= window.getChartDepositLabelText(category) #",                
+                        position: "outsideEnd"
+                    }
+                });
+            }
+            else {
+                yearDepositData.push({
+                    field: "ava",
+                    name: "Avanza",
+                    data: avanzaValues,
+                    color: "#009640"
+                });
+            }            
         }
 
         if(nordnetValues.some(isBiggerThan0)) {
@@ -83,6 +103,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         chartYearValues = addedYear; 
         chartData = yearDepositData;
     }
+
+
 
     window.getChartDepositLabelText = function getChartDepositLabelText(category) {
         return kendo.toString(total[category], 'n0') + ' kr';
