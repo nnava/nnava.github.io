@@ -67,7 +67,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
     function getTaxYearSumBelopp(year) {
@@ -80,7 +80,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
     function getDepositsYearSumBelopp(year) {
@@ -92,24 +92,32 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
-    function getTotalDividend(year) {
+    function getTotalDividend(year, addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+ 
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND Transaktionstyp = "UTDELNING"', [sourceData]);
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTDELNING"'  + taxSqlWhere + ")", [sourceData]);
                        
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);               
+        return belopp["0"].Belopp;               
     }
 
-    function getVardepapperTotalDividend(year) {
+    function getVardepapperTotalDividend(year, addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+
         return alasql('SELECT FIRST(Vardepapper) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND Transaktionstyp = "UTDELNING" \
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY Vardepapper', [sourceData]);
     }
 

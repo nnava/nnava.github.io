@@ -66,7 +66,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var belopp = JSON.parse(JSON.stringify(result));
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
     function getTaxYearSumBelopp(year) {
@@ -78,7 +78,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var belopp = JSON.parse(JSON.stringify(result));
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
     function getDepositsYearSumBelopp(year) {
@@ -89,25 +89,53 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var belopp = JSON.parse(JSON.stringify(result));
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
-    function getTotalDividend(year) {
+    function getTotalDividend(year, addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
+
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"', [sourceData]);
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"' + taxSqlWhere, [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp); 
+        return belopp["0"].Belopp; 
     }
 
-    function getVardepapperTotalDividend(year) {
-        return alasql('SELECT FIRST(Vardepapperbeskrivning) AS [name], ROUND(SUM(Belopp::NUMBER), 2) AS [value] \
+    function getVardepapperTotalDividend(year, addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
+
+        var result = alasql('SELECT FIRST(ISIN) AS [name], ROUND(SUM(Belopp::NUMBER), 2) AS [value] \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning" \
-                       GROUP BY Vardepapperbeskrivning', [sourceData]);
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"' + taxSqlWhere + ' \
+                       GROUP BY ISIN', [sourceData]);
+                
+        var resultForReturn = [];
+        result.forEach(function(object) {
+
+            if(object == null) return;
+            if(object.name == null) return;
+
+            var newVardepapperObject = new Object();
+
+            var resultName = alasql('SELECT DISTINCT Vardepapperbeskrivning \
+                       FROM ? \
+                       WHERE [ISIN] = "' + object.name + '" AND Vardepapperbeskrivning != "Utlandsk kallskatt"', [sourceData]);
+
+            newVardepapperObject.name = resultName["0"].Vardepapperbeskrivning;
+            newVardepapperObject.value = object.value;
+
+            resultForReturn.push(newVardepapperObject);
+        });
+
+        return resultForReturn;
     }
 
     return {

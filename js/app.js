@@ -39,6 +39,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         appControlLoader.loadChartDividendExpenses();
         appControlLoader.loadChartDonutExpenses();
         appControlLoader.loadChartDividendYearMonth();
+        appControlLoader.loadChartDividendTreemap();
     }, false);
 
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {

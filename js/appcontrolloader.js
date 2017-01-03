@@ -76,6 +76,7 @@ define(['./chartdonutexpenses',
         loadControls: loadControls,
         loadChartDividendExpenses: loadChartDividendExpenses,
         loadChartDonutExpenses: loadChartDonutExpenses,
-        loadChartDividendYearMonth: loadChartDividendYearMonth
+        loadChartDividendYearMonth: loadChartDividendYearMonth,
+        loadChartDividendTreemap: loadChartDividendTreemap
     }
 });
