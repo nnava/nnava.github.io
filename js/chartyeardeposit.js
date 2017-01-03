@@ -61,7 +61,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             yearDepositData.push({
                 field: "ava",
                 name: "Avanza",
-                data: avanzaValues
+                data: avanzaValues,
+                color: "#009640"
             });
         }
 
@@ -70,6 +71,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 field: "nn",
                 name: "Nordnet",
                 data: nordnetValues,
+                color: "#00A8EF",
                 labels: {
                     visible: true,
                     template: "#= window.getChartDepositLabelText(category) #",                
