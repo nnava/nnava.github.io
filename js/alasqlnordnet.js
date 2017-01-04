@@ -26,7 +26,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
                        FROM ? \
-                       WHERE Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING" \
+                       WHERE Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING" \
                        GROUP BY YEAR(Bokforingsdag) \
                        ORDER BY 1', [sourceData]);
     }
@@ -87,7 +87,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
         
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;

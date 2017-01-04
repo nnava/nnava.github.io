@@ -52,6 +52,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var nordnetBelopp = alasqlnordnet.getDepositsYearSumBelopp(entry.Ar);
             var avanzaBelopp = alasqlavanza.getDepositsYearSumBelopp(entry.Ar);
             var totalBelopp = nordnetBelopp + avanzaBelopp;
+
             total[entry.Ar] = totalBelopp;
 
             nordnetValues.push(nordnetBelopp);
@@ -102,8 +103,6 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         chartYearValues = addedYear; 
         chartData = yearDepositData;
     }
-
-
 
     window.getChartDepositLabelText = function getChartDepositLabelText(category) {
         return kendo.toString(total[category], 'n0') + ' kr';

@@ -31,6 +31,7 @@
     </head>
     <body>
 
+        <textarea id="nordnetDataString" class="hidden"></textarea>
         <input type="text" id="nordnetData" class="k-textbox hidden">
         <input type="text" id="avanzaData" class="k-textbox hidden">
 
@@ -307,7 +308,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 12;
+            var versionNumber = 13;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

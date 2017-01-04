@@ -18,6 +18,7 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                 allowedExtensions: [".csv"]
             },
             showFileList: true,
+            multiple: true,
             localization: {
                 select: 'Välj fil(er)',
                 remove: 'Ta bort',
@@ -47,23 +48,17 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
     }
 
     var ALLOWED_EXTENSIONS = [".csv"];
-    var maxFiles = 2;
+    var maxFiles = 10;
 
     function onSelect(e) {
 
         if($('#dataFiles').parent().children('input[type=file]:not(#uploader)').length > maxFiles) {
             e.preventDefault();
-            alert("Max antal filer är två och då en Avanza och en Nordnet");
+            alert("Max antal filer är tio");
         }
 
-        var addedFilesCount = e.files.length;
-        
-        var loadControlsWaiter = 0;
-        if(addedFilesCount > 1)
-            loadControlsWaiter = 1;
-
         $.each(e.files, function (index, value) {
-            
+
             var extension = value.extension.toLowerCase();
             if (ALLOWED_EXTENSIONS.indexOf(extension) == -1) {
                 alert("Endast fil med filformat CSV");
@@ -72,24 +67,42 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
 
             var reader = new FileReader();
             reader.onload = function(e) {
-                var jsonResultString = getBankSourceJsonData(reader.result);                  
-                var isFileAvanza = reader.result.startsWith("Datum");
+                var hasNordnetDataValue = false;
+                if($('#nordnetData').val())
+                    hasNordnetDataValue = true;
 
-                if(isFileAvanza)
-                    $('#avanzaData').val(jsonResultString);
-                else
-                    $('#nordnetData').val(jsonResultString);
+                var readerResultString = reader.result;
 
+                // If we already have a file of NN, remove first line for this
+                if(hasNordnetDataValue) {
+                    readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
+                }
+                         
+                var isFileAvanza = readerResultString.startsWith("Datum");
+
+                if(isFileAvanza) {
+                    $('#avanzaData').val(getBankSourceJsonData(readerResultString));
+                }                    
+                else {
+
+                    if(hasNordnetDataValue) {
+                        $('#nordnetDataString').val($('#nordnetDataString').val() + readerResultString);
+                    }
+                    else {
+                        $('#nordnetDataString').val(readerResultString);
+                    }
+
+                    $('#nordnetData').val(getBankSourceJsonData($('#nordnetDataString').val()));
+                }
+                    
                 $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
 
-                if(loadControlsWaiter == 0)
-                    appControlLoader.loadControls();
-
-                loadControlsWaiter--;
+                appControlLoader.loadControls();
             }
 
-            reader.readAsText(value.rawFile, 'ISO-8859-1');
-        });     
+            reader.readAsText(value.rawFile, 'ISO-8859-1');            
+        });       
+
     };
 
     function replaceAll(str, find, replace) {
@@ -104,6 +117,8 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
 
         stringValue = replaceAll(stringValue, "ö", "o");
         stringValue = replaceAll(stringValue, "ä", "a");
+        stringValue = replaceAll(stringValue, "Ä", "A");
+        stringValue = replaceAll(stringValue, "Ö", "O");
         stringValue = replaceAll(stringValue, ",", ".");
         stringValue = replaceAll(stringValue, "/", "");
 
