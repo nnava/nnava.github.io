@@ -112,7 +112,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         if(addTaxToSum)
             taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
 
-        var result = alasql('SELECT FIRST(ISIN) AS [name], ROUND(SUM(Belopp::NUMBER), 2) AS [value] \
+        var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"' + taxSqlWhere + ' \
                        GROUP BY ISIN', [sourceData]);
