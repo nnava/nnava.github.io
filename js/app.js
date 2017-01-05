@@ -32,6 +32,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         kendo.resize($("#chartDividendYearMonth"));
         kendo.resize($("#chartDividendExpensesMonth"));
         kendo.resize($("#chartDonutDividendTotal"));
+        kendo.resize($("#chartDonutDividend"));
         kendo.resize($("#treeMapDividend"));
     });
 
@@ -40,6 +41,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         appControlLoader.loadChartDonutExpenses();
         appControlLoader.loadChartDividendYearMonth();
         appControlLoader.loadChartDividendTreemap();
+        appControlLoader.loadChartDonutDividend();
     }, false);
 
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {

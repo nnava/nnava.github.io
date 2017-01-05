@@ -4,6 +4,7 @@ define(['./chartdonutexpenses',
      './chartdividendtreemap',
      './chartdividendyeargrowth',
      './chartyeardeposit',
+     './chartdonutdividend',
      './dropdowndividendyear'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
@@ -11,6 +12,7 @@ define(['./chartdonutexpenses',
      chartDividendTreemap,
      chartDividendYearGrowth,
      chartYearDeposit,
+     chartDonutDividend,
      dropdownDividendYear) {
 
     function loadControls() {
@@ -20,6 +22,7 @@ define(['./chartdonutexpenses',
         loadChartDividendYearMonth();
         loadChartDividendExpenses();
         loadChartDonutExpenses();
+        loadChartDonutDividend();
         loadChartDividendTreemap();
     }
 
@@ -34,6 +37,7 @@ define(['./chartdonutexpenses',
 
     function dropDownListDividendYear_Change(e) {
         loadChartDividendTreemap();
+        loadChartDonutDividend();
     }
 
     function loadChartYearDeposit() {
@@ -46,6 +50,16 @@ define(['./chartdonutexpenses',
         chartDividendYearGrowth.setChartId('#chartDividendYearGrowth');
         chartDividendYearGrowth.setChartData($('#avanzaData').val(), $('#nordnetData').val());
         chartDividendYearGrowth.loadChart();
+    }
+
+    function loadChartDonutDividend() {
+        var year = dropdownDividendYear.getValue();
+        if(year == null || year == '')
+            year = 0;
+
+        chartDonutDividend.setChartId('#chartDonutDividend');
+        chartDonutDividend.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
+        chartDonutDividend.loadChart();
     }
 
     function loadChartDividendTreemap() {
@@ -81,6 +95,7 @@ define(['./chartdonutexpenses',
         loadChartDividendExpenses: loadChartDividendExpenses,
         loadChartDonutExpenses: loadChartDonutExpenses,
         loadChartDividendYearMonth: loadChartDividendYearMonth,
-        loadChartDividendTreemap: loadChartDividendTreemap
+        loadChartDividendTreemap: loadChartDividendTreemap,
+        loadChartDonutDividend: loadChartDonutDividend
     }
 });
