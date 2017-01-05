@@ -68,6 +68,7 @@ define(['./uploadcontrol', './appcontrolloader'],
 
     document.getElementById('btnExportToPdf').addEventListener('click', function() {
 
+        var today = new Date().toISOString().slice(0, 10);
         kendo.drawing.drawDOM($(".content-wrapper"))
         .then(function(group) {
             return kendo.drawing.exportPDF(group, {
@@ -78,7 +79,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         .done(function(data) {
             kendo.saveAs({
                 dataURI: data,
-                fileName: "Aktierapport.pdf"
+                fileName: "Aktierapport_" + today + ".pdf"
             });
         });
     });
