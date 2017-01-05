@@ -267,7 +267,7 @@
                                         <br/>
                                         <pre>
 $.each(e.files, function (index, value) {
-    
+
     var extension = value.extension.toLowerCase();
     if (ALLOWED_EXTENSIONS.indexOf(extension) == -1) {
         alert("Endast fil med filformat CSV");
@@ -276,23 +276,40 @@ $.each(e.files, function (index, value) {
 
     var reader = new FileReader();
     reader.onload = function(e) {
-        var jsonResultString = getBankSourceJsonData(reader.result);                  
-        var isFileAvanza = reader.result.startsWith("Datum");
+        var hasNordnetDataValue = false;
+        if($('#nordnetData').val())
+            hasNordnetDataValue = true;
 
-        if(isFileAvanza)
-            $('#avanzaData').val(jsonResultString);
-        else
-            $('#nordnetData').val(jsonResultString);
+        var readerResultString = reader.result;
 
+        // If we already have a file of NN, remove first line for this
+        if(hasNordnetDataValue) {
+            readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
+        }
+                    
+        var isFileAvanza = readerResultString.startsWith("Datum");
+
+        if(isFileAvanza) {
+            $('#avanzaData').val(getBankSourceJsonData(readerResultString));
+        }                    
+        else {
+
+            if(hasNordnetDataValue) {
+                $('#nordnetDataString').val($('#nordnetDataString').val() + readerResultString);
+            }
+            else {
+                $('#nordnetDataString').val(readerResultString);
+            }
+
+            $('#nordnetData').val(getBankSourceJsonData($('#nordnetDataString').val()));
+        }
+            
         $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
 
-        if(loadControlsWaiter == 0)
-            appControlLoader.loadControls();
-
-        loadControlsWaiter--;
+        appControlLoader.loadControls();
     }
 
-    reader.readAsText(value.rawFile, 'ISO-8859-1');
+    reader.readAsText(value.rawFile, 'ISO-8859-1');            
 });</pre>
                                 För den mer nyfikna så finns källkoden öppen att läsa/hämta/bidra till på följande adress: <a href="https://github.com/nnava/nnava.github.io" class="label label-success">nnava.github.io</a>
 
