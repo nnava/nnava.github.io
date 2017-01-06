@@ -26,7 +26,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
                        FROM ? \
-                       WHERE Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING" \
+                       WHERE (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING") \
                        GROUP BY YEAR(Bokforingsdag) \
                        ORDER BY 1', [sourceData]);
     }

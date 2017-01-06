@@ -52,7 +52,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Datum)) AS Ar \
                        FROM ? \
-                       WHERE [Typ av transaktion] = "Insattning" OR [Typ av transaktion] = "Uttag" \
+                       WHERE ([Typ av transaktion] = "Insattning" OR [Typ av transaktion] = "Uttag") \
                        GROUP BY YEAR(Datum) \
                        ORDER BY 1', [sourceData]);
     }
@@ -99,7 +99,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"' + taxSqlWhere, [sourceData]);
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning"' + taxSqlWhere + ")", [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -114,7 +114,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"' + taxSqlWhere + ' \
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning"' + taxSqlWhere + ') \
                        GROUP BY ISIN', [sourceData]);
                 
         var resultForReturn = [];
