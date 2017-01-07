@@ -96,13 +96,16 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                 }
                     
                 $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
+                $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
+                $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
+
+                $('#mainContainer').attr("class", "container-fluid");
 
                 appControlLoader.loadControls();
             }
 
             reader.readAsText(value.rawFile, 'ISO-8859-1');            
         });       
-
     };
 
     function replaceAll(str, find, replace) {

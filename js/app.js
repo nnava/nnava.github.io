@@ -15,10 +15,6 @@ define(['./uploadcontrol', './appcontrolloader'],
             }
         });
 
-        $("#btnExportToPdf").kendoButton({
-            enable: false
-        });
-
         uploadControl.setControlId('#dataFiles');
         uploadControl.load();
                 
@@ -66,9 +62,30 @@ define(['./uploadcontrol', './appcontrolloader'],
         
     });
 
+    document.getElementById('btnExportToPng').addEventListener('click', function() {
+        $(".export-chartToImg").each(function(index) {
+            $(this).click();
+        });
+
+        $(".export-DOMToImg").each(function(index) {
+            $(this).click();
+        });        
+    });
+
+    document.getElementById('btnExportToSvg').addEventListener('click', function() {
+        $(".export-chartToSvg").each(function(index) {
+            $(this).click();
+        });
+        
+        $(".export-DOMToSvg").each(function(index) {
+            $(this).click();
+        });
+    });
+
     document.getElementById('btnExportToPdf').addEventListener('click', function() {
 
         var today = new Date().toISOString().slice(0, 10);
+
         kendo.drawing.drawDOM($(".content-wrapper"))
         .then(function(group) {
             return kendo.drawing.exportPDF(group, {
@@ -83,5 +100,93 @@ define(['./uploadcontrol', './appcontrolloader'],
             });
         });
     });
+
+    $(".export-chartToSvg").click(function() {
+        var chartId = this.id.toString().replace("btn-", "").replace("ToSvg", "");
+        var chartFilename = getChartFilename(chartId) + ".svg";
+
+        var chart = $("#" + chartId).getKendoChart();
+        chart.exportSVG().done(function(data) {
+            kendo.saveAs({
+                dataURI: data,
+                fileName: chartFilename
+            });
+        });
+    });
+
+    $(".export-DOMToSvg").click(function() {
+        var domId = this.id.toString().replace("btn-", "").replace("ToSvg", "");
+        var filename = getChartFilename(domId) + ".svg";
+
+        kendo.drawing.drawDOM($("#" + domId))
+            .then(function(domObject) {
+                return kendo.drawing.exportSVG(domObject);
+            })
+            .done(function(data) {        
+                kendo.saveAs({
+                    dataURI: data,
+                    fileName: filename
+            });
+        });
+    });
+
+    $(".export-DOMToImg").click(function() {
+        var domId = this.id.toString().replace("btn-", "").replace("ToImg", "");
+        var filename = getChartFilename(domId) + ".png";
+
+        kendo.drawing.drawDOM($("#" + domId))
+            .then(function(domObject) {
+                return kendo.drawing.exportImage(domObject);
+            })
+            .done(function(data) {
+                kendo.saveAs({
+                    dataURI: data,
+                    fileName: filename
+            });
+        });
+    });
+
+    $(".export-chartToImg").click(function() {
+        var chartId = this.id.toString().replace("btn-", "").replace("ToImg", "");
+        var chartFilename = getChartFilename(chartId) + ".png";
+
+        var chart = $("#" + chartId).getKendoChart();
+        chart.exportImage().done(function(data) {
+            kendo.saveAs({
+                dataURI: data,
+                fileName: chartFilename,
+            });
+        });
+    });
+
+    function getChartFilename(chartId) {
+        var today = new Date().toISOString().slice(0, 10);
+        var chartFilename = "NOTFOUND";
+
+        switch(chartId) {
+            case "chartDividendExpensesMonth":
+                chartFilename = "utdelningar_kostnader";
+                break;
+            case "chartDonutDividendTotal":
+                chartFilename = "utdelningar_kostnader_total";
+                break;
+            case "chartDividendYearGrowth":
+                chartFilename = "utd_utdtillväxt_år";
+                break;
+            case "treeMapDividend":
+                chartFilename = "treemap_utd_år";
+                break;
+            case "chartDonutDividend":
+                chartFilename = "donut_utd_år";
+                break;
+            case "chartYearDeposit":
+                chartFilename = "insättningar";
+                break;
+            default:
+                chartFilename = "NOTFOUND";
+        }
+
+        return chartFilename + "_" + today;
+    }
 
 });

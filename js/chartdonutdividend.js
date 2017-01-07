@@ -44,6 +44,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
 
     function loadChart() {
         $(chartId).kendoChart({
+            plotArea: {
+                background: ""
+            },
             title: {
                 text: "Värdepapper/utdelning"
             },
@@ -71,7 +74,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
             seriesColors: colorArray,
             tooltip: {
                 visible: true,
-                template: "#= category # - #= kendo.format('{0:P}', percentage) #"
+                template: "#= category # - #= kendo.format('{0:P}', percentage) # (#= value #) kr"
             },
             theme: "bootstrap"
         });

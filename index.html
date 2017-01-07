@@ -16,6 +16,10 @@
         <link rel="stylesheet" href="styles/kendo.bootstrap.mobile.min.css" />
         <link rel="stylesheet" href="styles/kendo.common-bootstrap.min.css" />
         <link rel="stylesheet" href="styles/styles.css" />
+        
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/kendo.all.min.js"></script>
+        <script src="/js/kendo.culture.se-SE.min.js"></script>
 
         <script>
 
@@ -49,13 +53,13 @@
                     <div class="container-fluid">
 
                         <div class="row-fluid">
-                            <div class="col-lg-6">
+                            <div class="col-md-6">
                                 <h3>Nordnet/Avanza-sammanställning</h3>
                                 <p>
                                     <input type="file" name="files" id="dataFiles" />
                                 </p>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <h3>Inställningar</h3>
                                     <p>
@@ -67,15 +71,22 @@
                         </div>
 
                         <div class="row-fluid">
-                            <div class="col-lg-12">
-                                <p>
-                                    <button id="btnExportToPdf" class='export-pdf k-primary k-button'>Exportera till PDF</button>
-                                </p>
+                            <div class="col-md-12">
+                                <div class="btn-group">
+                                    <button id="btnExportToPdf" class='export-button-primary k-primary k-button'>Exportera till PDF</button>
+                                    <button id="btnExportToPng" class='export-button-primary k-primary k-button'>Exportera alla grafer till PNG</button>
+                                    <button id="btnExportToSvg" class='export-button-primary k-primary k-button'>Exportera alla grafer till SVG</button>
+                                </div>
+                                <script>
+                                    $(".export-button-primary").kendoButton({
+                                        enable: false
+                                    });
+                                </script>
                             </div>
                         </div>
 
                         <div class="row-fluid">
-                            <div class="col-lg-12">
+                            <div class="col-md-12">
                                 <div>
                                     <h4>Kostnader per månad</h4>
                                     <p>
@@ -91,7 +102,7 @@
                     <div class="content-wrapper">
                         <div class="container-fluid">
                             <div class="row-fluid">
-                                <div class="col-lg-12">
+                                <div class="col-md-12">
                                     <div class="inputMonth">
                                         <label for="inputJanuari">Januari</label><br/>
                                         <input id="inputJanuari" class="inputMonthNumber" type="number" min="0" value="21800" step="100" />
@@ -143,55 +154,119 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="container-fluid">
+                        
+                        <div id="mainContainer" class="container-fluid hidden">
                             <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartDividendExpensesMonth"></div>
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/kostnader</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDividendExpensesMonthToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDividendExpensesMonthToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDividendExpensesMonth"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            
                             <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartDonutDividendTotal"></div>
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/kostnader - total</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDonutDividendTotalToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDonutDividendTotalToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDonutDividendTotal"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartDividendYearGrowth"></div>
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelning och utdelningstillväxt per år</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDividendYearGrowthToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDividendYearGrowthToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDividendYearGrowth"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartDividendYearMonth"></div>
-                                </div>
-                            </div>
-                            <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartDividendExpensesMonth"></div>
-                                </div>
-                            </div>
-                            <div id="divDividendYear" class="row-fluid hidden">
-                                <div class="col-lg-6">
+
+                            <div id="divDividendYear" class="row-fluid">
+                                <div class="col-md-6">
                                     <h4>Välj år</h4>
                                     <p>
                                         <input id="dropdownDividendYear" style="width: 90px" />
                                     </p>
                                 </div>
                             </div>
+
                             <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="treeMapDividend"></div>
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap utdelningar - år</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-treeMapDividendToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-treeMapDividendToImg" type="button" class="k-button btn-xs k-primary export-DOMToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="treeMapDividend"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartDonutDividend"></div>
-                                </div>
-                            </div>                            
-                            <div class="row-fluid">
-                                <div class="col-lg-12">
-                                    <div id="chartYearDeposit"></div>
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Donut utdelningar - år</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDonutDividendToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDonutDividendToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDonutDividend"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Insättningar</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartYearDepositToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartYearDepositToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartYearDeposit"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -323,14 +398,11 @@ $.each(e.files, function (index, value) {
             </div>
         </div>
         
-        <script src="/js/jquery.min.js"></script>
         <script src="/js/alasql.min.js"></script>
-        <script src="/js/kendo.all.min.js"></script>
-        <script src="/js/kendo.culture.se-SE.min.js"></script>
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 16;
+            var versionNumber = 17;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

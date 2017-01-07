@@ -129,7 +129,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     function loadChart() {
         $(chartId).kendoChart({
             title: {
-                text: "Utdelning år och utdelningstillväxt"
+                text: "Utdelning och utdelningstillväxt per år"
             },
             legend: {
                 position: "top"
