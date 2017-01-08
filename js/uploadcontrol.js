@@ -8,12 +8,11 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
 
     function load() {
         $(controlId).kendoUpload({
-            async: {
+            async: {         
                 autoUpload: true
             },
             select: onSelect,
             remove: onRemove,
-            complete: function(files) { console.log('complete');  },
             validation: {
                 allowedExtensions: [".csv"]
             },
@@ -57,6 +56,9 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
             alert("Max antal filer är tio");
         }
 
+        var fileArrayLength = e.files.length;
+        var timeoutValue = 1;
+
         $.each(e.files, function (index, value) {
 
             var extension = value.extension.toLowerCase();
@@ -64,21 +66,31 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                 alert("Endast fil med filformat CSV");
                 e.preventDefault();
             }
-
+            
             var reader = new FileReader();
-            reader.onload = function(e) {
-                var hasNordnetDataValue = false;
-                if($('#nordnetData').val())
-                    hasNordnetDataValue = true;
+            reader.onloadend = function(e) {
+                if((index +1) == fileArrayLength) {
+                    $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
+                    $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
+                    $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
 
+                    $('#mainContainer').attr("class", "container-fluid");
+
+                    appControlLoader.loadControls();
+                }
+            }
+ 
+            reader.onload = function(e) {
                 var readerResultString = reader.result;
+                var isFileAvanza = readerResultString.startsWith("Datum");
+                var hasNordnetDataValue = false;
+                if($('#nordnetData').val() && isFileAvanza == false)
+                    hasNordnetDataValue = true;
 
                 // If we already have a file of NN, remove first line for this
                 if(hasNordnetDataValue) {
                     readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
                 }
-                         
-                var isFileAvanza = readerResultString.startsWith("Datum");
 
                 if(isFileAvanza) {
                     $('#avanzaData').val(getBankSourceJsonData(readerResultString));
@@ -94,18 +106,11 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
 
                     $('#nordnetData').val(getBankSourceJsonData($('#nordnetDataString').val()));
                 }
-                    
-                $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
-                $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
-                $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
-
-                $('#mainContainer').attr("class", "container-fluid");
-
-                appControlLoader.loadControls();
             }
-
-            reader.readAsText(value.rawFile, 'ISO-8859-1');            
-        });       
+            
+            setTimeout(function(){ reader.readAsText(value.rawFile, 'ISO-8859-1'); }, timeoutValue);
+            timeoutValue += 50;
+        }); 
     };
 
     function replaceAll(str, find, replace) {
