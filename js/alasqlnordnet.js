@@ -23,6 +23,22 @@ define(['./alasql.min'], function(alasqlhelper) {
                        ORDER BY 1', [sourceData]);
     }
 
+    function getBuyTransactionYears() {
+        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Year \
+                       FROM ? \
+                       WHERE Transaktionstyp = "KOPT" \
+                       GROUP BY YEAR(Bokforingsdag) \
+                       ORDER BY 1', [sourceData]);
+    }
+
+    function getSellTransactionYears() {
+        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Year \
+                       FROM ? \
+                       WHERE Transaktionstyp = "SÅLT" \
+                       GROUP BY YEAR(Bokforingsdag) \
+                       ORDER BY 1', [sourceData]);
+    }
+
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
                        FROM ? \
@@ -121,6 +137,32 @@ define(['./alasql.min'], function(alasqlhelper) {
                        GROUP BY Vardepapper', [sourceData]);
     }
 
+    function getBuyTransactionCount(year, month) {
+
+        var result = alasql('SELECT COUNT(*) AS TransactionCount \
+                       FROM ? \
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
+                       AND Transaktionstyp = "KOPT"', [sourceData]);
+
+        var count = JSON.parse(JSON.stringify(result));
+        if(count["0"].TransactionCount == null) return 0;
+
+        return count["0"].TransactionCount;
+    }
+
+    function getSellTransactionCount(year, month) {
+
+        var result = alasql('SELECT COUNT(*) AS TransactionCount \
+                       FROM ? \
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
+                       AND Transaktionstyp = "SÅLT"', [sourceData]);
+
+        var count = JSON.parse(JSON.stringify(result));
+        if(count["0"].TransactionCount == null) return 0;
+
+        return count["0"].TransactionCount;
+    }
+
     function SumValues(result) {
         var total = 0;
 
@@ -143,6 +185,10 @@ define(['./alasql.min'], function(alasqlhelper) {
         getVardepapperTotalDividend: getVardepapperTotalDividend,
         getTaxYearSumBelopp: getTaxYearSumBelopp,
         getDepositsYearSumBelopp: getDepositsYearSumBelopp,
-        getDepositYears: getDepositYears
+        getDepositYears: getDepositYears,
+        getBuyTransactionYears: getBuyTransactionYears,
+        getBuyTransactionCount: getBuyTransactionCount,
+        getSellTransactionYears: getSellTransactionYears,
+        getSellTransactionCount: getSellTransactionCount
     };
 });

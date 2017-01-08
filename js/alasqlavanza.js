@@ -49,6 +49,22 @@ define(['./alasql.min'], function(alasqlhelper) {
                        ORDER BY 1', [sourceData]);
     }
 
+    function getBuyTransactionYears() {
+        return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
+                FROM ? \
+                WHERE [Typ av transaktion] = "Kop" \
+                GROUP BY YEAR(Datum) \
+                ORDER BY 1', [sourceData]);
+    }
+
+    function getSellTransactionYears() {
+        return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
+                FROM ? \
+                WHERE [Typ av transaktion] = "Salj" \
+                GROUP BY YEAR(Datum) \
+                ORDER BY 1', [sourceData]);
+    }
+
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Datum)) AS Ar \
                        FROM ? \
@@ -138,6 +154,42 @@ define(['./alasql.min'], function(alasqlhelper) {
         return resultForReturn;
     }
 
+    function getBuyTransactionCount(year, month) {
+        var result = alasql('SELECT COUNT(*) AS TransactionCount \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
+                       AND [Typ av transaktion] = "Kop"', [sourceData]);
+
+        var resultMinus = alasql('SELECT COUNT(*) AS TransactionCount \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
+                       AND [Typ av transaktion] = "Kop, rattelse"', [sourceData]);
+
+        var countMinusValue = 0;
+        var countMinus = JSON.parse(JSON.stringify(resultMinus));
+        if(countMinus["0"].TransactionCount == null) 
+            countMinusValue = 0
+        else
+            countMinusValue = countMinus["0"].TransactionCount;
+
+        var count = JSON.parse(JSON.stringify(result));
+        if(count["0"].TransactionCount == null) return 0;
+
+        return count["0"].TransactionCount - countMinusValue;
+    }
+
+    function getSellTransactionCount(year, month) {
+        var result = alasql('SELECT COUNT(*) AS TransactionCount \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
+                       AND [Typ av transaktion] = "Salj"', [sourceData]);
+
+        var count = JSON.parse(JSON.stringify(result));
+        if(count["0"].TransactionCount == null) return 0;
+
+        return parseInt(count["0"].TransactionCount);
+    }
+
     return {
         setSourceData: setSourceData,
         getDividendMaxYear: getDividendMaxYear,
@@ -149,6 +201,10 @@ define(['./alasql.min'], function(alasqlhelper) {
         getVardepapperTotalDividend: getVardepapperTotalDividend,
         getTaxYearSumBelopp: getTaxYearSumBelopp,
         getDepositsYearSumBelopp: getDepositsYearSumBelopp,
-        getDepositYears: getDepositYears
+        getDepositYears: getDepositYears,
+        getBuyTransactionYears: getBuyTransactionYears,
+        getBuyTransactionCount: getBuyTransactionCount,
+        getSellTransactionYears: getSellTransactionYears,
+        getSellTransactionCount: getSellTransactionCount
     };
 });

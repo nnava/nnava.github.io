@@ -5,7 +5,9 @@ define(['./chartdonutexpenses',
      './chartdividendyeargrowth',
      './chartyeardeposit',
      './chartdonutdividend',
-     './dropdowndividendyear'], 
+     './dropdowndividendyear',
+     './charttransactionbuyline',
+     './charttransactionsellline'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -13,7 +15,9 @@ define(['./chartdonutexpenses',
      chartDividendYearGrowth,
      chartYearDeposit,
      chartDonutDividend,
-     dropdownDividendYear) {
+     dropdownDividendYear,
+     chartTransactionBuyLine,
+     chartTransactionSellLine) {
 
     function loadControls() {
         loadDropdownDividendYear();
@@ -24,6 +28,20 @@ define(['./chartdonutexpenses',
         loadChartDonutExpenses();
         loadChartDonutDividend();
         loadChartDividendTreemap();
+        loadChartTransactionBuyLine();
+        loadChartTransactionSellLine();
+    }
+
+    function loadChartTransactionSellLine() {
+        chartTransactionSellLine.setChartId('#chartTransactionSellLine');
+        chartTransactionSellLine.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartTransactionSellLine.loadChart();
+    }
+
+    function loadChartTransactionBuyLine() {
+        chartTransactionBuyLine.setChartId('#chartTransactionBuyLine');
+        chartTransactionBuyLine.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartTransactionBuyLine.loadChart();
     }
 
     function loadDropdownDividendYear() {

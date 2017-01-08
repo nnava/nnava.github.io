@@ -30,6 +30,8 @@ define(['./uploadcontrol', './appcontrolloader'],
         kendo.resize($("#chartDonutDividendTotal"));
         kendo.resize($("#chartDonutDividend"));
         kendo.resize($("#treeMapDividend"));
+        kendo.resize($("#chartTransactionBuyLine"));
+        kendo.resize($("#chartTransactionSellLine"));
     });
 
     document.getElementById('checkboxTax').addEventListener('change', function() {
@@ -181,6 +183,12 @@ define(['./uploadcontrol', './appcontrolloader'],
                 break;
             case "chartYearDeposit":
                 chartFilename = "insättningar";
+                break;
+            case "chartTransactionSellLine":
+                chartFilename = "transaktioner_sälj";
+                break;
+            case "chartTransactionBuyLine":
+                chartFilename = "transaktioner_köp";
                 break;
             default:
                 chartFilename = "NOTFOUND";

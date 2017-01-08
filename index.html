@@ -267,6 +267,40 @@
                                 </div>
                             </div>
 
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Antal köptransaktioner - år/månad</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartTransactionBuyLineToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartTransactionBuyLineToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartTransactionBuyLine"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Antal säljtransaktioner - år/månad</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartTransactionSellLineToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartTransactionSellLineToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartTransactionSellLine"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -402,7 +436,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 18;
+            var versionNumber = 19;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
