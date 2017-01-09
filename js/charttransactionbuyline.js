@@ -4,6 +4,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     var chartId;
     var months = monthstaticvalues.getMonthValues();
     var colorArray = colors.getColorArray();
+    var yearTotalValue = [];
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -32,6 +33,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var datasetValue = [];
         var addedYear = [];        
         var yearWithMonthValues = [];
+        yearTotalValue = [];
         
         resultYear.forEach(function(entry) {
 
@@ -43,15 +45,20 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var year = entry.Year;
             var monthNumber = 11;
             var monthDataValues = [];
+            var totalTransactionCount = 0;
             for(var i=0; i <= monthNumber; i++)
             {
                 var month = i + 1;               
 
                 var resultNordnet = alasqlnordnet.getBuyTransactionCount(year, month);
                 var resultAvanza = alasqlavanza.getBuyTransactionCount(year, month);
+                var total = resultNordnet + resultAvanza;
+                totalTransactionCount += total;
 
-                monthDataValues[i] = resultNordnet + resultAvanza;
+                monthDataValues[i] = total;
             }
+
+            yearTotalValue[year] = totalTransactionCount;
 
             yearWithMonthValues.push({
                 name: entry.Year,
@@ -69,7 +76,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 text: "Antal köptransaktioner - år/månad"
             },
             legend: {
-                position: "bottom"
+                position: "bottom",
+                labels: {
+                    template: "#= window.getChartBuyLineLegendText(text) #"
+                }
             },
             chartArea: {
                 background: ""
@@ -105,6 +115,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             theme: "bootstrap"
         });
+    }
+
+    window.getChartBuyLineLegendText = function getChartBuyLineLegendText(text) {
+        return text + " (" + yearTotalValue[text] + " st)";
     }
 
     return {
