@@ -7,3 +7,5 @@ Licenses:
 * Telerik Kendo UI (http://www.telerik.com/kendo-ui)
 * RequireJs (https://github.com/requirejs/requirejs)
 * Papaparse (http://papaparse.com/)
+* Bootstrap (http://getbootstrap.com/)
+* Alasql (https://github.com/agershun/alasql)
