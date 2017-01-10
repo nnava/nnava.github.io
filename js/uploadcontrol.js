@@ -123,12 +123,8 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
 
     function getBankSourceJsonData(stringValue) {
 
-        stringValue = replaceAll(stringValue, "ö", "o");
-        stringValue = replaceAll(stringValue, "ä", "a");
-        stringValue = replaceAll(stringValue, "Ä", "A");
-        stringValue = replaceAll(stringValue, "Ö", "O");
-        stringValue = replaceAll(stringValue, ",", ".");
         stringValue = replaceAll(stringValue, "/", "");
+        stringValue = replaceAll(stringValue, ",", ".");
 
         var config = {
             header: true,

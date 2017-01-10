@@ -26,7 +26,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
-                       AND [Vardepapperbeskrivning] = "Utlandsk kallskatt" \
+                       AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
                        GROUP BY YEAR(Datum), MONTH(Datum)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -52,7 +52,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getBuyTransactionYears() {
         return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
                 FROM ? \
-                WHERE [Typ av transaktion] = "Kop" \
+                WHERE [Typ av transaktion] = "Köp" \
                 GROUP BY YEAR(Datum) \
                 ORDER BY 1', [sourceData]);
     }
@@ -60,7 +60,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getSellTransactionYears() {
         return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
                 FROM ? \
-                WHERE [Typ av transaktion] = "Salj" \
+                WHERE [Typ av transaktion] = "Sälj" \
                 GROUP BY YEAR(Datum) \
                 ORDER BY 1', [sourceData]);
     }
@@ -68,7 +68,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR(Datum)) AS Ar \
                        FROM ? \
-                       WHERE ([Typ av transaktion] = "Insattning" OR [Typ av transaktion] = "Uttag") \
+                       WHERE ([Typ av transaktion] = "Insättning" OR [Typ av transaktion] = "Uttag") \
                        GROUP BY YEAR(Datum) \
                        ORDER BY 1', [sourceData]);
     }
@@ -76,7 +76,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDividendAll(addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
+            taxSqlWhere = ' OR [Värdepapperbeskrivning] = "Utländsk källskatt"';
             
         return alasql('SELECT FIRST(YEAR(Datum)) AS Year, SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
@@ -101,7 +101,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' \
-                       AND [Vardepapperbeskrivning] = "Utlandsk kallskatt" \
+                       AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
                        GROUP BY YEAR(Datum)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -112,7 +112,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDepositsYearSumBelopp(year) {
         var result = alasql('SELECT FIRST(YEAR(Datum)) AS Ar, SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Insattning" OR [Typ av transaktion] = "Uttag") \
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Insättning" OR [Typ av transaktion] = "Uttag") \
                        GROUP BY YEAR(Datum)', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -123,7 +123,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getTotalDividend(year, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
+            taxSqlWhere = ' OR [Värdepapperbeskrivning] = "Utländsk källskatt"';
 
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
@@ -138,7 +138,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getVardepapperTotalDividend(year, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
+            taxSqlWhere = ' OR [Värdepapperbeskrivning] = "Utländsk källskatt"';
 
         var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                        FROM ? \
@@ -153,11 +153,11 @@ define(['./alasql.min'], function(alasqlhelper) {
 
             var newVardepapperObject = new Object();
 
-            var resultName = alasql('SELECT DISTINCT Vardepapperbeskrivning \
+            var resultName = alasql('SELECT DISTINCT [Värdepapperbeskrivning] \
                        FROM ? \
-                       WHERE [ISIN] = "' + object.name + '" AND Vardepapperbeskrivning != "Utlandsk kallskatt"', [sourceData]);
+                       WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"', [sourceData]);
 
-            newVardepapperObject.name = resultName["0"].Vardepapperbeskrivning;
+            newVardepapperObject.name = resultName["0"].Värdepapperbeskrivning;
             newVardepapperObject.value = object.value;
 
             resultForReturn.push(newVardepapperObject);
@@ -170,12 +170,12 @@ define(['./alasql.min'], function(alasqlhelper) {
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
-                       AND [Typ av transaktion] = "Kop"', [sourceData]);
+                       AND [Typ av transaktion] = "Köp"', [sourceData]);
 
         var resultMinus = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
-                       AND [Typ av transaktion] = "Kop, rattelse"', [sourceData]);
+                       AND [Typ av transaktion] = "Köp, rättelse"', [sourceData]);
 
         var countMinusValue = 0;
         var countMinus = JSON.parse(JSON.stringify(resultMinus));
@@ -194,7 +194,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
-                       AND [Typ av transaktion] = "Salj"', [sourceData]);
+                       AND [Typ av transaktion] = "Sälj"', [sourceData]);
 
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;

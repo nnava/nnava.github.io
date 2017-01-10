@@ -10,40 +10,40 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendMaxYear() {
-        return alasql('SELECT MAX(YEAR(Bokforingsdag)) AS Ar \
+        return alasql('SELECT MAX(YEAR([Bokföringsdag])) AS Ar \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING"', [sourceData]);
     }
 
     function getDividendYears() {
-        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Ar \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING" \
-                       GROUP BY YEAR(Bokforingsdag) \
+                       GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1', [sourceData]);
     }
 
     function getBuyTransactionYears() {
-        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Year \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM ? \
-                       WHERE Transaktionstyp = "KOPT" \
-                       GROUP BY YEAR(Bokforingsdag) \
+                       WHERE Transaktionstyp = "KÖPT" \
+                       GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1', [sourceData]);
     }
 
     function getSellTransactionYears() {
-        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Year \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM ? \
                        WHERE Transaktionstyp = "SÅLT" \
-                       GROUP BY YEAR(Bokforingsdag) \
+                       GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1', [sourceData]);
     }
 
     function getDepositYears() {
-        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Ar \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Ar \
                        FROM ? \
-                       WHERE (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING") \
-                       GROUP BY YEAR(Bokforingsdag) \
+                       WHERE (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING") \
+                       GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1', [sourceData]);
     }
 
@@ -52,19 +52,19 @@ define(['./alasql.min'], function(alasqlhelper) {
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
 
-        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE (Transaktionstyp = "UTDELNING"' + taxSqlWhere +') \
-                       GROUP BY YEAR(Bokforingsdag) \
+                       GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1', [sourceData]);
     }
 
     function getDividendMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND Transaktionstyp = "UTDELNING" \
-                       GROUP BY YEAR(Bokforingsdag), MONTH(Bokforingsdag)', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -75,9 +75,9 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getTaxMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND Transaktionstyp = "UTL KUPSKATT" \
-                       GROUP BY YEAR(Bokforingsdag), MONTH(Bokforingsdag)', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -88,9 +88,9 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getDividendYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND Transaktionstyp = "UTDELNING" \
-                       GROUP BY YEAR(Bokforingsdag)', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -101,9 +101,9 @@ define(['./alasql.min'], function(alasqlhelper) {
     function getTaxYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND Transaktionstyp = "UTL KUPSKATT" \
-                       GROUP BY YEAR(Bokforingsdag)', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -115,7 +115,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSATTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
         
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -130,8 +130,8 @@ define(['./alasql.min'], function(alasqlhelper) {
  
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTDELNING"'  + taxSqlWhere + ") \
-                       GROUP BY YEAR(Bokforingsdag)", [sourceData]);
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING"'  + taxSqlWhere + ") \
+                       GROUP BY YEAR([Bokföringsdag])", [sourceData]);
                        
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -144,18 +144,18 @@ define(['./alasql.min'], function(alasqlhelper) {
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
 
-        return alasql('SELECT FIRST(Vardepapper) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
+        return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
-                       GROUP BY Vardepapper', [sourceData]);
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
+                       GROUP BY [Värdepapper]', [sourceData]);
     }
 
     function getBuyTransactionCount(year, month) {
 
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
-                       AND Transaktionstyp = "KOPT"', [sourceData]);
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
+                       AND Transaktionstyp = "KÖPT"', [sourceData]);
 
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
@@ -167,7 +167,7 @@ define(['./alasql.min'], function(alasqlhelper) {
 
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND MONTH(Bokforingsdag) = ' + month + ' \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND Transaktionstyp = "SÅLT"', [sourceData]);
 
         var count = JSON.parse(JSON.stringify(result));
