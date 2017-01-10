@@ -69,7 +69,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return Math.round(belopp["0"].Belopp);
     }
 
     function getTaxMonthSumBelopp(year, month) {
@@ -82,7 +82,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return Math.round(belopp["0"].Belopp);
     }
 
     function getDividendYearSumBelopp(year) {
@@ -130,7 +130,8 @@ define(['./alasql.min'], function(alasqlhelper) {
  
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTDELNING"'  + taxSqlWhere + ")", [sourceData]);
+                       WHERE YEAR(Bokforingsdag) = ' + year + ' AND (Transaktionstyp = "UTDELNING"'  + taxSqlWhere + ") \
+                       GROUP BY YEAR(Bokforingsdag)", [sourceData]);
                        
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -159,7 +160,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
 
-        return count["0"].TransactionCount;
+        return parseInt(count["0"].TransactionCount);
     }
 
     function getSellTransactionCount(year, month) {
@@ -172,7 +173,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
 
-        return count["0"].TransactionCount;
+        return parseInt(count["0"].TransactionCount);
     }
 
     function SumValues(result) {

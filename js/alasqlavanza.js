@@ -19,7 +19,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
     function getTaxMonthSumBelopp(year, month) {
@@ -32,7 +32,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return parseInt(belopp["0"].Belopp);
+        return belopp["0"].Belopp;
     }
 
     function getDividendMaxYear() {
@@ -132,7 +132,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
 
-        return belopp["0"].Belopp; 
+        return Math.round(belopp["0"].Belopp); 
     }
 
     function getVardepapperTotalDividend(year, addTaxToSum) {
@@ -187,7 +187,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
 
-        return count["0"].TransactionCount - countMinusValue;
+        return parseInt(count["0"].TransactionCount) - parseInt(countMinusValue);
     }
 
     function getSellTransactionCount(year, month) {

@@ -49,7 +49,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                 resultAvanza = resultAvanza + taxAvanza;
             }
 
-            var totalDividendBelopp = resultNordnet + resultAvanza;
+            var totalDividendBelopp = Math.round(resultNordnet + resultAvanza);
             monthDividendDataValues[i] = totalDividendBelopp;
 
             var monthExpenseTextboxValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();

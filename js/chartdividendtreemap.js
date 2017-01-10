@@ -33,7 +33,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         $(chartId).kendoTreeMap({
             dataSource: {
                 data: [{
-                    name: 'Utdelningar totalt: ' + kendo.toString(totalBelopp, "#,0 kr"),
+                    name: 'Utdelningar totalt: ' + kendo.toString(Math.round(totalBelopp), "#,0 kr"),
                     value: kendo.toString(totalBelopp, "#,0 kr"),
                     items: chartData
                 }]
@@ -49,7 +49,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             content: function (e) {
                 var treemap = $(chartId).data("kendoTreeMap");
                 var item = treemap.dataItem(e.target.closest(".k-treemap-tile"));
-                return item.name + ": " + kendo.toString(item.value, "#,0 kr");
+                return item.name + ": " + kendo.toString(Math.round(item.value), "#,0 kr");
             }
         });
     }
