@@ -59,7 +59,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
             seriesDefaults: {
                 type: "donut",
                 startAngle: 150,
-                holeSize: 70,
+                holeSize: 80,
             },
             series: [{
                 name: "Data",

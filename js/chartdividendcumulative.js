@@ -60,7 +60,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet'], function(alasqlhel
                 type: "area",
                 labels: {
                     visible: true,
-                    background: "transparent"
+                    background: "transparent",
+                    format: "#,0"
                 }
             },
             series: [{
@@ -83,7 +84,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet'], function(alasqlhel
             },
             tooltip: {
                 visible: true,
-                template: "#= category # - #= value # kr"
+                template: "#= category # - #= kendo.toString(value, 'n0') # kr"
             },
             theme: "bootstrap"
         });

@@ -133,7 +133,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         if (value == 0) 
             return "";
         else
-            return value;
+            return kendo.toString(value, 'n0');
     }
 
     return {
