@@ -111,7 +111,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             tooltip: {
                 visible: true,
                 format: "{0}",
-                template: "#= series.name #: #= value #"
+                template: "#= series.name #: #= value # st"
             },
             theme: "bootstrap"
         });

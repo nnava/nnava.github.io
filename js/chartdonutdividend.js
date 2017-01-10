@@ -74,7 +74,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
             seriesColors: colorArray,
             tooltip: {
                 visible: true,
-                template: "#= category # - #= kendo.format('{0:P}', percentage) # (#= kendo.toString(value, 'n0') #) kr"
+                template: "#= category # - #= kendo.format('{0:P}', percentage) # (#= kendo.toString(value, 'n0') # kr)"
             },
             theme: "bootstrap"
         });

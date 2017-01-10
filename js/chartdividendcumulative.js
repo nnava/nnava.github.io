@@ -83,7 +83,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet'], function(alasqlhel
             },
             tooltip: {
                 visible: true,
-                template: "#= category # - #= value #"
+                template: "#= category # - #= value # kr"
             },
             theme: "bootstrap"
         });
