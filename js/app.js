@@ -32,6 +32,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         kendo.resize($("#treeMapDividend"));
         kendo.resize($("#chartTransactionBuyLine"));
         kendo.resize($("#chartTransactionSellLine"));
+        kendo.resize($("#chartDividendCumulative"));
     });
 
     document.getElementById('checkboxTax').addEventListener('change', function() {
@@ -40,6 +41,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         appControlLoader.loadChartDividendYearMonth();
         appControlLoader.loadChartDividendTreemap();
         appControlLoader.loadChartDonutDividend();
+        appControlLoader.loadChartDividendCumulative();
     }, false);
 
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
@@ -98,7 +100,7 @@ define(['./uploadcontrol', './appcontrolloader'],
         .done(function(data) {
             kendo.saveAs({
                 dataURI: data,
-                fileName: "Aktierapport_" + today + ".pdf"
+                fileName: "nnava_" + today + ".pdf"
             });
         });
     });
@@ -189,6 +191,9 @@ define(['./uploadcontrol', './appcontrolloader'],
                 break;
             case "chartTransactionBuyLine":
                 chartFilename = "transaktioner_köp";
+                break;
+            case "chartDividendCumulative":
+                chartFilename = "utdelningar_ackumulerad_total";
                 break;
             default:
                 chartFilename = "NOTFOUND";

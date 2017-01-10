@@ -71,7 +71,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     function loadChart() {
         $(chartId).kendoChart({
             title: {
-                text: "Utdelningar/kostnader total"
+                text: "Utdelningar/kostnader - total"
             },
             legend: {
                 position: "top"

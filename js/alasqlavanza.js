@@ -73,6 +73,18 @@ define(['./alasql.min'], function(alasqlhelper) {
                        ORDER BY 1', [sourceData]);
     }
 
+    function getDividendAll(addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR [Vardepapperbeskrivning] = "Utlandsk kallskatt"';
+            
+        return alasql('SELECT FIRST(YEAR(Datum)) AS Year, SUM(Belopp::NUMBER) AS Belopp \
+                       FROM ? \
+                       WHERE ([Typ av transaktion] = "Utdelning"' + taxSqlWhere + ') \
+                       GROUP BY YEAR(Datum) \
+                       ORDER BY 1', [sourceData]);
+    }
+
     function getDividendYearSumBelopp(year) {
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM ? \
@@ -205,6 +217,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         getBuyTransactionYears: getBuyTransactionYears,
         getBuyTransactionCount: getBuyTransactionCount,
         getSellTransactionYears: getSellTransactionYears,
-        getSellTransactionCount: getSellTransactionCount
+        getSellTransactionCount: getSellTransactionCount,
+        getDividendAll: getDividendAll
     };
 });

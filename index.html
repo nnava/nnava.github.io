@@ -160,7 +160,7 @@
                                 <div class="col-md-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/kostnader</h4>
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/kostnader - nuvarande år</h4>
                                             <div class="btn-group pull-right">
                                                 <button id="btn-chartDividendExpensesMonthToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
                                                 <button id="btn-chartDividendExpensesMonthToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
@@ -202,6 +202,23 @@
                                         </div>
                                         <div class="panel-body">
                                             <div id="chartDividendYearGrowth"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelning ackumulerad - total</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDividendCumulativeToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDividendCumulativeToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDividendCumulative"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +271,7 @@
                                 <div class="col-md-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Insättningar</h4>
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Insättningar - år</h4>
                                             <div class="btn-group pull-right">
                                                 <button id="btn-chartYearDepositToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
                                                 <button id="btn-chartYearDepositToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
@@ -382,21 +399,31 @@ $.each(e.files, function (index, value) {
         alert("Endast fil med filformat CSV");
         e.preventDefault();
     }
-
+    
     var reader = new FileReader();
-    reader.onload = function(e) {
-        var hasNordnetDataValue = false;
-        if($('#nordnetData').val())
-            hasNordnetDataValue = true;
+    reader.onloadend = function(e) {
+        if((index +1) == fileArrayLength) {
+            $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
+            $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
+            $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
 
+            $('#mainContainer').attr("class", "container-fluid");
+
+            appControlLoader.loadControls();
+        }
+    }
+
+    reader.onload = function(e) {
         var readerResultString = reader.result;
+        var isFileAvanza = readerResultString.startsWith("Datum");
+        var hasNordnetDataValue = false;
+        if($('#nordnetData').val() && isFileAvanza == false)
+            hasNordnetDataValue = true;
 
         // If we already have a file of NN, remove first line for this
         if(hasNordnetDataValue) {
             readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
         }
-                    
-        var isFileAvanza = readerResultString.startsWith("Datum");
 
         if(isFileAvanza) {
             $('#avanzaData').val(getBankSourceJsonData(readerResultString));
@@ -412,13 +439,10 @@ $.each(e.files, function (index, value) {
 
             $('#nordnetData').val(getBankSourceJsonData($('#nordnetDataString').val()));
         }
-            
-        $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
-
-        appControlLoader.loadControls();
     }
-
-    reader.readAsText(value.rawFile, 'ISO-8859-1');            
+    
+    setTimeout(function(){ reader.readAsText(value.rawFile, 'ISO-8859-1'); }, timeoutValue);
+    timeoutValue += 50;
 });</pre>
                                 För den mer nyfikna så finns källkoden öppen att läsa/hämta/bidra till på följande adress: <a href="https://github.com/nnava/nnava.github.io" class="label label-success">nnava.github.io</a>
 
@@ -436,7 +460,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 19;
+            var versionNumber = 20;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

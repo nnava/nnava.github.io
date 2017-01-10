@@ -47,6 +47,18 @@ define(['./alasql.min'], function(alasqlhelper) {
                        ORDER BY 1', [sourceData]);
     }
 
+    function getDividendAll(addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+
+        return alasql('SELECT FIRST(YEAR(Bokforingsdag)) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+                       FROM ? \
+                       WHERE (Transaktionstyp = "UTDELNING"' + taxSqlWhere +') \
+                       GROUP BY YEAR(Bokforingsdag) \
+                       ORDER BY 1', [sourceData]);
+    }
+
     function getDividendMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
@@ -189,6 +201,7 @@ define(['./alasql.min'], function(alasqlhelper) {
         getBuyTransactionYears: getBuyTransactionYears,
         getBuyTransactionCount: getBuyTransactionCount,
         getSellTransactionYears: getSellTransactionYears,
-        getSellTransactionCount: getSellTransactionCount
+        getSellTransactionCount: getSellTransactionCount,
+        getDividendAll: getDividendAll
     };
 });
