@@ -189,6 +189,19 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         });
     });
 
+    $(".export-chartToPdf").click(function() {
+        var chartId = this.id.toString().replace("btn-", "").replace("ToPdf", "");
+        var chartFilename = getChartFilename(chartId) + ".pdf";
+
+        var chart = $("#" + chartId).getKendoChart();
+        chart.exportPDF({ paperSize: "auto", margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" } }).done(function(data) {
+            kendo.saveAs({
+                dataURI: data,
+                fileName: chartFilename
+            });
+        });
+    });
+
     function getChartFilename(chartId) {
         var today = new Date().toISOString().slice(0, 10);
         var chartFilename = "NOTFOUND";
