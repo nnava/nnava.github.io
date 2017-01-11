@@ -3,6 +3,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
     var chartData;
     var chartId;
     var colorArray = colors.getColorArray();
+    var selectedYear = 0;
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -12,6 +13,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
 
         alasqlnordnet.setSourceData(nordnetValue);
         alasqlavanza.setSourceData(avanzaValue);
+
+        selectedYear = year;
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
@@ -48,7 +51,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
                 background: ""
             },
             title: {
-                text: "Värdepapper/utdelning"
+                text: "Värdepapper/utdelning - år " + selectedYear
             },
             legend: {
                 position: "top"

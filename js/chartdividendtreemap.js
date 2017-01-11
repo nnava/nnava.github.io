@@ -3,6 +3,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     var chartData;
     var totalBelopp;
     var chartId;
+    var selectedYear = 0;
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -12,6 +13,8 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
         alasqlnordnet.setSourceData(nordnetValue);
         alasqlavanza.setSourceData(avanzaValue);
+
+        selectedYear = year;
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
@@ -33,7 +36,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         $(chartId).kendoTreeMap({
             dataSource: {
                 data: [{
-                    name: 'Utdelningar totalt: ' + kendo.toString(Math.round(totalBelopp), "#,0 kr"),
+                    name: 'Utdelningar år ' + selectedYear + ' - totalt: ' + kendo.toString(Math.round(totalBelopp), "#,0 kr"),
                     value: kendo.toString(totalBelopp, "#,0 kr"),
                     items: chartData
                 }]
