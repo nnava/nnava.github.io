@@ -15,24 +15,24 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet'], function(alasqlhel
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
 
-        alasql('CREATE TABLE IF NOT EXISTS ArTable \
-                (Ar INT);');
+        alasql('CREATE TABLE IF NOT EXISTS DropdownDivYearTable \
+                (Year INT);');
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DropdownDivYearTable SELECT Year \
                 FROM ?', [nordnetYearData]);
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DropdownDivYearTable SELECT Year \
                 FROM ?', [avanzaYearData]);
 
-        var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable');
-        alasql('TRUNCATE TABLE ArTable');
+        var resultYear = alasql('SELECT DISTINCT Year FROM DropdownDivYearTable');
+        alasql('TRUNCATE TABLE DropdownDivYearTable');
         
         dropdownData = [];
         resultYear.forEach(function(entry) {
 
-            if (entry.Ar == null) { return; }
+            if (entry.Year == null) { return; }
 
-            dropdownData.push({ text: entry.Ar, value: entry.Ar });
+            dropdownData.push({ text: entry.Year, value: entry.Year });
         });
     }
 

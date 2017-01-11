@@ -17,17 +17,17 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
 
-        alasql('CREATE TABLE IF NOT EXISTS ArTable \
-                (Ar INT);');
+        alasql('CREATE TABLE IF NOT EXISTS DivYearMonthYearTable \
+                (Year INT);');
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DivYearMonthYearTable SELECT Year \
                 FROM ?', [nordnetYearData]);
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DivYearMonthYearTable SELECT Year \
                 FROM ?', [avanzaYearData]);
 
-        var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable');
-        alasql('TRUNCATE TABLE ArTable');
+        var resultYear = alasql('SELECT DISTINCT Year FROM DivYearMonthYearTable');
+        alasql('TRUNCATE TABLE DivYearMonthYearTable');
 
         var datasetValue = [];
         var entryId = 0;

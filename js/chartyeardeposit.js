@@ -23,17 +23,17 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var nordnetYearData = alasqlnordnet.getDepositYears();
         var avanzaYearData = alasqlavanza.getDepositYears();
 
-        alasql('CREATE TABLE IF NOT EXISTS ArTable \
-                (Ar INT);');
+        alasql('CREATE TABLE IF NOT EXISTS DepositYearTable \
+                (Year INT);');
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DepositYearTable SELECT Year \
                 FROM ?', [nordnetYearData]);
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DepositYearTable SELECT Year \
                 FROM ?', [avanzaYearData]);
 
-        var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable');
-        alasql('TRUNCATE TABLE ArTable');
+        var resultYear = alasql('SELECT DISTINCT Year FROM DepositYearTable');
+        alasql('TRUNCATE TABLE DepositYearTable');
 
         var yearDepositData = [];
         var addedYear = [];
@@ -44,16 +44,16 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
         resultYear.forEach(function(entry) {
 
-            if (entry.Ar == null) { return; }
-            if (addedYear.includes(entry.Ar)) return;
+            if (entry.Year == null) { return; }
+            if (addedYear.includes(entry.Year)) return;
 
-            addedYear.push(entry.Ar);
+            addedYear.push(entry.Year);
 
-            var nordnetBelopp = alasqlnordnet.getDepositsYearSumBelopp(entry.Ar);
-            var avanzaBelopp = alasqlavanza.getDepositsYearSumBelopp(entry.Ar);
+            var nordnetBelopp = alasqlnordnet.getDepositsYearSumBelopp(entry.Year);
+            var avanzaBelopp = alasqlavanza.getDepositsYearSumBelopp(entry.Year);
             var totalBelopp = nordnetBelopp + avanzaBelopp;
 
-            total[entry.Ar] = totalBelopp;
+            total[entry.Year] = totalBelopp;
 
             nordnetValues.push(nordnetBelopp);
             avanzaValues.push(avanzaBelopp);          

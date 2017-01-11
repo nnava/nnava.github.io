@@ -36,13 +36,13 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendMaxYear() {
-        return alasql('SELECT MAX(YEAR(Datum)) AS Ar \
+        return alasql('SELECT MAX(YEAR(Datum)) AS Year \
                        FROM ? \
                        WHERE [Typ av transaktion] = "Utdelning"', [sourceData]);
     }
 
     function getDividendYears() {
-        return alasql('SELECT FIRST(YEAR(Datum)) AS Ar \
+        return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
                        FROM ? \
                        WHERE [Typ av transaktion] = "Utdelning" \
                        GROUP BY YEAR(Datum) \
@@ -66,7 +66,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDepositYears() {
-        return alasql('SELECT FIRST(YEAR(Datum)) AS Ar \
+        return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
                        FROM ? \
                        WHERE ([Typ av transaktion] = "Insättning" OR [Typ av transaktion] = "Uttag") \
                        GROUP BY YEAR(Datum) \

@@ -17,24 +17,24 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var nordnetYearData = alasqlnordnet.getDividendMaxYear();
         var avanzaYearData = alasqlavanza.getDividendMaxYear();
 
-        alasql('CREATE TABLE IF NOT EXISTS ArTable \
-                (Ar INT);');
+        alasql('CREATE TABLE IF NOT EXISTS DivExpensesYearTable \
+                (Year INT);');
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DivExpensesYearTable SELECT Year \
                 FROM ?', [nordnetYearData]);
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DivExpensesYearTable SELECT Year \
                 FROM ?', [avanzaYearData]);
 
-        var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable');
-        alasql('TRUNCATE TABLE ArTable');
+        var resultYear = alasql('SELECT DISTINCT Year FROM DivExpensesYearTable');
+        alasql('TRUNCATE TABLE DivExpensesYearTable');
 
         var monthNumber = 11;
         var monthDividendDataValues = [];
         var monthExpensesDataValues = [];
         var monthMarginDataValues = [];
 
-        var year = resultYear["0"].Ar;
+        var year = resultYear["0"].Year;
         for(var i=0; i <= monthNumber; i++)
         {
             var month = i + 1;

@@ -10,13 +10,13 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDividendMaxYear() {
-        return alasql('SELECT MAX(YEAR([Bokföringsdag])) AS Ar \
+        return alasql('SELECT MAX(YEAR([Bokföringsdag])) AS Year \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING"', [sourceData]);
     }
 
     function getDividendYears() {
-        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Ar \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM ? \
                        WHERE Transaktionstyp = "UTDELNING" \
                        GROUP BY YEAR([Bokföringsdag]) \
@@ -40,7 +40,7 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getDepositYears() {
-        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Ar \
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM ? \
                        WHERE (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING") \
                        GROUP BY YEAR([Bokföringsdag]) \

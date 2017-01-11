@@ -30,17 +30,17 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
 
-        alasql('CREATE TABLE IF NOT EXISTS ArTable \
-                (Ar INT);');
+        alasql('CREATE TABLE IF NOT EXISTS DivYearGrowthYearTable \
+                (Year INT);');
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DivYearGrowthYearTable SELECT Year \
                 FROM ?', [nordnetYearData]);
 
-        alasql('INSERT INTO ArTable SELECT Ar \
+        alasql('INSERT INTO DivYearGrowthYearTable SELECT Year \
                 FROM ?', [avanzaYearData]);
 
-        var resultYear = alasql('SELECT DISTINCT Ar FROM ArTable ORDER BY Ar');
-        alasql('TRUNCATE TABLE ArTable');
+        var resultYear = alasql('SELECT DISTINCT Year FROM DivYearGrowthYearTable ORDER BY Year');
+        alasql('TRUNCATE TABLE DivYearGrowthYearTable');
 
         var resultYearArray = yearToArray(resultYear);
 
@@ -68,7 +68,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var yearBefore = year-1;
             var foundLastYear = false;
             resultYear.forEach(function(entryLast) {
-                if(entryLast.Ar == yearBefore) {
+                if(entryLast.Year == yearBefore) {
                     var totalBeloppLastYear = getTotalDividendForYear(yearBefore);
 
                     var changeValue = totalBelopp - totalBeloppLastYear;
@@ -119,9 +119,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     function yearToArray(resultYear) {
         var resultYearArray = [];
         resultYear.forEach(function(entry) {
-            if (entry.Ar == null) { return; }
+            if (entry.Year == null) { return; }
 
-            resultYearArray.push(entry.Ar);
+            resultYearArray.push(entry.Year);
         });
 
         return resultYearArray;
