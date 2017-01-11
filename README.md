@@ -9,3 +9,4 @@ Licenses:
 * Papaparse (http://papaparse.com/)
 * Bootstrap (http://getbootstrap.com/)
 * Alasql (https://github.com/agershun/alasql)
+* Cookie Consent plugin by Silktide (http://silktide.com/cookieconsent)

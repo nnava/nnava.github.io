@@ -1,19 +1,24 @@
-define(['./uploadcontrol', './appcontrolloader'], 
-     function(uploadControl, appControlLoader) {
+define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticvalues'], 
+     function(uploadControl, appControlLoader, appCookies, monthstaticvalues) {
+
+    var monthsInput = monthstaticvalues.getMonthInputs();
 
     $(document).ready(function() {
-
-        $(".inputMonthNumberParent").kendoNumericTextBox({
-            format: "#,0 kr"
-        });
 
         $(".inputMonthNumber").kendoNumericTextBox({
             format: "#,0 kr",
             change: function() {
                 appControlLoader.loadChartDonutExpenses();
                 appControlLoader.loadChartDividendExpenses();
+                saveInputMonthNumberToCookie();
             }
         });
+
+        $(".inputMonthNumberParent").kendoNumericTextBox({
+            format: "#,0 kr"
+        });
+        
+        setInputMonthNumberFromCookie();
 
         uploadControl.setControlId('#dataFiles');
         uploadControl.load();
@@ -21,6 +26,27 @@ define(['./uploadcontrol', './appcontrolloader'],
         alasql.options.cache = false;
         kendo.culture("se-SE");
     });
+
+    function setInputMonthNumberFromCookie() {
+        var inputMonthNumberCookie = appCookies.getCookieValue('nnava_inputmonthnumbers');
+        if(inputMonthNumberCookie == null) return;
+
+        inputMonthNumberCookie.forEach(function(entry) {
+            $('#' + entry.monthInputId).data("kendoNumericTextBox").value(entry.value);
+        });
+    }
+
+    function saveInputMonthNumberToCookie() {
+        var monthNumber = 11;
+        var inputMonthNumber = [];
+
+        for(var i=0; i <= monthNumber; i++) {
+            var month = i + 1;
+            inputMonthNumber.push({monthInputId: monthsInput[i], value: $('#' + monthsInput[i]).data("kendoNumericTextBox").value()});
+        }
+
+        appCookies.createCookie('nnava_inputmonthnumbers', JSON.stringify(inputMonthNumber), 365);
+    }
     
     $(window).on("resize", function() {
         kendo.resize($("#chartYearDeposit"));
@@ -63,7 +89,7 @@ define(['./uploadcontrol', './appcontrolloader'],
 
         appControlLoader.loadChartDonutExpenses();
         appControlLoader.loadChartDividendExpenses();
-        
+        saveInputMonthNumberToCookie();
     });
 
     document.getElementById('btnExportToPng').addEventListener('click', function() {
