@@ -135,14 +135,17 @@ define(['./alasql.min'], function(alasqlhelper) {
         return Math.round(belopp["0"].Belopp); 
     }
 
-    function getVardepapperTotalDividend(year, addTaxToSum) {
-        var taxSqlWhere = '';
-        if(addTaxToSum)
-            taxSqlWhere = ' OR [Värdepapperbeskrivning] = "Utländsk källskatt"';
+    function getVärdepapperForYear(year) {
+        return alasql('SELECT DISTINCT [Värdepapperbeskrivning] AS Vardepapper \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"', [sourceData]);
+    }
+
+    function getVärdepapperDividend(year, month, värdepapperbeskrivning, addTaxToSum) {
 
         var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning"' + taxSqlWhere + ') \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [Värdepapperbeskrivning] = "' + värdepapperbeskrivning + '" AND [Typ av transaktion] = "Utdelning" \
                        GROUP BY ISIN', [sourceData]);
                 
         var resultForReturn = [];
@@ -157,8 +160,56 @@ define(['./alasql.min'], function(alasqlhelper) {
                        FROM ? \
                        WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"', [sourceData]);
 
+            var taxValue = 0;
+            if(addTaxToSum) {
+                var resultTax = alasql('SELECT SUM(Belopp::NUMBER) AS [value] \
+                                     FROM ? \
+                                     WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
+                                     GROUP BY ISIN', [sourceData]);
+                
+                taxValue = resultTax["0"].value;
+            }
+
             newVardepapperObject.name = resultName["0"].Värdepapperbeskrivning;
-            newVardepapperObject.value = object.value;
+            newVardepapperObject.value = (object.value + taxValue);
+
+            resultForReturn.push(newVardepapperObject);
+        });
+
+        return resultForReturn;
+    }
+
+    function getVardepapperTotalDividend(year, addTaxToSum) {
+
+        var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
+                       FROM ? \
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning" \
+                       GROUP BY ISIN', [sourceData]);
+                
+        var resultForReturn = [];
+        result.forEach(function(object) {
+
+            if(object == null) return;
+            if(object.name == null) return;
+
+            var newVardepapperObject = new Object();
+
+            var resultName = alasql('SELECT DISTINCT [Värdepapperbeskrivning] \
+                       FROM ? \
+                       WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"', [sourceData]);
+
+            var taxValue = 0;
+            if(addTaxToSum) {
+                var resultTax = alasql('SELECT SUM(Belopp::NUMBER) AS [value] \
+                                     FROM ? \
+                                     WHERE YEAR(Datum) = ' + year + ' AND [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
+                                     GROUP BY ISIN', [sourceData]);
+                
+                taxValue = resultTax["0"].value;
+            }
+
+            newVardepapperObject.name = resultName["0"].Värdepapperbeskrivning;
+            newVardepapperObject.value = (object.value + taxValue);
 
             resultForReturn.push(newVardepapperObject);
         });
@@ -218,6 +269,8 @@ define(['./alasql.min'], function(alasqlhelper) {
         getBuyTransactionCount: getBuyTransactionCount,
         getSellTransactionYears: getSellTransactionYears,
         getSellTransactionCount: getSellTransactionCount,
-        getDividendAll: getDividendAll
+        getDividendAll: getDividendAll,
+        getVärdepapperDividend: getVärdepapperDividend,
+        getVärdepapperForYear: getVärdepapperForYear
     };
 });

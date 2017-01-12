@@ -8,7 +8,8 @@ define(['./chartdonutexpenses',
      './dropdowndividendyear',
      './charttransactionbuyline',
      './charttransactionsellline',
-     './chartdividendcumulative'], 
+     './chartdividendcumulative',
+     './chartdividendstackedcumulative'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -19,7 +20,8 @@ define(['./chartdonutexpenses',
      dropdownDividendYear,
      chartTransactionBuyLine,
      chartTransactionSellLine,
-     chartDividendCumulative) {
+     chartDividendCumulative,
+     chartDividendStackedCumulative) {
 
     function loadControls() {
         loadDropdownDividendYear();
@@ -33,6 +35,17 @@ define(['./chartdonutexpenses',
         loadChartTransactionBuyLine();
         loadChartTransactionSellLine();
         loadChartDividendCumulative();
+        loadChartDividendStackedCumulative();
+    }
+
+    function loadChartDividendStackedCumulative() {
+        var year = dropdownDividendYear.getValue();
+        if(year == null || year == '')
+            year = 0;
+
+        chartDividendStackedCumulative.setChartId('#chartDividendStackedCumulative');
+        chartDividendStackedCumulative.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
+        chartDividendStackedCumulative.loadChart();
     }
 
     function loadChartDividendCumulative() {
@@ -64,6 +77,7 @@ define(['./chartdonutexpenses',
     function dropDownListDividendYear_Change(e) {
         loadChartDividendTreemap();
         loadChartDonutDividend();
+        loadChartDividendStackedCumulative();
     }
 
     function loadChartYearDeposit() {
@@ -123,6 +137,7 @@ define(['./chartdonutexpenses',
         loadChartDividendYearMonth: loadChartDividendYearMonth,
         loadChartDividendTreemap: loadChartDividendTreemap,
         loadChartDonutDividend: loadChartDonutDividend,
-        loadChartDividendCumulative: loadChartDividendCumulative
+        loadChartDividendCumulative: loadChartDividendCumulative,
+        loadChartDividendStackedCumulative: loadChartDividendStackedCumulative
     }
 });

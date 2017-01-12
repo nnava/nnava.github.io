@@ -59,6 +59,7 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         kendo.resize($("#chartTransactionBuyLine"));
         kendo.resize($("#chartTransactionSellLine"));
         kendo.resize($("#chartDividendCumulative"));
+        kendo.resize($("#chartDividendStackedCumulative"));
     });
 
     document.getElementById('checkboxTax').addEventListener('change', function() {
@@ -68,6 +69,7 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         appControlLoader.loadChartDividendTreemap();
         appControlLoader.loadChartDonutDividend();
         appControlLoader.loadChartDividendCumulative();
+        appControlLoader.loadChartDividendStackedCumulative();
     }, false);
 
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
@@ -233,6 +235,9 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
                 break;
             case "chartDividendCumulative":
                 chartFilename = "utdelningar_ackumulerad_total";
+                break;
+            case "chartDividendStackedCumulative":
+                chartFilename = "utdelningar_ackumulerad_månad_värdepapper"
                 break;
             default:
                 chartFilename = "NOTFOUND";

@@ -250,6 +250,24 @@
                                 <div class="col-md-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelning per månad/värdepapper - år</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDividendStackedCumulativeToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
+                                                <button id="btn-chartDividendStackedCumulativeToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDividendStackedCumulativeToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDividendStackedCumulative"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
                                         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap utdelningar - år</h4>
                                             <div class="btn-group pull-right">
                                                 <button id="btn-treeMapDividendToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg" title="Till SVG">Till SVG</button>
@@ -477,7 +495,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 28;
+            var versionNumber = 29;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

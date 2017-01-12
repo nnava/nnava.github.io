@@ -176,15 +176,21 @@ define(['./alasql.min'], function(alasqlhelper) {
         return parseInt(count["0"].TransactionCount);
     }
 
-    function SumValues(result) {
-        var total = 0;
+    function getVärdepapperForYear(year) {
+        return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper \
+                       FROM ? \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "UTDELNING"', [sourceData]);
+    }
 
-        result.forEach(function(value) {
-            if(typeof value !== "undefined" && typeof value.Belopp !== "undefined")
-                total += parseInt(value.Belopp.replace(/ /g,''));
-        });
+    function getVärdepapperDividend(year, month, värdepapperbeskrivning, addTaxToSum) {
+        var taxSqlWhere = '';
+        if(addTaxToSum)
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
 
-        return total;
+        return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
+                       FROM ? \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [Värdepapper] = "' + värdepapperbeskrivning + '" AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
+                       GROUP BY [Värdepapper]', [sourceData]);
     }
 
     return {
@@ -203,6 +209,8 @@ define(['./alasql.min'], function(alasqlhelper) {
         getBuyTransactionCount: getBuyTransactionCount,
         getSellTransactionYears: getSellTransactionYears,
         getSellTransactionCount: getSellTransactionCount,
-        getDividendAll: getDividendAll
+        getDividendAll: getDividendAll,
+        getVärdepapperDividend: getVärdepapperDividend,
+        getVärdepapperForYear: getVärdepapperForYear
     };
 });
