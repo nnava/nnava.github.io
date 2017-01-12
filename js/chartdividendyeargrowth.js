@@ -55,7 +55,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             var totalTaxReturnBelopp = getTotalTaxReturnForYear(year -3);
             chartDataSumReturnYearTax.push(totalTaxReturnBelopp);
 
-            //if taxbelopp < 0, och finns värde i årsarray? lägg till annars lägg till år i ny årsarray (framtid)
+            // if taxbelopp < 0, och finns värde i årsarray? lägg till annars lägg till år i ny årsarray (framtid)
             if(totalTaxBelopp < 0 && !resultYearArray.includes(year + 3)) {
                 futureTaxReturnYears.push(year);
             }

@@ -30,7 +30,6 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         alasql('TRUNCATE TABLE DivYearMonthYearTable');
 
         var datasetValue = [];
-        var entryId = 0;
         var addedYear = [];        
         var yearWithMonthValues = [];
         
@@ -69,7 +68,6 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
                     spacing: parseFloat(0.3, 10)
             });
 
-            entryId++; 
         });
 
         chartData = yearWithMonthValues;

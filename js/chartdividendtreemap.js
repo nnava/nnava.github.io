@@ -47,7 +47,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         });
 
         $(chartId).kendoTooltip({
-            filter: ".k-leaf,.k-treemap-title",
+            filter: ".k-leaf, .k-treemap-title",
             position: "top",
             content: function (e) {
                 var treemap = $(chartId).data("kendoTreeMap");

@@ -59,9 +59,6 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             if(totalDividendBelopp > monthExpenseTextboxValue) {
                 monthValue = 0;
                 marginValue = totalDividendBelopp - monthExpenseTextboxValue;
-            } 
-            else {
-                marginValue = 0;
             }
 
             monthExpensesDataValues[i] = monthValue;
