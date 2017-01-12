@@ -100,6 +100,7 @@ define(['./chartdonutexpenses',
         chartDonutDividend.setChartId('#chartDonutDividend');
         chartDonutDividend.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
         chartDonutDividend.loadChart();
+        chartDonutDividend.resize();
     }
 
     function loadChartDividendTreemap() {
@@ -130,6 +131,10 @@ define(['./chartdonutexpenses',
         chartDividendExpenses.loadChart();
     };
 
+    function resizeChartDonutDividend() {
+        chartDonutDividend.resize();
+    };
+
     return {
         loadControls: loadControls,
         loadChartDividendExpenses: loadChartDividendExpenses,
@@ -138,6 +143,7 @@ define(['./chartdonutexpenses',
         loadChartDividendTreemap: loadChartDividendTreemap,
         loadChartDonutDividend: loadChartDonutDividend,
         loadChartDividendCumulative: loadChartDividendCumulative,
-        loadChartDividendStackedCumulative: loadChartDividendStackedCumulative
+        loadChartDividendStackedCumulative: loadChartDividendStackedCumulative,
+        resizeChartDonutDividend: resizeChartDonutDividend
     }
 });

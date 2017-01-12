@@ -60,9 +60,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
                 background: ""
             },
             seriesDefaults: {
-                type: "donut",
-                startAngle: 150,
-                holeSize: 80,
+                type: "donut"
             },
             series: [{
                 name: "Data",
@@ -83,9 +81,16 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
         });
     }
 
+    function resize() {
+        var height = ($(window).height() * 0.8);
+
+        $(chartId).css("height", height).data("kendoChart").resize();
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        resize: resize
     };
 });

@@ -54,12 +54,12 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         kendo.resize($("#chartDividendYearMonth"));
         kendo.resize($("#chartDividendExpensesMonth"));
         kendo.resize($("#chartDonutDividendTotal"));
-        kendo.resize($("#chartDonutDividend"));
         kendo.resize($("#treeMapDividend"));
         kendo.resize($("#chartTransactionBuyLine"));
         kendo.resize($("#chartTransactionSellLine"));
         kendo.resize($("#chartDividendCumulative"));
         kendo.resize($("#chartDividendStackedCumulative"));
+        appControlLoader.resizeChartDonutDividend();
     });
 
     document.getElementById('checkboxTax').addEventListener('change', function() {
