@@ -82,8 +82,9 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
     }
 
     function resize() {
-        var height = ($(window).height() * 0.8);
+        if(chartId == null) return;
 
+        var height = ($(window).height() * 0.8);
         $(chartId).css("height", height).data("kendoChart").resize();
     }
 
