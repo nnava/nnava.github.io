@@ -25,6 +25,14 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
                 
         alasql.options.cache = false;
         kendo.culture("se-SE");
+
+        $("#spantaxinfo").kendoTooltip({
+            content: "Påverkar ej diagrammen <br/>Utdelningar/kostnader - nuvarande år <br/> \
+                    Utdelningar/kostnader - total <br/> \
+                    Utdelning och utdelningstillväxt per år",
+            position: "bottom",
+            width: 250
+        });
     });
 
     function setInputMonthNumberFromCookie() {
