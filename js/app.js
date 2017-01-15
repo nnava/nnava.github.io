@@ -218,10 +218,10 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
 
         switch(chartId) {
             case "chartDividendExpensesMonth":
-                chartFilename = "utdelningar_kostnader";
+                chartFilename = "utdelningar_utgifter";
                 break;
             case "chartDonutDividendTotal":
-                chartFilename = "utdelningar_kostnader_total";
+                chartFilename = "utdelningar_utgifter_total";
                 break;
             case "chartDividendYearGrowth":
                 chartFilename = "utd_utdtillväxt_år";

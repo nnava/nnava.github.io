@@ -89,7 +89,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     function loadChart() {
         $(chartId).kendoChart({
             title: {
-                text: "Utdelningar/kostnader - nuvarande år"
+                text: "Utdelningar/utgifter - nuvarande år"
             },
             legend: {
                 position: "bottom"

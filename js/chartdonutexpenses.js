@@ -61,7 +61,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
         });
 
         donutData.push({
-            category: "Kostnader",
+            category: "Utgifter",
             value: totalYearExpenses,
         });
 
@@ -71,7 +71,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     function loadChart() {
         $(chartId).kendoChart({
             title: {
-                text: "Utdelningar/kostnader - total"
+                text: "Utdelningar/utgifter - total"
             },
             legend: {
                 position: "top"
