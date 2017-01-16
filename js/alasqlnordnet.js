@@ -47,6 +47,14 @@ define(['./alasql.min'], function(alasqlhelper) {
                        ORDER BY 1', [sourceData]);
     }
 
+    function getCourtageYears() {
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
+                       FROM ? \
+                       WHERE (Transaktionstyp = "KÖPT" OR Transaktionstyp = "SÅLT") \
+                       GROUP BY YEAR([Bokföringsdag]) \
+                       ORDER BY 1', [sourceData]);
+    }
+
     function getDividendAll(addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
@@ -193,6 +201,17 @@ define(['./alasql.min'], function(alasqlhelper) {
                        GROUP BY [Värdepapper]', [sourceData]);
     }
 
+    function getCourtageSumAvgifter(year) {
+        var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
+                       FROM ? \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KÖPT" OR Transaktionstyp = "SÅLT")', [sourceData]);
+
+        var courtage = JSON.parse(JSON.stringify(result));
+        if(courtage["0"].value == null) return 0;
+
+        return courtage["0"].value;
+    }
+
     return {
         setSourceData: setSourceData,
         getDividendMaxYear: getDividendMaxYear,
@@ -211,6 +230,8 @@ define(['./alasql.min'], function(alasqlhelper) {
         getSellTransactionCount: getSellTransactionCount,
         getDividendAll: getDividendAll,
         getVärdepapperDividend: getVärdepapperDividend,
-        getVärdepapperForYear: getVärdepapperForYear
+        getVärdepapperForYear: getVärdepapperForYear,
+        getCourtageSumAvgifter: getCourtageSumAvgifter,
+        getCourtageYears: getCourtageYears
     };
 });

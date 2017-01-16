@@ -67,6 +67,7 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         kendo.resize($("#chartTransactionSellLine"));
         kendo.resize($("#chartDividendCumulative"));
         kendo.resize($("#chartDividendStackedCumulative"));
+        kendo.resize($("#chartCourtageYear"));
         appControlLoader.resizeChartDonutDividend();
     });
 
@@ -246,6 +247,9 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
                 break;
             case "chartDividendStackedCumulative":
                 chartFilename = "utdelningar_ackumulerad_månad_värdepapper"
+                break;
+            case "chartCourtageYear":
+                chartFilename = "courtage_år"
                 break;
             default:
                 chartFilename = "NOTFOUND";

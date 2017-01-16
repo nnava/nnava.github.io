@@ -9,7 +9,8 @@ define(['./chartdonutexpenses',
      './charttransactionbuyline',
      './charttransactionsellline',
      './chartdividendcumulative',
-     './chartdividendstackedcumulative'], 
+     './chartdividendstackedcumulative',
+     './chartcourtageyear'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -21,7 +22,8 @@ define(['./chartdonutexpenses',
      chartTransactionBuyLine,
      chartTransactionSellLine,
      chartDividendCumulative,
-     chartDividendStackedCumulative) {
+     chartDividendStackedCumulative,
+     chartCourtageYear) {
 
     function loadControls() {
         loadDropdownDividendYear();
@@ -36,6 +38,7 @@ define(['./chartdonutexpenses',
         loadChartTransactionSellLine();
         loadChartDividendCumulative();
         loadChartDividendStackedCumulative();
+        loadChartCourtageYear();
     }
 
     function loadChartDividendStackedCumulative() {
@@ -46,6 +49,12 @@ define(['./chartdonutexpenses',
         chartDividendStackedCumulative.setChartId('#chartDividendStackedCumulative');
         chartDividendStackedCumulative.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
         chartDividendStackedCumulative.loadChart();
+    }
+
+    function loadChartCourtageYear() {
+        chartCourtageYear.setChartId('#chartCourtageYear');
+        chartCourtageYear.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartCourtageYear.loadChart();
     }
 
     function loadChartDividendCumulative() {
