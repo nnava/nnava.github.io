@@ -1,5 +1,5 @@
-define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticvalues'], 
-     function(uploadControl, appControlLoader, appCookies, monthstaticvalues) {
+define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticvalues', './alasqlstockdata'], 
+     function(uploadControl, appControlLoader, appCookies, monthstaticvalues, alasqlstockdata) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
 
@@ -33,6 +33,9 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
             position: "bottom",
             width: 250
         });
+
+        alasqlstockdata.createStockDataTable();
+        alasqlstockdata.loadDataFromFileToTable();
     });
 
     function setInputMonthNumberFromCookie() {

@@ -126,6 +126,7 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
         return resultYearArray;
     }
+    
     function loadChart() {
         $(chartId).kendoChart({
             title: {

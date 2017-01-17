@@ -1,4 +1,4 @@
-define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], function(alasqlhelper, alasqlavanza, alasqlnordnet, colors) {
+define(['./colors', './bankdatadividend'], function(colors, bankdatadividend) {
 
     var chartData;
     var chartId;
@@ -11,28 +11,15 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './colors'], functi
 
     function setChartData(avanzaValue, nordnetValue, year) {
 
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
-
         selectedYear = year;
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
-        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year, isTaxChecked);
-        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(year, isTaxChecked);
+        bankdatadividend.setData(avanzaValue, nordnetValue);
+        var result = bankdatadividend.getVärdepapperTotalDividend(year, isTaxChecked);
 
         var donutData = [];
-        resultNordnetDividend.forEach(function(entry) {
-            if(entry == null) return;
-            if(entry.name == null) return;
-
-            donutData.push({ 
-                "category": entry.name,
-                "value": entry.value
-            });
-        });
-
-        resultAvanzaDividend.forEach(function(entry) {
+        result.forEach(function(entry) {
             if(entry == null) return;
             if(entry.name == null) return;
 

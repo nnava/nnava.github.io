@@ -1,4 +1,4 @@
-define(['./alasql.min'], function(alasqlhelper) {
+define([], function() {
     
     var sourceData;
 
@@ -136,35 +136,35 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getVärdepapperForYear(year) {
-        return alasql('SELECT DISTINCT [Värdepapperbeskrivning] AS Vardepapper \
+        return alasql('SELECT DISTINCT [Värdepapperbeskrivning] AS Vardepapper, [ISIN] AS ISIN \
                        FROM ? \
                        WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"', [sourceData]);
     }
 
-    function getVärdepapperDividend(year, month, värdepapperbeskrivning, addTaxToSum) {
+    function getVärdepapperDividend(year, month, isin, addTaxToSum) {
 
-        var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
+        var result = alasql('SELECT FIRST(ISIN) AS [ISIN], SUM(Belopp::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [Värdepapperbeskrivning] = "' + värdepapperbeskrivning + '" AND [Typ av transaktion] = "Utdelning" \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [ISIN] = "' + isin + '" AND [Typ av transaktion] = "Utdelning" \
                        GROUP BY ISIN', [sourceData]);
                 
         var resultForReturn = [];
         result.forEach(function(object) {
 
             if(object == null) return;
-            if(object.name == null) return;
+            if(object.ISIN == null) return;
 
             var newVardepapperObject = new Object();
 
             var resultName = alasql('SELECT DISTINCT [Värdepapperbeskrivning] \
                        FROM ? \
-                       WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"', [sourceData]);
+                       WHERE [ISIN] = "' + object.ISIN + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"', [sourceData]);
 
             var taxValue = 0;
             if(addTaxToSum) {
                 var resultTax = alasql('SELECT SUM(Belopp::NUMBER) AS [value] \
                                      FROM ? \
-                                     WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
+                                     WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [ISIN] = "' + object.ISIN + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
                                      GROUP BY ISIN', [sourceData]);
                 
                 taxValue = resultTax["0"].value;

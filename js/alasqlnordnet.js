@@ -1,4 +1,4 @@
-define(['./alasql.min'], function(alasqlhelper) {
+define([], function() {
     
     var sourceData;
 
@@ -152,10 +152,33 @@ define(['./alasql.min'], function(alasqlhelper) {
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
 
-        return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
+        var result = alasql('SELECT FIRST([ISIN]) AS [ISIN], FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [belopp] \
                        FROM ? \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
-                       GROUP BY [Värdepapper]', [sourceData]);
+                       GROUP BY [ISIN]', [sourceData]);
+
+        var resultForReturn = [];
+        result.forEach(function(object) {
+            if(object == null) return;
+            if(object.name == null) return;
+
+            var newVardepapperObject = new Object();
+
+            var resultName = alasql('SELECT DISTINCT namn \
+                       FROM StockData \
+                       WHERE [isin] = "' + object.ISIN + '"');
+
+            var name = object.name;
+            if(resultName.length != 0)
+                name = resultName["0"].namn;
+
+            newVardepapperObject.name = name;
+            newVardepapperObject.value = object.belopp;
+
+            resultForReturn.push(newVardepapperObject);
+        });
+
+        return resultForReturn;
     }
 
     function getBuyTransactionCount(year, month) {
@@ -185,19 +208,19 @@ define(['./alasql.min'], function(alasqlhelper) {
     }
 
     function getVärdepapperForYear(year) {
-        return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper \
+        return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper, [ISIN] AS ISIN \
                        FROM ? \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "UTDELNING"', [sourceData]);
     }
 
-    function getVärdepapperDividend(year, month, värdepapperbeskrivning, addTaxToSum) {
+    function getVärdepapperDividend(year, month, isin, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
 
         return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [Värdepapper] = "' + värdepapperbeskrivning + '" AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [ISIN] = "' + isin + '" AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY [Värdepapper]', [sourceData]);
     }
 
