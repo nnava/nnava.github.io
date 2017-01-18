@@ -224,10 +224,21 @@ define([], function() {
                        GROUP BY [Värdepapper]', [sourceData]);
     }
 
-    function getCourtageSumAvgifter(year) {
+    function getCourtageSumSell(year) {
         var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KÖPT" OR Transaktionstyp = "SÅLT")', [sourceData]);
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "SÅLT"', [sourceData]);
+
+        var courtage = JSON.parse(JSON.stringify(result));
+        if(courtage["0"].value == null) return 0;
+
+        return courtage["0"].value;
+    }
+
+    function getCourtageSumBuy(year) {
+        var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
+                       FROM ? \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "KÖPT"', [sourceData]);
 
         var courtage = JSON.parse(JSON.stringify(result));
         if(courtage["0"].value == null) return 0;
@@ -254,7 +265,8 @@ define([], function() {
         getDividendAll: getDividendAll,
         getVärdepapperDividend: getVärdepapperDividend,
         getVärdepapperForYear: getVärdepapperForYear,
-        getCourtageSumAvgifter: getCourtageSumAvgifter,
+        getCourtageSumBuy: getCourtageSumBuy,
+        getCourtageSumSell: getCourtageSumSell,
         getCourtageYears: getCourtageYears
     };
 });

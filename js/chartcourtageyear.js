@@ -1,16 +1,18 @@
-define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlhelper, alasqlavanza, alasqlnordnet, monthstaticvalues) {
+define(['./bankdatacourtage', ], function(bankdatacourtage) {
 
     var chartData;
     var chartId;
     var chartYearValues = [];
     var total = [];
-    var nordnetValues = [];
+    var nordnetSellValues = [];
+    var nordnetBuyValues = [];
     var chartDataCourtageGrowth = [];
 
     function resetArrayValues() {
         chartYearValues = [];
         chartDataCourtageGrowth = [];
-        nordnetValues = [];
+        nordnetSellValues = [];
+        nordnetBuyValues = [];
     }
 
     function setChartId(fieldId) {
@@ -21,10 +23,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
         resetArrayValues();
 
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
-
-        var nordnetYearData = alasqlnordnet.getCourtageYears();
+        bankdatacourtage.setDataValues(avanzaValue, nordnetValue);
+        bankdatacourtage.setSourceData();
+        
+        var nordnetYearData = bankdatacourtage.getCourtageYears();
 
         alasql('CREATE TABLE IF NOT EXISTS CourtageYearTable \
                 (Year INT);');
@@ -50,12 +52,16 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
 
             addedYear.push(year);
 
-            var nordnetBelopp = alasqlnordnet.getCourtageSumAvgifter(year);
-            var totalBelopp = nordnetBelopp;
+            var nordnetCourtageBuy = bankdatacourtage.getCourtageSumBuy(year);
+            console.log(nordnetCourtageBuy);
+            var nordnetCourtageSell = bankdatacourtage.getCourtageSumSell(year);
+            console.log(nordnetCourtageSell);
+            var totalBelopp = nordnetCourtageBuy + nordnetCourtageSell;
 
             total[year] = totalBelopp;
 
-            nordnetValues.push(nordnetBelopp);
+            nordnetSellValues.push(nordnetCourtageSell);
+            nordnetBuyValues.push(nordnetCourtageBuy);
  
             var yearBefore = year-1;
             var foundLastYear = false;
@@ -82,7 +88,10 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
     }
 
     function getTotalCourtageForYear(year) {
-        return alasqlnordnet.getCourtageSumAvgifter(year);
+        var nordnetCourtageBuy = bankdatacourtage.getCourtageSumBuy(year);
+        var nordnetCourtageSell = bankdatacourtage.getCourtageSumSell(year);
+        var totalBelopp = nordnetCourtageBuy + nordnetCourtageSell;
+        return totalBelopp;
     }
 
     window.getChartCourtageLabelText = function getChartCourtageLabelText(category) {
@@ -107,10 +116,14 @@ define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalue
             },
             series: [{
                 type: "column",
-                field: "nn",
-                name: "Nordnet",
-                data: nordnetValues,
-                color: "#00A8EF",
+                field: "nnsell",
+                name: "Nordnet sälj-courtage",
+                data: nordnetSellValues
+            },{
+                type: "column",
+                field: "nnbuy",
+                name: "Nordnet köp-courtage",
+                data: nordnetBuyValues,
                 labels: {
                     visible: true,
                     template: "#= window.getChartCourtageLabelText(category) #",                
