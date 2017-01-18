@@ -8,7 +8,11 @@ define([], function() {
                 marknad STRING,\
                 bransch STRING,\
                 handlas STRING); \
+                \
+                CREATE INDEX isinIndex ON StockData(isin); \
         ');
+
+
     }
 
     function loadDataFromFileToTable() {
