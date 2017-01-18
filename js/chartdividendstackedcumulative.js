@@ -49,6 +49,11 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
                 labels: {
                     format: "#,0 kr"
                 }
+            },
+            render: function(e) {
+                // Clear up the loading indicator for this chart
+                var loading = $(".chart-loading", e.sender.element.parent());
+                kendo.ui.progress(loading, false);
             },  
             categoryAxis: {
                 categories: months,

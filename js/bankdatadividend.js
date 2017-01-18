@@ -25,7 +25,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
         alasql('INSERT INTO VardepapperTotalDividend SELECT name, [value] \
                 FROM ?', [resultAvanzaDividend]);
 
-        var result = alasql('SELECT FIRST(name) AS name, SUM([value]) AS [value] FROM VardepapperTotalDividend GROUP BY name');
+        var result = alasql('SELECT FIRST(name) AS name, SUM([value]) AS [value] FROM VardepapperTotalDividend GROUP BY name ORDER BY name');
         alasql('TRUNCATE TABLE VardepapperTotalDividend');
 
         return result;
@@ -48,7 +48,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
         alasql('INSERT INTO DivStackedCumulativeVardepapper SELECT Vardepapper, ISIN \
                 FROM ?', [nordnetData]);
 
-        var resultVärdepapper = alasql('SELECT FIRST(Vardepapper) AS Vardepapper, FIRST(ISIN) AS ISIN FROM DivStackedCumulativeVardepapper GROUP BY ISIN');
+        var resultVärdepapper = alasql('SELECT FIRST(Vardepapper) AS Vardepapper, FIRST(ISIN) AS ISIN FROM DivStackedCumulativeVardepapper GROUP BY ISIN ORDER BY Vardepapper');
         alasql('TRUNCATE TABLE DivStackedCumulativeVardepapper');
 
         return resultVärdepapper;

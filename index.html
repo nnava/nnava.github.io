@@ -258,7 +258,10 @@
                                             </div>
                                         </div>
                                         <div class="panel-body">
-                                            <div id="chartDividendStackedCumulative"></div>
+                                            <div class="chart-wrap" style="position: relative;">
+                                                <div id="chartDividendStackedCumulative"></div>
+                                                <div class="chart-loading"></div>
+                                            </div>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -524,7 +527,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 32;
+            var versionNumber = 33;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

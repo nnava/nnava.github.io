@@ -84,9 +84,13 @@ define(['./chartdonutexpenses',
     }
 
     function dropDownListDividendYear_Change(e) {
-        loadChartDividendTreemap();
-        loadChartDonutDividend();
-        loadChartDividendStackedCumulative();
+        kendo.ui.progress($(".chart-loading"), true);
+
+        setTimeout(function(){ 
+            loadChartDividendTreemap();
+            loadChartDonutDividend();
+            loadChartDividendStackedCumulative();
+         }, 5);
     }
 
     function loadChartYearDeposit() {
