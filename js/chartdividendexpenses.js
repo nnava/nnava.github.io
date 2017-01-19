@@ -1,4 +1,4 @@
-define(['./alasql.min', './alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlhelper, alasqlavanza, alasqlnordnet, monthstaticvalues) {
+define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlavanza, alasqlnordnet, monthstaticvalues) {
 
     var chartData;
     var chartId;

@@ -1,4 +1,4 @@
-define(['./alasql.min', './alasqlavanza', './alasqlnordnet'], function(alasqlhelper, alasqlavanza, alasqlnordnet) {
+define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
 
     var chartData;
     var chartId;
