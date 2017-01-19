@@ -21,7 +21,18 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function getCourtageYears() {
-        return alasqlnordnet.getCourtageYears();
+
+        var nordnetYearData = alasqlnordnet.getCourtageYears();
+
+        alasql('CREATE TABLE IF NOT EXISTS CourtageYearTable \
+               (Year INT);');
+
+        alasql('INSERT INTO CourtageYearTable SELECT Year \
+                FROM ?', [nordnetYearData]);
+
+        var resultYear = alasql('SELECT DISTINCT Year FROM CourtageYearTable');
+        alasql('TRUNCATE TABLE CourtageYearTable');
+        return resultYear;        
     }
 
     return { 

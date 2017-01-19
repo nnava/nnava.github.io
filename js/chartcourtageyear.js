@@ -26,16 +26,7 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
         bankdatacourtage.setDataValues(avanzaValue, nordnetValue);
         bankdatacourtage.setSourceData();
         
-        var nordnetYearData = bankdatacourtage.getCourtageYears();
-
-        alasql('CREATE TABLE IF NOT EXISTS CourtageYearTable \
-                (Year INT);');
-
-        alasql('INSERT INTO CourtageYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM CourtageYearTable');
-        alasql('TRUNCATE TABLE CourtageYearTable');
+        var resultYear = bankdatacourtage.getCourtageYears();
 
         var yearDepositData = [];
         var addedYear = [];
@@ -53,9 +44,7 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
             addedYear.push(year);
 
             var nordnetCourtageBuy = bankdatacourtage.getCourtageSumBuy(year);
-            console.log(nordnetCourtageBuy);
             var nordnetCourtageSell = bankdatacourtage.getCourtageSumSell(year);
-            console.log(nordnetCourtageSell);
             var totalBelopp = nordnetCourtageBuy + nordnetCourtageSell;
 
             total[year] = totalBelopp;
