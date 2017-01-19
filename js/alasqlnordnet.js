@@ -58,11 +58,11 @@ define([], function() {
     function getDividendAll(addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE (Transaktionstyp = "UTDELNING"' + taxSqlWhere +') \
+                       WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere +') \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1', [sourceData]);
     }
@@ -71,7 +71,7 @@ define([], function() {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
-                       AND Transaktionstyp = "UTDELNING" \
+                       AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING") \
                        GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -84,7 +84,7 @@ define([], function() {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
-                       AND Transaktionstyp = "UTL KUPSKATT" \
+                       AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
                        GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -97,7 +97,7 @@ define([], function() {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
-                       AND Transaktionstyp = "UTDELNING" \
+                       AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING") \
                        GROUP BY YEAR([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -110,7 +110,7 @@ define([], function() {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
-                       AND Transaktionstyp = "UTL KUPSKATT" \
+                       AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
                        GROUP BY YEAR([Bokföringsdag])', [sourceData]);
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -134,11 +134,11 @@ define([], function() {
     function getTotalDividend(year, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
  
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING"'  + taxSqlWhere + ") \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ") \
                        GROUP BY YEAR([Bokföringsdag])", [sourceData]);
                        
         var belopp = JSON.parse(JSON.stringify(result));
@@ -150,11 +150,11 @@ define([], function() {
     function getVardepapperTotalDividend(year, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         var result = alasql('SELECT FIRST([ISIN]) AS [ISIN], FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [belopp] \
                        FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY [ISIN]', [sourceData]);
 
         var resultForReturn = [];
@@ -210,17 +210,17 @@ define([], function() {
     function getVärdepapperForYear(year) {
         return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper, [ISIN] AS ISIN \
                        FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "UTDELNING"', [sourceData]);
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")', [sourceData]);
     }
 
     function getVärdepapperDividend(year, month, isin, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [ISIN] = "' + isin + '" AND (Transaktionstyp = "UTDELNING"' + taxSqlWhere + ') \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [ISIN] = "' + isin + '" AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY [Värdepapper]', [sourceData]);
     }
 
