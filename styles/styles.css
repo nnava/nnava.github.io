@@ -60,4 +60,13 @@ footer {
     }
 }
 
+div.k-loading-mask
+{
+    z-index: 3; /* must be larger than the z-index:2 of ... */
+}
 
+/* By default the text is hidden, re-position the text */
+span.k-loading-text
+{
+    display: none;
+}

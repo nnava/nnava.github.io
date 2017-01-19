@@ -55,7 +55,11 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
             e.preventDefault();
             alert("Max antal filer är tio");
         }
+        
 
+
+        kendo.ui.progress($(document.body), true);
+     
         var fileArrayLength = e.files.length;
         var timeoutValue = 1;
 
@@ -77,6 +81,8 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                     $('#mainContainer').attr("class", "container-fluid");
 
                     appControlLoader.loadControls();
+
+                    kendo.ui.progress($(document.body), false);
                 }
             }
  

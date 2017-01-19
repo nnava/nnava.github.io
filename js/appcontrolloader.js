@@ -90,7 +90,7 @@ define(['./chartdonutexpenses',
             loadChartDividendTreemap();
             loadChartDonutDividend();
             loadChartDividendStackedCumulative();
-         }, 5);
+         });
     }
 
     function loadChartYearDeposit() {
