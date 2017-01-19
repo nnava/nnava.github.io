@@ -28,3 +28,7 @@ footer {
     height: 80px;
     text-align:center;
 }
+
+.panel-body {
+  height: calc(100vh - 140px);
+}

@@ -47,7 +47,8 @@ define(['./colors', './bankdatadividend'], function(colors, bankdatadividend) {
                 background: ""
             },
             seriesDefaults: {
-                type: "donut"
+                type: "donut",
+                holeSize: 80
             },
             series: [{
                 name: "Data",
@@ -68,17 +69,9 @@ define(['./colors', './bankdatadividend'], function(colors, bankdatadividend) {
         });
     }
 
-    function resize() {
-        if(chartId == null) return;
-
-        var height = ($(window).height() * 0.8);
-        $(chartId).css("height", height).data("kendoChart").resize();
-    }
-
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart,
-        resize: resize
+        loadChart: loadChart
     };
 });

@@ -71,7 +71,7 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         kendo.resize($("#chartDividendCumulative"));
         kendo.resize($("#chartDividendStackedCumulative"));
         kendo.resize($("#chartCourtageYear"));
-        appControlLoader.resizeChartDonutDividend();
+        kendo.resize($("#chartDonutDividend"));
     });
 
     document.getElementById('checkboxTax').addEventListener('change', function() {
