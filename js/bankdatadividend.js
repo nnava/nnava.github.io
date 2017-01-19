@@ -8,7 +8,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
         nordnetValue = nordnetValueIn;
     }
 
-    function getVärdepapperTotalDividend(year, addTaxToSum) {
+    function getVärdepapperTotalDividend(year, sort, addTaxToSum) {
 
         alasqlnordnet.setSourceData(nordnetValue);
         alasqlavanza.setSourceData(avanzaValue);
@@ -25,7 +25,11 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
         alasql('INSERT INTO VardepapperTotalDividend SELECT name, [value] \
                 FROM ?', [resultAvanzaDividend]);
 
-        var result = alasql('SELECT FIRST(name) AS name, SUM([value]) AS [value] FROM VardepapperTotalDividend GROUP BY name ORDER BY name');
+        var sortExpression = " ORDER BY name";
+        if(sort == "size")
+            sortExpression = " ORDER BY SUM([value]) DESC";
+
+        var result = alasql('SELECT FIRST(name) AS name, SUM([value]) AS [value] FROM VardepapperTotalDividend GROUP BY name' + sortExpression);
         alasql('TRUNCATE TABLE VardepapperTotalDividend');
 
         return result;

@@ -1,4 +1,4 @@
-define(['./colors', './bankdatadividend'], function(colors, bankdatadividend) {
+define(['./colors', './bankdatadividend', './dropdowndonutdividendsort'], function(colors, bankdatadividend, dropdowndonutdividendsort) {
 
     var chartData;
     var chartId;
@@ -9,14 +9,14 @@ define(['./colors', './bankdatadividend'], function(colors, bankdatadividend) {
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue, year) {
+    function setChartData(avanzaValue, nordnetValue, year, sort) {
 
         selectedYear = year;
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
         bankdatadividend.setData(avanzaValue, nordnetValue);
-        var result = bankdatadividend.getVärdepapperTotalDividend(year, isTaxChecked);
+        var result = bankdatadividend.getVärdepapperTotalDividend(year, sort, isTaxChecked);
 
         var donutData = [];
         result.forEach(function(entry) {
@@ -47,8 +47,7 @@ define(['./colors', './bankdatadividend'], function(colors, bankdatadividend) {
                 background: ""
             },
             seriesDefaults: {
-                type: "donut",
-                holeSize: 80
+                type: "donut"
             },
             series: [{
                 name: "Data",

@@ -10,7 +10,8 @@ define(['./chartdonutexpenses',
      './charttransactionsellline',
      './chartdividendcumulative',
      './chartdividendstackedcumulative',
-     './chartcourtageyear'], 
+     './chartcourtageyear',
+     './dropdowndonutdividendsort'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -23,10 +24,12 @@ define(['./chartdonutexpenses',
      chartTransactionSellLine,
      chartDividendCumulative,
      chartDividendStackedCumulative,
-     chartCourtageYear) {
+     chartCourtageYear,
+     dropdownDonutDividendSort) {
 
     function loadControls() {
         loadDropdownDividendYear();
+        loadDropdownDonutDividendSort();
         loadChartYearDeposit();
         loadChartDividendYearGrowth();        
         loadChartDividendYearMonth();
@@ -90,7 +93,19 @@ define(['./chartdonutexpenses',
             loadChartDividendTreemap();
             loadChartDonutDividend();
             loadChartDividendStackedCumulative();
-         });
+        });
+    }
+
+    function loadDropdownDonutDividendSort() {
+        dropdownDonutDividendSort.setDropdownId('#dropdownDonutDividendSelectSort');
+        dropdownDonutDividendSort.setDropdownData();
+        dropdownDonutDividendSort.loadDropdown();
+
+        $("#dropdownDonutDividendSelectSort").data("kendoDropDownList").bind("change", dropDownListDonutDividendSort_Change);
+    }
+
+    function dropDownListDonutDividendSort_Change(e) {
+        loadChartDonutDividend();
     }
 
     function loadChartYearDeposit() {
@@ -110,8 +125,12 @@ define(['./chartdonutexpenses',
         if(year == null || year == '')
             year = 0;
 
+        var sort = dropdownDonutDividendSort.getValue();
+        if(sort == null || sort == '')
+            sort = "name";
+
         chartDonutDividend.setChartId('#chartDonutDividend');
-        chartDonutDividend.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
+        chartDonutDividend.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year, sort);
         chartDonutDividend.loadChart();
     }
 
