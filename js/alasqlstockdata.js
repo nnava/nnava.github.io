@@ -11,8 +11,6 @@ define([], function() {
                 \
                 CREATE INDEX isinIndex ON StockData(isin); \
         ');
-
-
     }
 
     function loadDataFromFileToTable() {
