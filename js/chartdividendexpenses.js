@@ -9,10 +9,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue) {
-
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
+    function setChartData() {
 
         var nordnetYearData = alasqlnordnet.getDividendMaxYear();
         var avanzaYearData = alasqlavanza.getDividendMaxYear();

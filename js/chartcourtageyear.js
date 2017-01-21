@@ -19,13 +19,10 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue) {
+    function setChartData() {
 
         resetArrayValues();
 
-        bankdatacourtage.setDataValues(avanzaValue, nordnetValue);
-        bankdatacourtage.setSourceData();
-        
         var resultYear = bankdatacourtage.getCourtageYears();
 
         var yearDepositData = [];

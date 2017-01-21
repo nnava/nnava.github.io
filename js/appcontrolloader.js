@@ -50,37 +50,37 @@ define(['./chartdonutexpenses',
             year = 0;
 
         chartDividendStackedCumulative.setChartId('#chartDividendStackedCumulative');
-        chartDividendStackedCumulative.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
+        chartDividendStackedCumulative.setChartData(year);
         chartDividendStackedCumulative.loadChart();
     }
 
     function loadChartCourtageYear() {
         chartCourtageYear.setChartId('#chartCourtageYear');
-        chartCourtageYear.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartCourtageYear.setChartData();
         chartCourtageYear.loadChart();
     }
 
     function loadChartDividendCumulative() {
         chartDividendCumulative.setChartId('#chartDividendCumulative');
-        chartDividendCumulative.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartDividendCumulative.setChartData();
         chartDividendCumulative.loadChart();
     }
 
     function loadChartTransactionSellLine() {
         chartTransactionSellLine.setChartId('#chartTransactionSellLine');
-        chartTransactionSellLine.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartTransactionSellLine.setChartData();
         chartTransactionSellLine.loadChart();
     }
 
     function loadChartTransactionBuyLine() {
         chartTransactionBuyLine.setChartId('#chartTransactionBuyLine');
-        chartTransactionBuyLine.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartTransactionBuyLine.setChartData();
         chartTransactionBuyLine.loadChart();
     }
 
     function loadDropdownDividendYear() {
         dropdownDividendYear.setDropdownId('#dropdownDividendYear');
-        dropdownDividendYear.setDropdownData($('#avanzaData').val(), $('#nordnetData').val());
+        dropdownDividendYear.setDropdownData();
         dropdownDividendYear.loadDropdown();
 
         $("#dropdownDividendYear").data("kendoDropDownList").bind("change", dropDownListDividendYear_Change);
@@ -110,13 +110,13 @@ define(['./chartdonutexpenses',
 
     function loadChartYearDeposit() {
         chartYearDeposit.setChartId('#chartYearDeposit');
-        chartYearDeposit.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartYearDeposit.setChartData();
         chartYearDeposit.loadChart();
     }
 
     function loadChartDividendYearGrowth() {
         chartDividendYearGrowth.setChartId('#chartDividendYearGrowth');
-        chartDividendYearGrowth.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartDividendYearGrowth.setChartData();
         chartDividendYearGrowth.loadChart();
     }
 
@@ -130,7 +130,7 @@ define(['./chartdonutexpenses',
             sort = "name";
 
         chartDonutDividend.setChartId('#chartDonutDividend');
-        chartDonutDividend.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year, sort);
+        chartDonutDividend.setChartData(year, sort);
         chartDonutDividend.loadChart();
     }
 
@@ -140,25 +140,25 @@ define(['./chartdonutexpenses',
             year = 0;
 
         chartDividendTreemap.setChartId('#treeMapDividend');
-        chartDividendTreemap.setChartData($('#avanzaData').val(), $('#nordnetData').val(), year);
+        chartDividendTreemap.setChartData(year);
         chartDividendTreemap.loadChart();
     };
 
     function loadChartDividendYearMonth() {
         chartDividendYearMonth.setChartId('#chartDividendYearMonth');
-        chartDividendYearMonth.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartDividendYearMonth.setChartData();
         chartDividendYearMonth.loadChart();
     };
 
     function loadChartDonutExpenses() {
         chartDonutExpenses.setChartId('#chartDonutDividendTotal');
-        chartDonutExpenses.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartDonutExpenses.setChartData();
         chartDonutExpenses.loadChart();
     };
 
     function loadChartDividendExpenses() {
         chartDividendExpenses.setChartId('#chartDividendExpensesMonth');
-        chartDividendExpenses.setChartData($('#avanzaData').val(), $('#nordnetData').val());
+        chartDividendExpenses.setChartData();
         chartDividendExpenses.loadChart();
     };
 

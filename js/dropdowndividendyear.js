@@ -7,10 +7,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         dropdownId = fieldId;
     }
 
-    function setDropdownData(avanzaValue, nordnetValue) {
-
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
+    function setDropdownData() {
 
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();

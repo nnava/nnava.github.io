@@ -1,17 +1,6 @@
 define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alasqlavanza, alasqlnordnet, alasqlstockdata) {
 
-    var avanzaValue;
-    var nordnetValue;
-
-    function setData(avanzaValueIn, nordnetValueIn) {
-        avanzaValue = avanzaValueIn;
-        nordnetValue = nordnetValueIn;
-    }
-
     function getVärdepapperTotalDividend(year, sort, addTaxToSum) {
-
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
 
         var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year, addTaxToSum);
         var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(year, addTaxToSum);
@@ -36,9 +25,6 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
     }
 
     function getVärdepapperForYear(year) {
-
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
         
         var avanzaData = alasqlavanza.getVärdepapperForYear(year);
         var nordnetData = alasqlnordnet.getVärdepapperForYear(year);
@@ -107,7 +93,6 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
     return { 
         getVärdepapperTotalDividend: getVärdepapperTotalDividend,
         getVärdepapperForYear: getVärdepapperForYear,
-        getVärdepapperDividendData: getVärdepapperDividendData,
-        setData: setData
+        getVärdepapperDividendData: getVärdepapperDividendData
     };
 });

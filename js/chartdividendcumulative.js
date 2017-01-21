@@ -7,10 +7,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue) {
-
-        alasqlnordnet.setSourceData(nordnetValue);
-        alasqlavanza.setSourceData(avanzaValue);
+    function setChartData() {
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 

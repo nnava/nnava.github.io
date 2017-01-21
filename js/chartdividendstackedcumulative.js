@@ -10,12 +10,11 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue, year) {
+    function setChartData(year) {
 
         selectedYear = year;
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
-        bankdatadividend.setData(avanzaValue, nordnetValue);
         var resultVärdepapper = bankdatadividend.getVärdepapperForYear(selectedYear);
         
         chartData = bankdatadividend.getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked);

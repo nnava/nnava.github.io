@@ -9,13 +9,12 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort'], functi
         chartId = fieldId;
     }
 
-    function setChartData(avanzaValue, nordnetValue, year, sort) {
+    function setChartData(year, sort) {
 
         selectedYear = year;
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
-        bankdatadividend.setData(avanzaValue, nordnetValue);
         var result = bankdatadividend.getVärdepapperTotalDividend(year, sort, isTaxChecked);
 
         var donutData = [];

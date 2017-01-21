@@ -1,4 +1,4 @@
-define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoader) {
+define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnordnet'], function(Papa, appControlLoader, alasqlavanza, alasqlnordnet) {
   
     var controlId;
 
@@ -35,9 +35,9 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                 var isFileAvanza = reader.result.startsWith("Datum");
 
                 if(isFileAvanza)
-                    $('#avanzaData').val('');
+                    alasql('TRUNCATE TABLE AvanzaData');
                 else
-                    $('#nordnetData').val('');
+                    alasql('TRUNCATE TABLE NordnetData');
 
                 appControlLoader.loadControls();
             }
@@ -54,14 +54,15 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
         if($('#dataFiles').parent().children('input[type=file]:not(#uploader)').length > maxFiles) {
             e.preventDefault();
             alert("Max antal filer är tio");
-        }
-        
-
+        }      
 
         kendo.ui.progress($(document.body), true);
      
         var fileArrayLength = e.files.length;
         var timeoutValue = 1;
+
+        alasqlavanza.createDataTable();
+        alasqlnordnet.createDataTable();
 
         $.each(e.files, function (index, value) {
 
@@ -79,8 +80,8 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                     $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
 
                     $('#mainContainer').attr("class", "container-fluid");
-
-                    appControlLoader.loadControls();
+        
+                    appControlLoader.loadControls(); 
 
                     kendo.ui.progress($(document.body), false);
                 }
@@ -98,19 +99,15 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
                     readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
                 }
 
+                readerResultString = replaceToNeededCharacters(readerResultString);
+
                 if(isFileAvanza) {
-                    $('#avanzaData').val(getBankSourceJsonData(readerResultString));
+                    alasql('INSERT INTO AvanzaData SELECT * FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    
                 else {
-
-                    if(hasNordnetDataValue) {
-                        $('#nordnetDataString').val($('#nordnetDataString').val() + readerResultString);
-                    }
-                    else {
-                        $('#nordnetDataString').val(readerResultString);
-                    }
-
-                    $('#nordnetData').val(getBankSourceJsonData($('#nordnetDataString').val()));
+                    var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
+                    alasql('INSERT INTO NordnetData \
+                    SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper] FROM ?', [nordnetData]);
                 }
             }
             
@@ -127,10 +124,15 @@ define(['./papaparse.min', './appcontrolloader'], function(Papa, appControlLoade
         return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     }
 
-    function getBankSourceJsonData(stringValue) {
+    function replaceToNeededCharacters(stringValue) {
 
         stringValue = replaceAll(stringValue, "/", "");
         stringValue = replaceAll(stringValue, ",", ".");
+
+        return stringValue;
+    }
+
+    function getBankSourceJsonData(stringValue) {
 
         var config = {
             header: true,

@@ -44,10 +44,6 @@
     </head>
     <body>
 
-        <textarea id="nordnetDataString" class="hidden"></textarea>
-        <input type="text" id="nordnetData" class="k-textbox hidden">
-        <input type="text" id="avanzaData" class="k-textbox hidden">
-
         <ul class="nav nav-tabs navbar-default">
             <a class="navbar-brand" data-toggle="tab" href="#home">
                 <img alt="Brand" src="/styles/images/icon32x32.png">
@@ -485,7 +481,9 @@ $.each(e.files, function (index, value) {
 
             $('#mainContainer').attr("class", "container-fluid");
 
-            appControlLoader.loadControls();
+            appControlLoader.loadControls(); 
+
+            kendo.ui.progress($(document.body), false);
         }
     }
 
@@ -501,19 +499,15 @@ $.each(e.files, function (index, value) {
             readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
         }
 
+        readerResultString = replaceToNeededCharacters(readerResultString);
+
         if(isFileAvanza) {
-            $('#avanzaData').val(getBankSourceJsonData(readerResultString));
+            alasql('INSERT INTO AvanzaData SELECT * FROM CSV(?, {separator:";"})', [readerResultString]);
         }                    
         else {
-
-            if(hasNordnetDataValue) {
-                $('#nordnetDataString').val($('#nordnetDataString').val() + readerResultString);
-            }
-            else {
-                $('#nordnetDataString').val(readerResultString);
-            }
-
-            $('#nordnetData').val(getBankSourceJsonData($('#nordnetDataString').val()));
+            var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
+            alasql('INSERT INTO NordnetData \
+            SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper] FROM ?', [nordnetData]);
         }
     }
     
@@ -536,7 +530,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 38;
+            var versionNumber = 39;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

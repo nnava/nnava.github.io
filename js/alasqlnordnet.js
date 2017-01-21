@@ -1,58 +1,73 @@
 define([], function() {
     
-    var sourceData;
-
-    function setSourceData(fieldValue) {
-        if(fieldValue.length == 0)
-            sourceData = [];
-        else 
-            sourceData = JSON.parse(fieldValue);
+    function createDataTable() {
+        alasql('CREATE TABLE IF NOT EXISTS NordnetData (  \
+                [Affärsdag] DATE, \
+                Antal DECIMAL, \
+                Avgifter NVARCHAR(50), \
+                Belopp NVARCHAR(50), \
+                [Bokföringsdag] DATE, \
+                ISIN NVARCHAR(50), \
+                Instrumenttyp NVARCHAR(20), \
+                Kurs DECIMAL, \
+                Likviddag DATE, \
+                Makuleringsdatum DATE, \
+                Transaktionstyp NVARCHAR(100), \
+                Valuta NVARCHAR(10), \
+                [Värdepapper] NVARCHAR(100)); \
+                \
+                CREATE INDEX AffarsdagIndex ON NordnetData([Affärsdag]); \
+                CREATE INDEX ISINIndex ON NordnetData(ISIN); \
+                CREATE INDEX TransaktionstypIndex ON NordnetData([Transaktionstyp]); \
+                CREATE INDEX VardepapperIndex ON NordnetData([Värdepapper]); \
+                CREATE INDEX BeloppIndex ON NordnetData([Belopp]); \
+        ');        
     }
 
     function getDividendMaxYear() {
         return alasql('SELECT MAX(YEAR([Bokföringsdag])) AS Year \
-                       FROM ? \
-                       WHERE Transaktionstyp = "UTDELNING"', [sourceData]);
+                       FROM NordnetData \
+                       WHERE Transaktionstyp = "UTDELNING"');
     }
 
     function getDividendYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE Transaktionstyp = "UTDELNING" \
                        GROUP BY YEAR([Bokföringsdag]) \
-                       ORDER BY 1', [sourceData]);
+                       ORDER BY 1');
     }
 
     function getBuyTransactionYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE Transaktionstyp = "KÖPT" \
                        GROUP BY YEAR([Bokföringsdag]) \
-                       ORDER BY 1', [sourceData]);
+                       ORDER BY 1');
     }
 
     function getSellTransactionYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE Transaktionstyp = "SÅLT" \
                        GROUP BY YEAR([Bokföringsdag]) \
-                       ORDER BY 1', [sourceData]);
+                       ORDER BY 1');
     }
 
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING") \
                        GROUP BY YEAR([Bokföringsdag]) \
-                       ORDER BY 1', [sourceData]);
+                       ORDER BY 1');
     }
 
     function getCourtageYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE (Transaktionstyp = "KÖPT" OR Transaktionstyp = "SÅLT") \
                        GROUP BY YEAR([Bokföringsdag]) \
-                       ORDER BY 1', [sourceData]);
+                       ORDER BY 1');
     }
 
     function getDividendAll(addTaxToSum) {
@@ -61,18 +76,18 @@ define([], function() {
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere +') \
                        GROUP BY YEAR([Bokföringsdag]) \
-                       ORDER BY 1', [sourceData]);
+                       ORDER BY 1');
     }
 
     function getDividendMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING") \
-                       GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])');
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -82,10 +97,10 @@ define([], function() {
 
     function getTaxMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
-                       GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag]), MONTH([Bokföringsdag])');
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -95,10 +110,10 @@ define([], function() {
 
     function getDividendYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING") \
-                       GROUP BY YEAR([Bokföringsdag])', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag])');
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -108,10 +123,10 @@ define([], function() {
 
     function getTaxYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
-                       GROUP BY YEAR([Bokföringsdag])', [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag])');
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -122,8 +137,8 @@ define([], function() {
     function getDepositsYearSumBelopp(year) {
 
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING")', [sourceData]);
+                       FROM NordnetData \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING")');
         
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -137,9 +152,9 @@ define([], function() {
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
  
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ") \
-                       GROUP BY YEAR([Bokföringsdag])", [sourceData]);
+                       GROUP BY YEAR([Bokföringsdag])");
                        
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -153,9 +168,9 @@ define([], function() {
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         var result = alasql('SELECT FIRST([ISIN]) AS [ISIN], FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [belopp] \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
-                       GROUP BY [ISIN]', [sourceData]);
+                       GROUP BY [ISIN]');
 
         var resultForReturn = [];
         result.forEach(function(object) {
@@ -184,9 +199,9 @@ define([], function() {
     function getBuyTransactionCount(year, month) {
 
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
-                       AND Transaktionstyp = "KÖPT"', [sourceData]);
+                       AND Transaktionstyp = "KÖPT"');
 
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
@@ -197,9 +212,9 @@ define([], function() {
     function getSellTransactionCount(year, month) {
 
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
-                       AND Transaktionstyp = "SÅLT"', [sourceData]);
+                       AND Transaktionstyp = "SÅLT"');
 
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
@@ -209,8 +224,8 @@ define([], function() {
 
     function getVärdepapperForYear(year) {
         return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper, [ISIN] AS ISIN \
-                       FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")', [sourceData]);
+                       FROM NordnetData \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
     }
 
     function getVärdepapperDividend(year, month, isin, addTaxToSum) {
@@ -219,15 +234,15 @@ define([], function() {
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
-                       FROM ? \
+                       FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [ISIN] = "' + isin + '" AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
-                       GROUP BY [Värdepapper]', [sourceData]);
+                       GROUP BY [Värdepapper]');
     }
 
     function getCourtageSumSell(year) {
         var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
-                       FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "SÅLT"', [sourceData]);
+                       FROM NordnetData \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "SÅLT"');
 
         var courtage = JSON.parse(JSON.stringify(result));
         if(courtage["0"].value == null) return 0;
@@ -237,8 +252,8 @@ define([], function() {
 
     function getCourtageSumBuy(year) {
         var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
-                       FROM ? \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "KÖPT"', [sourceData]);
+                       FROM NordnetData \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "KÖPT"');
 
         var courtage = JSON.parse(JSON.stringify(result));
         if(courtage["0"].value == null) return 0;
@@ -247,7 +262,7 @@ define([], function() {
     }
 
     return {
-        setSourceData: setSourceData,
+        createDataTable: createDataTable,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,
         getDividendMonthSumBelopp: getDividendMonthSumBelopp,
