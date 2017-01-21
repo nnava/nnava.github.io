@@ -1,4 +1,4 @@
-define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlavanza, alasqlnordnet, monthstaticvalues) {
+define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
 
     var chartDataDividendGrowth = [];
     var chartDataSumYearDividend = [];
@@ -6,7 +6,6 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
     var chartDataSumReturnYearTax = [];
     var chartDataYears = [];
     var chartId;
-    var months = monthstaticvalues.getMonthValues();
 
     function resetArrayValues() {
         chartDataDividendGrowth = [];
@@ -57,6 +56,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 futureTaxReturnYears.push(year);
             }
 
+            // Post för återbetald källskatt, hur ser den ut?
             var totalBelopp = totalDividend + totalTaxBelopp;
 
             chartDataSumYearDividend.push(totalBelopp);
@@ -66,7 +66,11 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
             var foundLastYear = false;
             resultYear.forEach(function(entryLast) {
                 if(entryLast.Year == yearBefore) {
-                    var totalBeloppLastYear = getTotalDividendForYear(yearBefore);
+                    var totalDividendLastYear = getTotalDividendForYear(yearBefore);
+                    var totalTaxBeloppLastYear = getTotalTaxForYear(yearBefore);
+
+
+                    var totalBeloppLastYear = totalDividendLastYear + totalTaxBeloppLastYear;
 
                     var changeValue = totalBelopp - totalBeloppLastYear;
                     var growthValue = ((changeValue / totalBeloppLastYear) * 100).toFixed(2);
