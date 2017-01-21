@@ -236,6 +236,9 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
             case "chartDonutDividend":
                 chartFilename = "donut_utd_år";
                 break;
+            case "chartDividendYearMonth":
+                chartFilename = "utdelningar_månad_år";
+                break;
             case "chartYearDeposit":
                 chartFilename = "insättningar";
                 break;

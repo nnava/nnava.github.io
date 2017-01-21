@@ -219,6 +219,24 @@
                                 <div class="col-md-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar månad/år</h4>
+                                            <div class="btn-group pull-right">
+                                                <button id="btn-chartDividendYearMonthToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
+                                                <button id="btn-chartDividendYearMonthToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                <button id="btn-chartDividendYearMonthToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div id="chartDividendYearMonth" style="height: 100%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
                                         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelning ackumulerad - total</h4>
                                             <div class="btn-group pull-right">
                                                 <button id="btn-chartDividendCumulativeToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
@@ -530,7 +548,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 39;
+            var versionNumber = 40;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

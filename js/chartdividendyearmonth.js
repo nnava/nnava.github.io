@@ -13,7 +13,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
 
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
-
+        
         alasql('CREATE TABLE IF NOT EXISTS DivYearMonthYearTable \
                 (Year INT);');
 
@@ -32,17 +32,17 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
         
         resultYear.forEach(function(entry) {
 
-            if (entry.Ar == null) { return; }
-            if(addedYear.includes(entry.Ar)) return;
+            if (entry.Year == null) { return; }
+            if(addedYear.includes(entry.Year)) return;
 
-            addedYear.push(entry.Ar);
+            var year = entry.Year;
+            addedYear.push(year);
 
             var monthNumber = 11;
             var monthDataValues = [];
             for(var i=0; i <= monthNumber; i++)
             {
-                var month = i + 1;
-                var year = entry.Ar;
+                var month = i + 1;                
 
                 var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
                 var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
@@ -59,7 +59,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
             }
 
             yearWithMonthValues.push({
-                    name: entry.Ar,
+                    name: year,
                     data: monthDataValues,
                     gap: parseFloat(0.4, 10),
                     spacing: parseFloat(0.3, 10)
@@ -79,7 +79,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
                 text: "Utdelningar månad/år"
             },
             legend: {
-                position: "bottom"
+                position: "bottom",
+                visible: true
             },
             seriesColors: colorArray,
             seriesDefaults: {
