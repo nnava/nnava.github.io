@@ -25,6 +25,9 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
     }
 
     function getVärdepapperForYear(year) {
+
+        alasqlavanza.getBuyTransactionSumBelopp(year);
+        alasqlavanza.getSellTransactionSumBelopp(year);
         
         var avanzaData = alasqlavanza.getVärdepapperForYear(year);
         var nordnetData = alasqlnordnet.getVärdepapperForYear(year);

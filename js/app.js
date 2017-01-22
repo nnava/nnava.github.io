@@ -72,6 +72,7 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         kendo.resize($("#chartDividendStackedCumulative"));
         kendo.resize($("#chartCourtageYear"));
         kendo.resize($("#chartDonutDividend"));
+        kendo.resize($('#chartTransactionNetYearGrowth'));
     });
 
     document.getElementById('checkboxTax').addEventListener('change', function() {
@@ -256,6 +257,9 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
                 break;
             case "chartCourtageYear":
                 chartFilename = "courtage_år"
+                break;
+            case "chartTransactionNetYearGrowth":
+                chartFilename = "köp_sälj_nettoinvesterat_år"
                 break;
             default:
                 chartFilename = "NOTFOUND";

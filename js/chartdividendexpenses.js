@@ -29,11 +29,12 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
         var monthNumber = 11;
         var monthDividendDataValues = [];
         var monthExpensesDataValues = [];
+        var yearAvgExpensesValues = [];
         var monthMarginDataValues = [];
+        var totalExpenses = 0;
 
         var year = resultYear["0"].Year;
-        for(var i=0; i <= monthNumber; i++)
-        {
+        for(var i=0; i <= monthNumber; i++) {
             var month = i + 1;
 
             var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
@@ -51,6 +52,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
 
             var monthExpenseTextboxValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();
 
+            totalExpenses += monthExpenseTextboxValue;
+
             var monthValue = monthExpenseTextboxValue - totalDividendBelopp;
             var marginValue = 0;
             if(totalDividendBelopp > monthExpenseTextboxValue) {
@@ -60,6 +63,12 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
 
             monthExpensesDataValues[i] = monthValue;
             monthMarginDataValues[i] = marginValue;
+        }
+
+        totalExpenses = (totalExpenses / 12);
+
+        for(var i=0; i <= monthNumber; i++) {
+            yearAvgExpensesValues.push(totalExpenses);
         }
 
         var monthExpensesDividendData = [];
@@ -78,6 +87,20 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
             name: "Överskott",
             data: monthMarginDataValues,
             color: "#5CB85C"
+        });
+
+        monthExpensesDividendData.push({
+            type: "line",
+            data: yearAvgExpensesValues,
+            name: "Utgifter medelvärde",
+            color: "#f2b661",
+            tooltip: {
+                visible: true
+            },
+            labels: {
+                rotation: 0,
+                visible: false
+            }
         });
 
         chartData = monthExpensesDividendData;
@@ -101,14 +124,11 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 }
             },
             series: chartData,
-            valueAxis: {
-                line: {
-                    visible: false
-                },
+            valueAxes: [{
                 labels: {
                     format: "#,0 kr"
                 }
-            },  
+            }], 
             categoryAxis: {
                 categories: months,
                 majorGridLines: {

@@ -54,6 +54,14 @@ define([], function() {
                        ORDER BY 1');
     }
 
+    function getTransactionYears() {
+        return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
+                FROM NordnetData \
+                WHERE (Transaktionstyp = "SÅLT" OR Transaktionstyp = "KÖPT") \
+                GROUP BY YEAR([Bokföringsdag]) \
+                ORDER BY 1');
+    }
+
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
@@ -261,6 +269,18 @@ define([], function() {
         return courtage["0"].value;
     }
 
+    function getBuyTransactionSumBelopp(year) {
+        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
+                       FROM NordnetData \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "KÖPT"');
+    }
+
+    function getSellTransactionSumBelopp(year) {
+        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
+                       FROM NordnetData \
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "SÅLT"');
+    }
+
     return {
         createDataTable: createDataTable,
         getDividendMaxYear: getDividendMaxYear,
@@ -282,6 +302,9 @@ define([], function() {
         getVärdepapperForYear: getVärdepapperForYear,
         getCourtageSumBuy: getCourtageSumBuy,
         getCourtageSumSell: getCourtageSumSell,
-        getCourtageYears: getCourtageYears
+        getCourtageYears: getCourtageYears,
+        getBuyTransactionSumBelopp: getBuyTransactionSumBelopp,
+        getSellTransactionSumBelopp: getSellTransactionSumBelopp,
+        getTransactionYears: getTransactionYears
     };
 });

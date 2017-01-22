@@ -11,7 +11,8 @@ define(['./chartdonutexpenses',
      './chartdividendcumulative',
      './chartdividendstackedcumulative',
      './chartcourtageyear',
-     './dropdowndonutdividendsort'], 
+     './dropdowndonutdividendsort',
+     './charttransactionnetyeargrowth'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -25,7 +26,8 @@ define(['./chartdonutexpenses',
      chartDividendCumulative,
      chartDividendStackedCumulative,
      chartCourtageYear,
-     dropdownDonutDividendSort) {
+     dropdownDonutDividendSort,
+     chartTransactionNetYearGrowth) {
 
     function loadControls() {
         loadDropdownDividendYear();
@@ -42,6 +44,7 @@ define(['./chartdonutexpenses',
         loadChartDividendCumulative();
         loadChartDividendStackedCumulative();
         loadChartCourtageYear();
+        loadChartTransactionNetYearGrowth();
     }
 
     function loadChartDividendStackedCumulative() {
@@ -52,6 +55,12 @@ define(['./chartdonutexpenses',
         chartDividendStackedCumulative.setChartId('#chartDividendStackedCumulative');
         chartDividendStackedCumulative.setChartData(year);
         chartDividendStackedCumulative.loadChart();
+    }
+
+    function loadChartTransactionNetYearGrowth() {
+        chartTransactionNetYearGrowth.setChartId('#chartTransactionNetYearGrowth');
+        chartTransactionNetYearGrowth.setChartData();
+        chartTransactionNetYearGrowth.loadChart();
     }
 
     function loadChartCourtageYear() {
