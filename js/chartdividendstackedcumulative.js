@@ -1,6 +1,6 @@
 define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankdatadividend, colors, monthstaticvalues) {
 
-    var chartData;
+    var chartData = [];
     var chartId;
     var selectedYear = 0;
     var colorArray = colors.getColorArray();
@@ -12,12 +12,44 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
 
     function setChartData(year) {
 
+        chartData = [];
+
         selectedYear = year;
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
         var resultVärdepapper = bankdatadividend.getVärdepapperForYear(selectedYear);
         
-        chartData = bankdatadividend.getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked);
+        var dividendData = bankdatadividend.getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked);
+        dividendData.forEach(function(entry) {
+            chartData.push({
+                type: "column",
+                name: entry.name,
+                data: entry.data                
+            });
+        });
+
+        var resultTotalDividend = bankdatadividend.getTotalDividend(year, isTaxChecked);
+        var avgDividendValue = (resultTotalDividend / 12);
+
+        var avgDividendArray = [];
+        for(var i=0; i <= 11; i++) {
+            avgDividendArray.push(avgDividendValue);
+        }
+
+        chartData.push({
+            type: "line",
+            data: avgDividendArray,
+            name: "Utdelningar medelvärde",
+            color: "#f2b661",
+            tooltip: {
+                visible: true
+            },
+            labels: {
+                rotation: 0,
+                visible: false
+            }
+        });
+    
     }
 
     function loadChart() {
@@ -42,9 +74,6 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
             series: chartData,
             seriesColors: colorArray,
             valueAxis: {
-                line: {
-                    visible: false
-                },
                 labels: {
                     format: "#,0 kr"
                 }

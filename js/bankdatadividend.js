@@ -1,5 +1,12 @@
 define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alasqlavanza, alasqlnordnet, alasqlstockdata) {
 
+
+    function getTotalDividend(year, isTaxChecked) {
+        var resultNordnetTotal = alasqlnordnet.getTotalDividend(year, isTaxChecked);
+        var resultAvanzaTotal = alasqlavanza.getTotalDividend(year, isTaxChecked);
+        return resultNordnetTotal + resultAvanzaTotal;
+    }
+
     function getVärdepapperTotalDividend(year, sort, addTaxToSum) {
 
         var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year, addTaxToSum);
@@ -96,6 +103,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
     return { 
         getVärdepapperTotalDividend: getVärdepapperTotalDividend,
         getVärdepapperForYear: getVärdepapperForYear,
-        getVärdepapperDividendData: getVärdepapperDividendData
+        getVärdepapperDividendData: getVärdepapperDividendData,
+        getTotalDividend: getTotalDividend
     };
 });
