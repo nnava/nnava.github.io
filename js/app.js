@@ -86,8 +86,14 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
     }, false);
 
     document.getElementById('btnDemo').addEventListener('click', function() {
-        demodata.createDemoData();
-        appControlLoader.loadControls();
+
+        kendo.ui.progress($(document.body), true);
+        
+        setTimeout(function(){               
+            demodata.createDemoData();
+            appControlLoader.loadControls();
+        }, 1);
+
     });
 
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
