@@ -30,21 +30,39 @@ define(['./chartdonutexpenses',
      chartTransactionNetYearGrowth) {
 
     function loadControls() {
+
+        $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
+        $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
+        $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
+
+        $('#mainContainer').attr("class", "container-fluid");
+
         loadDropdownDividendYear();
         loadDropdownDonutDividendSort();
-        loadChartYearDeposit();
-        loadChartDividendYearGrowth();        
-        loadChartDividendYearMonth();
         loadChartDividendExpenses();
         loadChartDonutExpenses();
-        loadChartDonutDividend();
-        loadChartDividendTreemap();
-        loadChartTransactionBuyLine();
-        loadChartTransactionSellLine();
+        loadChartDividendYearGrowth(); 
+        loadChartDividendYearMonth();   
+        loadChartDividendStackedCumulative(); 
         loadChartDividendCumulative();
-        loadChartDividendStackedCumulative();
-        loadChartCourtageYear();
-        loadChartTransactionNetYearGrowth();
+          
+        kendo.ui.progress($(document.body), false);
+
+        setTimeout(function(){   
+            loadChartDonutDividend();
+            loadChartDividendTreemap();
+        }, 1000);
+
+        setTimeout(function(){               
+            loadChartTransactionBuyLine();
+            loadChartTransactionSellLine();            
+        }, 3000);
+
+        setTimeout(function(){                           
+            loadChartCourtageYear();
+            loadChartTransactionNetYearGrowth();
+            loadChartYearDeposit();
+        }, 4000);
     }
 
     function loadChartDividendStackedCumulative() {

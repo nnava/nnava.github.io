@@ -74,16 +74,8 @@ define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnord
             
             var reader = new FileReader();
             reader.onloadend = function(e) {
-                if((index +1) == fileArrayLength) {
-                    $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
-                    $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
-                    $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
-
-                    $('#mainContainer').attr("class", "container-fluid");
-        
-                    appControlLoader.loadControls(); 
-
-                    kendo.ui.progress($(document.body), false);
+                if((index +1) == fileArrayLength) {        
+                    appControlLoader.loadControls();                    
                 }
             }
  

@@ -1,5 +1,5 @@
-define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticvalues', './alasqlstockdata'], 
-     function(uploadControl, appControlLoader, appCookies, monthstaticvalues, alasqlstockdata) {
+define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata'], 
+     function(uploadControl, appControlLoader, appCookies, monthstaticvalues, alasqlstockdata, demodata) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
 
@@ -84,6 +84,11 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         appControlLoader.loadChartDividendCumulative();
         appControlLoader.loadChartDividendStackedCumulative();
     }, false);
+
+    document.getElementById('btnDemo').addEventListener('click', function() {
+        demodata.createDemoData();
+        appControlLoader.loadControls();
+    });
 
     document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
         
