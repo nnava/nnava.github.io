@@ -1,4 +1,4 @@
-define([], function() {
+define(['./alasqlstockdata'], function(alasqlstockdata) {
     
     function createDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS AvanzaData (  \
@@ -56,6 +56,14 @@ define([], function() {
         if(belopp["0"].Belopp == null) return 0;
 
         return belopp["0"].Belopp;
+    }
+
+    function getCourtageYears() {
+        return alasql('SELECT FIRST(YEAR(Datum)) AS Year \
+                       FROM AvanzaData \
+                       WHERE ([Typ av transaktion] = "Köp" OR [Typ av transaktion] = "Sälj") \
+                       GROUP BY YEAR(Datum) \
+                       ORDER BY 1');
     }
 
     function getDividendMaxYear() {
@@ -284,6 +292,81 @@ define([], function() {
         return parseInt(count["0"].TransactionCount);
     }
 
+    function getCourtageSumBuy(year) {
+
+        var result = alasql('SELECT FIRST(ISIN) AS [ISIN] \
+                       FROM AvanzaData \
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Köp" \
+                       GROUP BY ISIN');
+                
+        var totalCourtage = 0;
+        result.forEach(function(object) {
+
+            if(object == null) return;
+            if(object.ISIN == null) return;
+
+            var isin = object.ISIN;
+            var objectCurrency = alasqlstockdata.getVärdepapperHandlas(isin);         
+            if(objectCurrency !== "SEK" && (isin.startsWith("SE") == false)) return;
+
+            var resultTransactions = alasql('SELECT Antal, Kurs, Belopp \
+                       FROM AvanzaData \
+                       WHERE [Typ av transaktion] = "Köp" AND YEAR(Datum) = ' + year + ' AND [ISIN] = "' + isin + '"');
+
+            resultTransactions.forEach(function(object) {
+                if(object.Belopp === "-") return;
+                var transactionWithoutCourtage = (object.Antal * object.Kurs);
+                var courtage = Math.abs(object.Belopp) - transactionWithoutCourtage;
+
+                var courtageDecimalValue = (courtage % 1).toFixed(2);
+                if(courtageDecimalValue <= 0.50)
+                    totalCourtage += (Math.floor(courtage));
+                else
+                    totalCourtage += (Math.round(courtage));
+            });
+            
+        });
+
+        return totalCourtage;
+    }
+
+    function getCourtageSumSell(year) {
+
+        var result = alasql('SELECT FIRST(ISIN) AS [ISIN] \
+                       FROM AvanzaData \
+                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Sälj" \
+                       GROUP BY ISIN');
+                
+        var totalCourtage = 0;
+        result.forEach(function(object) {
+
+            if(object == null) return;
+            if(object.ISIN == null) return;
+
+            var isin = object.ISIN;
+            var objectCurrency = alasqlstockdata.getVärdepapperHandlas(isin);         
+            if(objectCurrency !== "SEK" && (isin.startsWith("SE") == false)) return;
+
+            var resultTransactions = alasql('SELECT Antal, Kurs, Belopp \
+                       FROM AvanzaData \
+                       WHERE [Typ av transaktion] = "Sälj" AND YEAR(Datum) = ' + year + ' AND [ISIN] = "' + isin + '"');
+
+            resultTransactions.forEach(function(object) {
+                var transactionWithoutCourtage = (Math.abs(object.Antal) * object.Kurs);
+                var courtage = transactionWithoutCourtage - object.Belopp;
+
+                var courtageDecimalValue = (courtage % 1).toFixed(2);
+                if(courtageDecimalValue <= 0.50)
+                    totalCourtage += (Math.floor(courtage));
+                else
+                    totalCourtage += (Math.round(courtage));
+            });
+            
+        });
+
+        return totalCourtage;
+    }
+
     return {
         createDataTable: createDataTable,
         getDividendMaxYear: getDividendMaxYear,
@@ -305,6 +388,9 @@ define([], function() {
         getVärdepapperForYear: getVärdepapperForYear,
         getBuyTransactionSumBelopp: getBuyTransactionSumBelopp,
         getSellTransactionSumBelopp: getSellTransactionSumBelopp,
-        getTransactionYears: getTransactionYears
+        getTransactionYears: getTransactionYears,
+        getCourtageYears: getCourtageYears,
+        getCourtageSumBuy: getCourtageSumBuy,
+        getCourtageSumSell: getCourtageSumSell
     };
 });

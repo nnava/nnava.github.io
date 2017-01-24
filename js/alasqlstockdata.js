@@ -24,9 +24,14 @@ define([], function() {
         return alasql('SELECT namn FROM StockData WHERE isin ="' + isin + '"');
     }
 
+    function getVärdepapperHandlas(isin) {
+        return alasql('SELECT VALUE DISTINCT handlas FROM StockData WHERE isin ="' + isin + '"');
+    }
+
     return { 
         createStockDataTable: createStockDataTable,
         loadDataFromFileToTable: loadDataFromFileToTable,
-        getVärdepapperNamn: getVärdepapperNamn
+        getVärdepapperNamn: getVärdepapperNamn,
+        getVärdepapperHandlas: getVärdepapperHandlas
     };
 });
