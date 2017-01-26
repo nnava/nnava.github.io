@@ -35,15 +35,10 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getDividendMonthSumBelopp(year, month) {
-        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        return alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
-                       AND [Typ av transaktion] = "Utdelning"');
-
-        var belopp = JSON.parse(JSON.stringify(result));
-        if(belopp["0"].Belopp == null) return 0;
-
-        return belopp["0"].Belopp;
+                       AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse")');
     }
 
     function getTaxMonthSumBelopp(year, month) {
@@ -119,21 +114,17 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             
         return alasql('SELECT FIRST(YEAR(Datum)) AS Year, SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
-                       WHERE ([Typ av transaktion] = "Utdelning"' + taxSqlWhere + ') \
+                       WHERE ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse"' + taxSqlWhere + ') \
                        GROUP BY YEAR(Datum) \
                        ORDER BY 1');
     }
 
     function getDividendYearSumBelopp(year) {
-        var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
+        return alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
                        WHERE YEAR(Datum) = ' + year + ' \
-                       AND [Typ av transaktion] = "Utdelning" \
+                       AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse") \
                        GROUP BY YEAR(Datum)');
-
-        var belopp = JSON.parse(JSON.stringify(result));
-
-        return belopp["0"].Belopp;
     }
 
     function getTaxYearSumBelopp(year) {
@@ -166,7 +157,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
-                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning"' + taxSqlWhere + ")");
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse"' + taxSqlWhere + ")");
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -177,14 +168,14 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getVärdepapperForYear(year) {
         return alasql('SELECT DISTINCT [Värdepapperbeskrivning] AS Vardepapper, [ISIN] AS ISIN \
                        FROM AvanzaData \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning"');
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse")');
     }
 
     function getVärdepapperDividend(year, month, isin, addTaxToSum) {
 
         var result = alasql('SELECT FIRST(ISIN) AS [ISIN], SUM(Belopp::NUMBER) AS [value] \
                        FROM AvanzaData \
-                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [ISIN] = "' + isin + '" AND [Typ av transaktion] = "Utdelning" \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' AND [ISIN] = "' + isin + '" AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse") \
                        GROUP BY ISIN');
                 
         var resultForReturn = [];
@@ -222,7 +213,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                        FROM AvanzaData \
-                       WHERE YEAR(Datum) = ' + year + ' AND [Typ av transaktion] = "Utdelning" \
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse") \
                        GROUP BY ISIN');
                 
         var resultForReturn = [];
@@ -286,10 +277,22 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
                        AND [Typ av transaktion] = "Sälj"');
 
+        var resultMinus = alasql('SELECT COUNT(*) AS TransactionCount \
+                       FROM AvanzaData \
+                       WHERE YEAR(Datum) = ' + year + ' AND MONTH(Datum) = ' + month + ' \
+                       AND [Typ av transaktion] = "Sälj, rättelse"');
+
+        var countMinusValue = 0;
+        var countMinus = JSON.parse(JSON.stringify(resultMinus));
+        if(countMinus["0"].TransactionCount == null) 
+            countMinusValue = 0
+        else
+            countMinusValue = countMinus["0"].TransactionCount;
+
         var count = JSON.parse(JSON.stringify(result));
         if(count["0"].TransactionCount == null) return 0;
 
-        return parseInt(count["0"].TransactionCount);
+        return parseInt(count["0"].TransactionCount) - parseInt(countMinusValue);
     }
 
     function getCourtageSumBuy(year) {
