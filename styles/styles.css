@@ -70,3 +70,8 @@ span.k-loading-text
 {
     display: none;
 }
+
+.top5 { margin-top:5px; }
+.top7 { margin-top:7px; }
+.top10 { margin-top:10px; }
+.top15 { margin-top:15px; }

@@ -1,5 +1,5 @@
-define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata'], 
-     function(uploadControl, appControlLoader, appCookies, monthstaticvalues, alasqlstockdata, demodata) {
+define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata'], 
+     function(uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
 
@@ -8,8 +8,8 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         $(".inputMonthNumber").kendoNumericTextBox({
             format: "#,0 kr",
             change: function() {
-                appControlLoader.loadChartDonutExpenses();
-                appControlLoader.loadChartDividendExpenses();
+                appControlHandler.loadChartDonutExpenses();
+                appControlHandler.loadChartDividendExpenses();
                 saveInputMonthNumberToCookie();
             }
         });
@@ -75,15 +75,17 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         kendo.resize($('#chartTransactionNetYearGrowth'));
     });
 
-    document.getElementById('checkboxTax').addEventListener('change', function() {
-        appControlLoader.loadChartDividendExpenses();
-        appControlLoader.loadChartDonutExpenses();
-        appControlLoader.loadChartDividendYearMonth();
-        appControlLoader.loadChartDividendTreemap();
-        appControlLoader.loadChartDonutDividend();
-        appControlLoader.loadChartDividendCumulative();
-        appControlLoader.loadChartDividendStackedCumulative();
-    }, false);
+    document.getElementById('btnReloadPortfolio').addEventListener('click', function() {
+
+        appControlHandler.saveSettings();
+
+        kendo.ui.progress($(document.body), true);
+        
+        setTimeout(function(){               
+            appControlHandler.loadControls();
+        }, 1);
+
+    });
 
     document.getElementById('btnDemo').addEventListener('click', function() {
 
@@ -91,7 +93,7 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         
         setTimeout(function(){               
             demodata.createDemoData();
-            appControlLoader.loadControls();
+            appControlHandler.loadControls();
         }, 1);
 
     });
@@ -113,8 +115,8 @@ define(['./uploadcontrol', './appcontrolloader', './appcookies', './monthstaticv
         $("#inputNovember").data("kendoNumericTextBox").value(newValue);
         $("#inputDecember").data("kendoNumericTextBox").value(newValue);
 
-        appControlLoader.loadChartDonutExpenses();
-        appControlLoader.loadChartDividendExpenses();
+        appControlHandler.loadChartDonutExpenses();
+        appControlHandler.loadChartDividendExpenses();
         saveInputMonthNumberToCookie();
     });
 

@@ -60,56 +60,83 @@
                         <div class="row-fluid">
                             <div class="col-md-6">
                                 <h3>Nordnet/Avanza-sammanställning</h3>
-                                <p>
-                                    <input type="file" name="files" id="dataFiles" />
-                                </p>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="file" name="files" id="dataFiles" />
+                                    </div>
+                                </div>
+                                <div class="row top10">
+                                    <div class="col-md-12">
+                                        <div class="btn-group">
+                                            <button id="btnExportToPdf" class='export-button-primary k-primary k-button'>Exportera alla grafer till PDF</button>
+                                            <button id="btnExportToPng" class='export-button-primary k-primary k-button'>Exportera alla grafer till PNG</button>
+                                            <button id="btnExportToSvg" class='export-button-primary k-primary k-button'>Exportera alla grafer till SVG</button>
+                                            <button id="btnDemo" class='k-primary k-button'>Demo</button>
+                                        </div>
+                                        <script>
+                                            $(".export-button-primary").kendoButton({
+                                                enable: false
+                                            });
+
+                                            $("#btnDemo").kendoButton({
+                                                enable: true
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
+                            <div id="appSettings" class="col-md-6">
                                 <div class="form-group">
-                                    <h3>Inställningar</h3>
-                                    <p>
-                                        <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
-                                        <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt</label>
-                                        <span id="spantaxinfo" class="k-icon k-i-note"></span>
-                                    </p>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h3>Inställningar</h3>
+                                            <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
+                                            <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt</label>
+                                            <span id="spantaxinfo" class="k-icon k-i-note"></span>
+                                        </div>
+                                    </div>
+
+                                    <div id="portfolioSelector" class="row top15 hidden">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label for="portfolioMultiSelect">Portföljer (Avanza)</label>
+                                                    <select id="portfolioMultiSelect" multiple="multiple" data-placeholder="Välj portföljer..." style="width: 100%"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row top10">
+                                        <div class="col-md-12">
+                                            <button id="btnReloadPortfolio" class='k-primary k-button'>Ladda om</button>
+                                        </div>
+                                        <script>
+                                            $("#btnReloadPortfolio").kendoButton({
+                                                enable: false
+                                            });
+                                        </script>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row-fluid">
-                            <div class="col-md-12">
-                                <div class="btn-group">
-                                    <button id="btnExportToPdf" class='export-button-primary k-primary k-button'>Exportera alla grafer till PDF</button>
-                                    <button id="btnExportToPng" class='export-button-primary k-primary k-button'>Exportera alla grafer till PNG</button>
-                                    <button id="btnExportToSvg" class='export-button-primary k-primary k-button'>Exportera alla grafer till SVG</button>
-                                    <button id="btnDemo" class='k-primary k-button'>Demo</button>
-                                </div>
-                                <script>
-                                    $(".export-button-primary").kendoButton({
-                                        enable: false
-                                    });
-
-                                    $("#btnDemo").kendoButton({
-                                        enable: true
-                                    });
-                                </script>
-                            </div>
-                        </div>
-
-                        <div class="row-fluid">
-                            <div class="col-md-12">
-                                <div>
-                                    <h4>Dina utgifter per månad</h4>
-                                    <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
-                                    <button id="btnSetInputMonthValues" class='k-button'>Sätt utgift för alla månader</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <br/>
                     <div class="content-wrapper">
                         <div class="container-fluid">
+                            <div class="row-fluid">
+                                <div class="col-md-12">
+                                    <div>
+                                        <h4>Dina utgifter per månad</h4>
+                                        <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
+                                        <button id="btnSetInputMonthValues" class='k-button'>Sätt utgift för alla månader</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="row-fluid">
                                 <div class="col-md-12">
                                     <div class="inputMonth">
@@ -435,6 +462,7 @@
                 </footer>
 
             </div>
+
             <div id="faq" class="tab-pane fade">
                 <br/>
                 <div class="container-fluid">
@@ -522,7 +550,7 @@ $.each(e.files, function (index, value) {
 
             $('#mainContainer').attr("class", "container-fluid");
 
-            appControlLoader.loadControls(); 
+            appControlHandler.loadControls(); 
 
             kendo.ui.progress($(document.body), false);
         }
@@ -571,7 +599,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 46;
+            var versionNumber = 47;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

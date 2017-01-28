@@ -1,4 +1,4 @@
-define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnordnet'], function(Papa, appControlLoader, alasqlavanza, alasqlnordnet) {
+define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet'], function(Papa, appControlHandler, alasqlavanza, alasqlnordnet) {
   
     var controlId;
 
@@ -34,12 +34,14 @@ define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnord
             reader.onload = function(e) {
                 var isFileAvanza = reader.result.startsWith("Datum");
 
-                if(isFileAvanza)
+                if(isFileAvanza) {
                     alasql('TRUNCATE TABLE AvanzaData');
+                    alasql('TRUNCATE TABLE AvanzaPortfolio;');
+                }
                 else
                     alasql('TRUNCATE TABLE NordnetData');
 
-                appControlLoader.loadControls();
+                appControlHandler.loadControls();
             }
 
             reader.readAsText(value.rawFile);
@@ -62,6 +64,7 @@ define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnord
         var timeoutValue = 1;
 
         alasqlavanza.createDataTable();
+        alasqlavanza.createPortfolioTable();
         alasqlnordnet.createDataTable();
 
         $.each(e.files, function (index, value) {
@@ -75,7 +78,7 @@ define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnord
             var reader = new FileReader();
             reader.onloadend = function(e) {
                 if((index +1) == fileArrayLength) {        
-                    appControlLoader.loadControls();                    
+                    appControlHandler.loadControls();                    
                 }
             }
  
@@ -95,6 +98,7 @@ define(['./papaparse.min', './appcontrolloader', './alasqlavanza', './alasqlnord
 
                 if(isFileAvanza) {
                     alasql('INSERT INTO AvanzaData SELECT * FROM CSV(?, {separator:";"})', [readerResultString]);
+                    alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    
                 else {
                     var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));

@@ -4,8 +4,14 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         createTables();
         truncateTables();
         createAvanzaDemoData();
+        createAvanzaPortfolioData();
         createNordnetDemoData();
     };
+
+    function createAvanzaPortfolioData() {
+        alasql('INSERT INTO AvanzaPortfolio VALUES ("ISK");');
+        alasql('INSERT INTO AvanzaPortfolio VALUES ("KF");');
+    }
 
     function createNordnetDemoData() {
         alasql('INSERT INTO NordnetData VALUES ("2016-11-18", 78, "0", "-85.31", "2016-12-07", "US4781601046", "Aktie", 0, "2016-12-06", "", "UTL KUPSKATT", "SEK", "JNJ");');
@@ -110,6 +116,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
     function createTables() {
         alasqlavanza.createDataTable();
+        alasqlavanza.createPortfolioTable();
         alasqlnordnet.createDataTable();
     }
 

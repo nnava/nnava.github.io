@@ -12,7 +12,8 @@ define(['./chartdonutexpenses',
      './chartdividendstackedcumulative',
      './chartcourtageyear',
      './dropdowndonutdividendsort',
-     './charttransactionnetyeargrowth'], 
+     './charttransactionnetyeargrowth',
+     './multiselectorportfolio'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -27,31 +28,37 @@ define(['./chartdonutexpenses',
      chartDividendStackedCumulative,
      chartCourtageYear,
      dropdownDonutDividendSort,
-     chartTransactionNetYearGrowth) {
+     chartTransactionNetYearGrowth,
+     multiselectorPortfolio) {
 
     function loadControls() {
 
         $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
         $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
         $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
+        $("#btnReloadPortfolio").kendoButton().data("kendoButton").enable(true);
 
         $('#mainContainer').attr("class", "container-fluid");
 
+        loadMultiselectorPortfolio();
         loadDropdownDividendYear();
         loadDropdownDonutDividendSort();
         loadChartDividendExpenses();
         loadChartDonutExpenses();
         loadChartDividendYearGrowth(); 
         loadChartDividendYearMonth();   
-        loadChartDividendStackedCumulative(); 
-        loadChartDividendCumulative();
+        loadChartDividendStackedCumulative();
           
         kendo.ui.progress($(document.body), false);
 
         setTimeout(function(){   
+            loadChartDividendCumulative();
+        }, 1000);
+
+        setTimeout(function(){   
             loadChartDonutDividend();
             loadChartDividendTreemap();
-        }, 1000);
+        }, 2000);
 
         setTimeout(function(){               
             loadChartTransactionBuyLine();
@@ -65,6 +72,10 @@ define(['./chartdonutexpenses',
         }, 4000);
     }
 
+    function saveSettings() {
+        multiselectorPortfolio.saveValues();
+    }
+
     function loadChartDividendStackedCumulative() {
         var year = dropdownDividendYear.getValue();
         if(year == null || year == '')
@@ -73,6 +84,12 @@ define(['./chartdonutexpenses',
         chartDividendStackedCumulative.setChartId('#chartDividendStackedCumulative');
         chartDividendStackedCumulative.setChartData(year);
         chartDividendStackedCumulative.loadChart();
+    }
+
+    function loadMultiselectorPortfolio() {
+        multiselectorPortfolio.setMultiselectorId('#portfolioMultiSelect');
+        multiselectorPortfolio.setData();
+        multiselectorPortfolio.loadMultiselector();
     }
 
     function loadChartTransactionNetYearGrowth() {
@@ -197,6 +214,7 @@ define(['./chartdonutexpenses',
         loadChartDividendTreemap: loadChartDividendTreemap,
         loadChartDonutDividend: loadChartDonutDividend,
         loadChartDividendCumulative: loadChartDividendCumulative,
-        loadChartDividendStackedCumulative: loadChartDividendStackedCumulative
+        loadChartDividendStackedCumulative: loadChartDividendStackedCumulative,
+        saveSettings: saveSettings
     }
 });
