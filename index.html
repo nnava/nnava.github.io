@@ -561,7 +561,7 @@ $.each(e.files, function (index, value) {
         else {
             var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
             alasql('INSERT INTO NordnetData \
-            SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper] FROM ?', [nordnetData]);
+            SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext FROM ?', [nordnetData]);
         }
     }
     
@@ -584,7 +584,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 48;
+            var versionNumber = 49;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
