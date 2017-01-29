@@ -104,8 +104,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     
     function getTotalTaxReturnForYear(year) {
         var avanzaTaxReturnSumBelopp = alasqlavanza.getReturnedTaxYearSumBelopp(year);
-        // ToDo byt mot riktiga returvärdet när vi har korrekt typer
-        var nordnetTaxReturnSumBelopp = - alasqlnordnet.getTaxYearSumBelopp(year-3);
+        var nordnetTaxReturnSumBelopp = alasqlnordnet.getReturnedTaxYearSumBelopp(year);
         return avanzaTaxReturnSumBelopp + nordnetTaxReturnSumBelopp;
     }
 

@@ -95,7 +95,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 else {
                     var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
                     alasql('INSERT INTO NordnetData \
-                    SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper] FROM ?', [nordnetData]);
+                    SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext FROM ?', [nordnetData]);
                 }
             }
             
