@@ -157,8 +157,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                        WHERE YEAR(Datum) = ' + year + ' \
-                       AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse") \
-                       GROUP BY YEAR(Datum)');
+                       AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse")');
     }
 
     function getTaxYearSumBelopp(year) {
@@ -166,16 +165,14 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                        WHERE YEAR(Datum) = ' + year + ' \
-                       AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
-                       GROUP BY YEAR(Datum)');
+                       AND [Värdepapperbeskrivning] = "Utländsk källskatt"');
     }
 
     function getDepositsYearSumBelopp(year) {
         return alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Insättning" OR [Typ av transaktion] = "Uttag") \
-                       GROUP BY YEAR(Datum)');
+                       WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Insättning" OR [Typ av transaktion] = "Uttag")');
     }
 
     function getTotalDividend(year, addTaxToSum) {
@@ -414,6 +411,13 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return totalCourtage;
     }
 
+    function getReturnedTaxYearSumBelopp(year) {
+        return alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE YEAR(Datum) = ' + year + ' AND [Värdepapperbeskrivning] = "Återbetalning utländsk källskatt" AND [Typ av transaktion] = "Övrigt"');
+    }
+
     return {
         createDataTable: createDataTable,
         createPortfolioTable: createPortfolioTable,
@@ -442,6 +446,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getTransactionYears: getTransactionYears,
         getCourtageYears: getCourtageYears,
         getCourtageSumBuy: getCourtageSumBuy,
-        getCourtageSumSell: getCourtageSumSell
+        getCourtageSumSell: getCourtageSumSell,
+        getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp
     };
 });

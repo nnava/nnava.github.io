@@ -77,7 +77,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 labels: {
                     visible: true,
                     background: "transparent",
-                    template: "#= category # - #= kendo.format('{0:P}', percentage)#",
+                    template: "#= category # - #= kendo.format('{0:P}', percentage) #",
                     position: "outsideEnd"
                 }
             },

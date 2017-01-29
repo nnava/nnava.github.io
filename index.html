@@ -543,35 +543,20 @@ $.each(e.files, function (index, value) {
     
     var reader = new FileReader();
     reader.onloadend = function(e) {
-        if((index +1) == fileArrayLength) {
-            $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
-            $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
-            $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
-
-            $('#mainContainer').attr("class", "container-fluid");
-
-            appControlHandler.loadControls(); 
-
-            kendo.ui.progress($(document.body), false);
+        if((index +1) == fileArrayLength) {        
+            appControlHandler.loadControls();                    
         }
     }
 
     reader.onload = function(e) {
         var readerResultString = reader.result;
         var isFileAvanza = readerResultString.startsWith("Datum");
-        var hasNordnetDataValue = false;
-        if($('#nordnetData').val() && isFileAvanza == false)
-            hasNordnetDataValue = true;
-
-        // If we already have a file of NN, remove first line for this
-        if(hasNordnetDataValue) {
-            readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
-        }
 
         readerResultString = replaceToNeededCharacters(readerResultString);
 
         if(isFileAvanza) {
             alasql('INSERT INTO AvanzaData SELECT * FROM CSV(?, {separator:";"})', [readerResultString]);
+            alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
         }                    
         else {
             var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
@@ -599,7 +584,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 47;
+            var versionNumber = 48;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

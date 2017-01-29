@@ -5,6 +5,8 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     var chartDataSumYearTax = [];
     var chartDataSumReturnYearTax = [];
     var chartDataYears = [];
+    var chartReturnTaxDiff = [];
+    var chartExpectedTaxBelopp = [];
     var chartId;
 
     function resetArrayValues() {
@@ -13,6 +15,8 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         chartDataSumYearTax = [];
         chartDataSumReturnYearTax = [];
         chartDataYears = [];
+        chartReturnTaxDiff = [];
+        chartExpectedTaxBelopp = [];
     }
 
     function setChartId(fieldId) {
@@ -48,7 +52,15 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
             var totalDividend = getTotalDividendForYear(year);
             var totalTaxBelopp = getTotalTaxForYear(year);
 
-            var totalTaxReturnBelopp = getTotalTaxReturnForYear(year -3);
+            var expectedTotalTaxReturnBelopp = getExpectedTotalTaxReturnForYear(year -3);
+            chartExpectedTaxBelopp[year] = expectedTotalTaxReturnBelopp;
+
+            var totalTaxReturnBelopp = getTotalTaxReturnForYear(year);
+            var diffValue = ((totalTaxReturnBelopp / expectedTotalTaxReturnBelopp) * 100).toFixed(3);
+
+            if(isNaN(diffValue) == false)
+                chartReturnTaxDiff[year] = diffValue;
+
             chartDataSumReturnYearTax.push(totalTaxReturnBelopp);
 
             // if taxbelopp < 0, och finns värde i årsarray? lägg till annars lägg till år i ny årsarray (framtid)
@@ -68,7 +80,6 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
                 if(entryLast.Year == yearBefore) {
                     var totalDividendLastYear = getTotalDividendForYear(yearBefore);
                     var totalTaxBeloppLastYear = getTotalTaxForYear(yearBefore);
-
 
                     var totalBeloppLastYear = totalDividendLastYear + totalTaxBeloppLastYear;
 
@@ -90,6 +101,13 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
         addFutureTaxReturnData(futureTaxReturnYears);
     }
+    
+    function getTotalTaxReturnForYear(year) {
+        var avanzaTaxReturnSumBelopp = alasqlavanza.getReturnedTaxYearSumBelopp(year);
+        // ToDo byt mot riktiga returvärdet när vi har korrekt typer
+        var nordnetTaxReturnSumBelopp = - alasqlnordnet.getTaxYearSumBelopp(year-3);
+        return avanzaTaxReturnSumBelopp + nordnetTaxReturnSumBelopp;
+    }
 
     function getTotalDividendForYear(year) {
         var nordnetSumBeloppLastYear = alasqlnordnet.getDividendYearSumBelopp(year);
@@ -103,7 +121,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         return nordnetTaxSumBelopp + avanzaTaxSumBelopp;    
     }
 
-    function getTotalTaxReturnForYear(year) {
+    function getExpectedTotalTaxReturnForYear(year) {
         var nordnetTaxReturnSumBelopp = alasqlnordnet.getTaxYearSumBelopp(year);
         var avanzaTaxReturnSumBelopp = alasqlavanza.getTaxYearSumBelopp(year);
         return - (nordnetTaxReturnSumBelopp + avanzaTaxReturnSumBelopp);
@@ -111,7 +129,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
     function addFutureTaxReturnData(futureTaxReturnYears) {
         futureTaxReturnYears.forEach(function(year) {
-            var totalTaxReturnBelopp = getTotalTaxReturnForYear(year);
+            var totalTaxReturnBelopp = getExpectedTotalTaxReturnForYear(year);
             chartDataSumReturnYearTax.push(totalTaxReturnBelopp);
             chartDataYears.push(year + 3);
         });        
@@ -164,7 +182,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
                 name: "Återbetald källskatt kr",
                 tooltip: {
                     visible: true,
-                    format: "#,0 kr"
+                    template: "#= window.returnTaxTooltipText(category, value) #"
                 }
             }
             ,{
@@ -199,6 +217,21 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
             },
             theme: "bootstrap"
         });      
+    }
+
+    window.returnTaxTooltipText = function returnTaxTooltipText(category, value) {
+        var returnTaxDiffValue = chartReturnTaxDiff[category];
+        if(returnTaxDiffValue){
+            var expectedTaxBelopp = kendo.toString(chartExpectedTaxBelopp[category], 'n2') + ' kr'; 
+            var returnedTaxBelopp = kendo.toString(value, 'n2') + ' kr';
+
+            return "Debiterad källskatt: " + expectedTaxBelopp + "<br/> " +
+                "Återbetald källskatt: " + returnedTaxBelopp + "<br/> " +
+                "Procentuellt återbetald källskatt: " + returnTaxDiffValue + " %";
+        }
+        else {
+            return kendo.toString(value, 'n2') + ' kr';
+        }
     }
 
     return {

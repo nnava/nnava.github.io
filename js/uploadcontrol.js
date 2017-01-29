@@ -85,14 +85,6 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
             reader.onload = function(e) {
                 var readerResultString = reader.result;
                 var isFileAvanza = readerResultString.startsWith("Datum");
-                var hasNordnetDataValue = false;
-                if($('#nordnetData').val() && isFileAvanza == false)
-                    hasNordnetDataValue = true;
-
-                // If we already have a file of NN, remove first line for this
-                if(hasNordnetDataValue) {
-                    readerResultString = readerResultString.substring(readerResultString.indexOf("\n") + 1);
-                }
 
                 readerResultString = replaceToNeededCharacters(readerResultString);
 
