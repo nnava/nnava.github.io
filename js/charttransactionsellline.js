@@ -110,7 +110,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
                 format: "{0}",
                 template: "#= series.name #: #= value # st"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 

@@ -140,7 +140,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 visible: true,
                 template: "${series.name} - #= kendo.toString(value, 'n0') # kr"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 

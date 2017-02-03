@@ -146,7 +146,8 @@ define(['./bankdatatransaction', './colors'], function(bankdatatransaction, colo
             categoryAxis: {
                 categories: chartDataYears,
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });      
     }
 

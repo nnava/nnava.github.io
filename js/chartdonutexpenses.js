@@ -89,7 +89,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 visible: true,
                 template: "#= category # - #= kendo.format('{0:P}', percentage) #"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 

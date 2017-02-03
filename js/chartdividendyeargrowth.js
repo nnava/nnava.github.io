@@ -214,7 +214,8 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
             categoryAxis: {
                 categories: chartDataYears,
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });      
     }
 

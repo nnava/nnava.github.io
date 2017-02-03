@@ -118,7 +118,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
                 visible: true,
                 format: "#,0 kr"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 

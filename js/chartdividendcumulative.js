@@ -83,7 +83,8 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
                 visible: true,
                 template: "#= category # - #= kendo.toString(value, 'n0') # kr"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 

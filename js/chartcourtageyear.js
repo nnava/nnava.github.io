@@ -214,7 +214,8 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                 visible: true,
                 template: "${series.name} - #= kendo.toString(value, 'n2') # kr"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 

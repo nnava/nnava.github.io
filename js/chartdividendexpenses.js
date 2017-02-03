@@ -139,7 +139,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 visible: true,
                 format: "#,0 kr"
             },
-            theme: "bootstrap"
+            theme: "bootstrap",
+            transitions: false
         });
     }
 
