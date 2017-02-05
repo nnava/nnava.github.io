@@ -2,7 +2,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
     var spreadSheetData = [];
     var spreadSheetId;
-    var yqlUrl = 'http://query.yahooapis.com/v1/public/yql';
+    var yqlUrl = 'https://query.yahooapis.com/v1/public/yql';
     var historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
     var currencyArray = [];
     var mergedCellsArray = [];
