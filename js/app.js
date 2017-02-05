@@ -1,5 +1,5 @@
-define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata'], 
-     function(uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata) {
+define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata', './portfoliocontrolhandler'], 
+     function(uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata, portfolioControlHandler) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
 
@@ -73,6 +73,14 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($("#chartCourtageYear"));
         kendo.resize($("#chartDonutDividend"));
         kendo.resize($('#chartTransactionNetYearGrowth'));
+    });
+
+    document.getElementById('btnLoadSpreadsheetPortfolio').addEventListener('click', function() {
+        kendo.ui.progress($(document.body), true);
+        
+        setTimeout(function(){               
+            portfolioControlHandler.loadControls();
+        }, 1);
     });
 
     document.getElementById('btnReloadPortfolio').addEventListener('click', function() {

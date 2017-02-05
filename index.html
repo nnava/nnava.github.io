@@ -20,6 +20,7 @@
         <script src="/js/jquery.min.js"></script>
         <script src="/js/kendo.all.min.js"></script>
         <script src="/js/kendo.culture.se-SE.min.js"></script>
+        <script src="/js/jszip.min.js"></script>
         
         <script>
 
@@ -49,6 +50,7 @@
                 <img alt="Brand" src="/styles/images/icon32x32.png">
             </a>
             <li class="active"><a data-toggle="tab" href="#home">Hem</a></li>
+            <li><a data-toggle="tab" href="#portfolio">Portföljöversikt</a></li>
             <li><a data-toggle="tab" href="#faq">FAQ</a></li>
         </ul>
 
@@ -56,7 +58,6 @@
             <div id="home" class="tab-pane fade in active">
                 <div id="maincontent">
                     <div class="container-fluid">
-
                         <div class="row-fluid">
                             <div class="col-md-6">
                                 <h3>Nordnet/Avanza-sammanställning</h3>
@@ -463,6 +464,25 @@
 
             </div>
 
+            <div id="portfolio" class="tab-pane fade">
+                <br/>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="col-md-12">
+                            <button id="btnLoadSpreadsheetPortfolio" class='k-primary k-button'>Ladda portfölj</button>
+                        </div>
+                        <script>
+                            $("#btnLoadSpreadsheetPortfolio").kendoButton({
+                            });
+                        </script>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="col-md-12 top10">
+                            <div id="spreadsheetStocks" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="faq" class="tab-pane fade">
                 <br/>
                 <div class="container-fluid">
@@ -583,8 +603,9 @@ $.each(e.files, function (index, value) {
         <script src="/js/alasql.min.js"></script>
         <script src="/js/pako_deflate.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 49;
+            var versionNumber = 50;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

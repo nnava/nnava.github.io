@@ -15,7 +15,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 CREATE INDEX KontoIndex ON AvanzaData(Konto); \
                 CREATE INDEX DatumIndex ON AvanzaData(Datum); \
                 CREATE INDEX ISINIndex ON AvanzaData(ISIN); \
-                CREATE INDEX TypAvTransaktionIndex ON AvanzaData([Typ av transaktion]); \
+                CREATE INDEX TypAvTransaktionIndex ON AvanzaData([Typ av transaktion], ISIN, Datum); \
                 CREATE INDEX VardepapperIndex ON AvanzaData([Värdepapperbeskrivning]); \
                 CREATE INDEX BeloppIndex ON AvanzaData([Belopp]); \
         ');
@@ -243,7 +243,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var result = alasql('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                        FROM AvanzaData \
-                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       JOIN AvanzaPortfolio USING Konto, Konto \
                        WHERE YEAR(Datum) = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse") \
                        GROUP BY ISIN');
                 
@@ -257,14 +257,14 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
             var resultName = alasql('SELECT DISTINCT [Värdepapperbeskrivning] \
                        FROM AvanzaData \
-                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       JOIN AvanzaPortfolio USING Konto, Konto \
                        WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
 
             var taxValue = 0;
             if(addTaxToSum) {
                 var resultTax = alasql('SELECT SUM(Belopp::NUMBER) AS [value] \
                                      FROM AvanzaData \
-                                     INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                                     JOIN AvanzaPortfolio USING Konto, Konto \
                                      WHERE YEAR(Datum) = ' + year + ' AND [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
                                      GROUP BY ISIN');
                 
@@ -418,11 +418,41 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE YEAR(Datum) = ' + year + ' AND [Värdepapperbeskrivning] = "Återbetalning utländsk källskatt" AND [Typ av transaktion] = "Övrigt"');
     }
 
+    function getStocksInPortfolio() {
+        var result = alasql('SELECT FIRST([Värdepapperbeskrivning]) AS [Värdepapperbeskrivning], FIRST(handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
+                            FROM AvanzaData \
+                            INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                            iNNER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
+                            WHERE ISIN != "-" AND [Typ av transaktion] != "Utdelning" AND [Värdepapperbeskrivning] != "Utländsk källskatt" \
+                            GROUP BY [Värdepapperbeskrivning] \
+                            HAVING SUM(Antal::NUMBER) > 0 \
+                            ORDER BY [Värdepapperbeskrivning]');
+        
+        var resultForReturn = [];
+        result.forEach(function(object) {
+            if(object == null) return;
+            if(object.Antal == null) return;
+            if(Number.isInteger(object.Antal) == false) return;
+
+            var newObject = new Object();
+            newObject.Värdepapperbeskrivning = object.Värdepapperbeskrivning;
+            newObject.Antal = object.Antal;
+            newObject.YahooSymbol = object.YahooSymbol;
+            newObject.Bransch = object.Bransch;
+            newObject.Valuta = object.Handlas;
+
+            resultForReturn.push(newObject);
+        });
+        
+        return resultForReturn;
+    }
+
     return {
         createDataTable: createDataTable,
         createPortfolioTable: createPortfolioTable,
         insertPortfolioData: insertPortfolioData,
         truncatePortfolioData: truncatePortfolioData,
+        getStocksInPortfolio: getStocksInPortfolio,
         getPortfolios: getPortfolios,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,

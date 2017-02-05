@@ -4,6 +4,8 @@ define([], function() {
         alasql('CREATE TABLE IF NOT EXISTS StockData (  \
                 namn STRING, \
                 kortnamn STRING,\
+                yahoosymbol STRING, \
+                azalink STRING, \
                 isin STRING,\
                 marknad STRING,\
                 bransch STRING,\
@@ -16,7 +18,7 @@ define([], function() {
     function loadDataFromFileToTable() {
         alasql('TRUNCATE TABLE StockData');
         alasql("SELECT * FROM JSON('stockdata.json')",[],function(jsonResult){
-            alasql('INSERT INTO StockData SELECT namn, kortnamn, isin, marknad, bransch, handlas FROM ?', [jsonResult]);
+            alasql('INSERT INTO StockData SELECT namn, kortnamn, yahoosymbol, azalink, isin, marknad, bransch, handlas FROM ?', [jsonResult]);
         });
     };
 
@@ -28,10 +30,15 @@ define([], function() {
         return alasql('SELECT VALUE DISTINCT handlas FROM StockData WHERE isin ="' + isin + '"');
     }
 
+    function getYahooSymbol(isin) {
+        return alasql('SELECT VALUE DISTINCT yahoosymbol FROM StockData WHERE isin ="' + isin + '"');
+    }
+
     return { 
         createStockDataTable: createStockDataTable,
         loadDataFromFileToTable: loadDataFromFileToTable,
         getVärdepapperNamn: getVärdepapperNamn,
-        getVärdepapperHandlas: getVärdepapperHandlas
+        getVärdepapperHandlas: getVärdepapperHandlas,
+        getYahooSymbol: getYahooSymbol
     };
 });

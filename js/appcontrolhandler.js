@@ -53,7 +53,7 @@ define(['./chartdonutexpenses',
 
         setTimeout(function(){   
             loadChartDividendCumulative();
-        }, 1000);
+        }, 100);
 
         setTimeout(function(){   
             loadChartDonutDividend();
@@ -85,7 +85,7 @@ define(['./chartdonutexpenses',
         chartDividendStackedCumulative.setChartData(year);
         chartDividendStackedCumulative.loadChart();
     }
-
+    
     function loadMultiselectorPortfolio() {
         multiselectorPortfolio.setMultiselectorId('#portfolioMultiSelect');
         multiselectorPortfolio.setData();
