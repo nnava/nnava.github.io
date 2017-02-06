@@ -93,7 +93,10 @@
                                             <h3>Inställningar</h3>
                                             <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
                                             <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt</label>
-                                            <span id="spantaxinfo" class="k-icon k-i-note"></span>
+                                            <span id="spantaxinfo" class="k-icon k-i-info"></span>
+                                            <input type="checkbox" id="checkboxPayment" class="k-checkbox hidden" checked="checked">
+                                            <label class="k-checkbox-label hidden" for="checkboxPayment">Tolka inlösen som utdelning (Nordnet)</label>
+                                            <span id="spanpaymentinfo" class="k-icon k-i-info hidden"></span>
                                         </div>
                                     </div>
 
@@ -606,7 +609,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 50;
+            var versionNumber = 51;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

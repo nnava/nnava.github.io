@@ -34,6 +34,14 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             width: 250
         });
 
+        $("#spanpaymentinfo").kendoTooltip({
+            content: "Tolka inlösensrätter som betalas ut som kontantbelopp som utdelning <br/> \
+                    Exempel där detta förfarande skett: <br/> \
+                    Betsson, Kinnevik, Creades, Sectra",
+            position: "bottom",
+            width: 250
+        });
+
         alasqlstockdata.createStockDataTable();
         alasqlstockdata.loadDataFromFileToTable();
     });

@@ -42,32 +42,36 @@ define(['./chartdonutexpenses',
 
         loadMultiselectorPortfolio();
         loadDropdownDividendYear();
-        loadDropdownDonutDividendSort();
-        loadChartDividendExpenses();
-        loadChartDonutExpenses();
-        loadChartDividendYearGrowth(); 
-        loadChartDividendYearMonth();   
+        loadDropdownDonutDividendSort();              
         loadChartDividendStackedCumulative();
           
         kendo.ui.progress($(document.body), false);
 
-        setTimeout(function(){   
-            loadChartDividendCumulative();
+        loadChartDividendExpenses();
+
+        setTimeout(function(){  
+            loadChartDividendYearGrowth(); 
+            loadChartDonutExpenses();
         }, 100);
 
         setTimeout(function(){   
-            loadChartDonutDividend();
+            loadChartDividendYearMonth();
+            loadChartDividendCumulative();  
+            loadChartDonutDividend(); 
+        }, 500);
+
+        setTimeout(function(){ 
             loadChartDividendTreemap();
+            loadChartTransactionBuyLine();
         }, 2000);
 
-        setTimeout(function(){               
-            loadChartTransactionBuyLine();
+        setTimeout(function(){    
+            loadChartTransactionNetYearGrowth();           
             loadChartTransactionSellLine();            
         }, 3000);
 
         setTimeout(function(){                           
-            loadChartCourtageYear();
-            loadChartTransactionNetYearGrowth();
+            loadChartCourtageYear();            
             loadChartYearDeposit();
         }, 4000);
     }
