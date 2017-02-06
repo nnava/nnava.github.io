@@ -89,7 +89,8 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 readerResultString = replaceToNeededCharacters(readerResultString);
 
                 if(isFileAvanza) {
-                    alasql('INSERT INTO AvanzaData SELECT * FROM CSV(?, {separator:";"})', [readerResultString]);
+                    alasql('INSERT INTO AvanzaData \
+                    SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, ISIN, Konto, Kurs, [Typ av transaktion], Valuta, [Värdepapperbeskrivning] FROM CSV(?, {separator:";"})', [readerResultString]);
                     alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    
                 else {

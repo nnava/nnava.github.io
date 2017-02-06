@@ -94,9 +94,6 @@
                                             <input type="checkbox" id="checkboxTax" class="k-checkbox" checked="checked">
                                             <label class="k-checkbox-label" for="checkboxTax">Exkludera källskatt</label>
                                             <span id="spantaxinfo" class="k-icon k-i-info"></span>
-                                            <input type="checkbox" id="checkboxPayment" class="k-checkbox hidden" checked="checked">
-                                            <label class="k-checkbox-label hidden" for="checkboxPayment">Tolka inlösen som utdelning (Nordnet)</label>
-                                            <span id="spanpaymentinfo" class="k-icon k-i-info hidden"></span>
                                         </div>
                                     </div>
 
@@ -579,7 +576,8 @@ $.each(e.files, function (index, value) {
         readerResultString = replaceToNeededCharacters(readerResultString);
 
         if(isFileAvanza) {
-            alasql('INSERT INTO AvanzaData SELECT * FROM CSV(?, {separator:";"})', [readerResultString]);
+            alasql('INSERT INTO AvanzaData \
+            SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, ISIN, Konto, Kurs, [Typ av transaktion], Valuta, [Värdepapperbeskrivning] FROM CSV(?, {separator:";"})', [readerResultString]);
             alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
         }                    
         else {
@@ -609,7 +607,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 51;
+            var versionNumber = 53;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
