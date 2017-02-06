@@ -40,6 +40,6 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         getNordnetCourtageSumBuy: getNordnetCourtageSumBuy,
         getAvanzaCourtageSumSell: getAvanzaCourtageSumSell,
         getAvanzaCourtageSumBuy: getAvanzaCourtageSumBuy,
-        getCourtageYears, getCourtageYears
+        getCourtageYears: getCourtageYears
     };
 });
