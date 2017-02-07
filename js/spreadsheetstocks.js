@@ -6,6 +6,7 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
     var historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
     var currencyArray = [];
     var mergedCellsArray = [];
+    var stockLastTradePriceArray = [];
 
     kendo.spreadsheet.defineFunction("yfcurrencytosek", function(callback, currency){
         fetchCurrencyToSek(currency, function(value){
@@ -53,8 +54,12 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
             data: {q: queryTemplate({symbol:symbol}), format: 'json'}
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
+
+            console.log(symbol, " calling fetchLastTradePriceOnly");
             var results = response.query.results;
             if(results == null) {
+                if(stockLastTradePriceArray[symbol]) { callback(stockLastTradePriceArray[symbol]); return; };
+
                 callback(0); 
                 return;
             }
@@ -62,6 +67,8 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
             var lastTradePriceOnly = results.row.LastTradePriceOnly;
             if(lastTradePriceOnly === "N/A")
                 lastTradePriceOnly = 0;
+
+            stockLastTradePriceArray[symbol] = lastTradePriceOnly;
 
             callback(lastTradePriceOnly);
         }).fail(function(err) {
@@ -73,12 +80,18 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
         spreadSheetId = fieldId;
     }
 
+    function resetArrayValues() {
+        spreadSheetData = [];
+        mergedCellsArray = [];
+        stockLastTradePrice = [];
+    }
+
     function setData() {
 
         var portfolioData = bankdataportfolio.getStocksInPortfolio();
 
-        spreadSheetData = [];
-        mergedCellsArray = [];
+        resetArrayValues();
+
         spreadSheetData.push({
             height: 25,
             cells: [

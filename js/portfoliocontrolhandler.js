@@ -16,7 +16,7 @@ define(['./spreadsheetstocks'],
         spreadsheetStocks.loadSpreadSheet();
     }
 
-    function portfolioData() {
+    function getPortfolioData() {
         var spreadsheet = $("#spreadsheetStocks").data("kendoSpreadsheet");
         var data = spreadsheet.toJSON();
 
@@ -25,6 +25,6 @@ define(['./spreadsheetstocks'],
 
     return {
         loadControls: loadControls,
-        portfolioData: portfolioData
+        getPortfolioData: getPortfolioData
     }
 });
