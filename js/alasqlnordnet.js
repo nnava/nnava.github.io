@@ -117,23 +117,38 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getDividendYearSumBelopp(year) {
-        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return belopp["0"].Belopp;
     }
 
     function getTaxYearSumBelopp(year) {
-        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT")');
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return belopp["0"].Belopp;
     }
 
     function getDepositsYearSumBelopp(year) {
-        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING")');
+        
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return belopp["0"].Belopp;
     }
 
     function getTotalDividend(year, addTaxToSum) {
@@ -141,9 +156,14 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
  
-        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");              
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");
+
+        var belopp = JSON.parse(JSON.stringify(result));
+        if(belopp["0"].Belopp == null) return 0;
+
+        return belopp["0"].Belopp;              
     }
 
     function getVardepapperTotalDividend(year, addTaxToSum) {
