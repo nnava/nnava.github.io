@@ -430,7 +430,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT FIRST([Värdepapperbeskrivning]) AS [Värdepapper], FIRST(handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
                             FROM AvanzaData \
                             INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                            LEFT OUTER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
+                            INNER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
                             WHERE ISIN != "-" AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" AND [Värdepapperbeskrivning] != "Utländsk källskatt" \
                             GROUP BY [Värdepapperbeskrivning] \
                             HAVING SUM(Antal::NUMBER) > 0 \
