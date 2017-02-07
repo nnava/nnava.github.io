@@ -75,3 +75,11 @@ span.k-loading-text
 .top7 { margin-top:7px; }
 .top10 { margin-top:10px; }
 .top15 { margin-top:15px; }
+
+.k-spreadsheet-sheets-bar span.k-link:first-child{
+  padding: .65em .92em;
+}
+ 
+.k-spreadsheet-sheets-bar .k-spreadsheet-sheets-remove{
+  margin-left: -.5em;
+}

@@ -427,11 +427,11 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getStocksInPortfolio() {
-        var result = alasql('SELECT FIRST([Värdepapperbeskrivning]) AS [Värdepapperbeskrivning], FIRST(handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
+        var result = alasql('SELECT FIRST([Värdepapperbeskrivning]) AS [Värdepapper], FIRST(handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
                             FROM AvanzaData \
                             INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                            iNNER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
-                            WHERE ISIN != "-" AND [Typ av transaktion] != "Utdelning" AND [Värdepapperbeskrivning] != "Utländsk källskatt" \
+                            LEFT OUTER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
+                            WHERE ISIN != "-" AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" AND [Värdepapperbeskrivning] != "Utländsk källskatt" \
                             GROUP BY [Värdepapperbeskrivning] \
                             HAVING SUM(Antal::NUMBER) > 0 \
                             ORDER BY [Värdepapperbeskrivning]');
@@ -443,7 +443,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             if(Number.isInteger(object.Antal) == false) return;
 
             var newObject = new Object();
-            newObject.Värdepapperbeskrivning = object.Värdepapperbeskrivning;
+            newObject.Värdepapper = object.Värdepapper;
             newObject.Antal = object.Antal;
             newObject.YahooSymbol = object.YahooSymbol;
             newObject.Bransch = object.Bransch;

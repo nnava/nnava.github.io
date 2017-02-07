@@ -1,4 +1,4 @@
-define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
+define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdataportfolio) {
 
     var spreadSheetData = [];
     var spreadSheetId;
@@ -53,7 +53,13 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
             data: {q: queryTemplate({symbol:symbol}), format: 'json'}
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
-            var lastTradePriceOnly = response.query.results.row.LastTradePriceOnly;
+            var results = response.query.results;
+            if(results == null) {
+                callback(0); 
+                return;
+            }
+
+            var lastTradePriceOnly = results.row.LastTradePriceOnly;
             if(lastTradePriceOnly === "N/A")
                 lastTradePriceOnly = 0;
 
@@ -69,14 +75,15 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
     function setData() {
 
-        var avanzaData = alasqlavanza.getStocksInPortfolio();
+        var portfolioData = bankdataportfolio.getStocksInPortfolio();
 
         spreadSheetData = [];
+        mergedCellsArray = [];
         spreadSheetData.push({
             height: 25,
             cells: [
                 {
-                    value: "Aktie", textAlign: "center", bold: "true"
+                    value: "Värdepapper", textAlign: "center", bold: "true"
                 },
                 {
                     value: "Bransch", textAlign: "center", bold: "true"
@@ -98,7 +105,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         
         var rowCount = 2;
         var indexCount = 1;
-        avanzaData.forEach(function(object) {
+        portfolioData.forEach(function(object) {
 
             var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOSEK(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "C#rowCount#*D#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
@@ -107,7 +114,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
                 index: indexCount,
                 cells: [
                     {
-                        value: object.Värdepapperbeskrivning, textAlign: "left"
+                        value: object.Värdepapper, textAlign: "left"
                     },
                     {
                         value: object.Bransch, textAlign: "left"
@@ -161,39 +168,50 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function loadSpreadSheet() {
-        $(spreadSheetId).kendoSpreadsheet({
-            theme: "bootstrap",
-            sheets: [
-                {
-                    name: "Aktier",
-                    mergedCells: mergedCellsArray,
-                    rows: spreadSheetData,
-                    columns: [
-                        {
-                            width: 200
-                        },
-                        {
-                            width: 130
-                        },
-                        {
-                            width: 90
-                        },
-                        {
-                            width: 100
-                        },
-                        {
-                            width: 40
-                        },
-                        {
-                            width: 110
-                        }
-                    ]
-                }
-            ],
-            excel: {
-                fileName: "Order.xlsx"
-            }
-        });
+
+        if($(spreadSheetId).data('kendoSpreadsheet')) {
+            $(spreadSheetId).data('kendoSpreadsheet').destroy();
+            $(spreadSheetId).empty();
+        }
+
+        setTimeout(function(){  
+            $(spreadSheetId).kendoSpreadsheet({
+                theme: "bootstrap",
+                sheets: [
+                    {
+                        name: "Aktier",
+                        mergedCells: mergedCellsArray,
+                        rows: spreadSheetData,
+                        columns: [
+                            {
+                                width: 200
+                            },
+                            {
+                                width: 130
+                            },
+                            {
+                                width: 90
+                            },
+                            {
+                                width: 100
+                            },
+                            {
+                                width: 40
+                            },
+                            {
+                                width: 110
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            $(".k-button-icon > .k-i-file-excel").parent().on("click", function () {
+                $(".k-spreadsheet-window").find(".k-textbox").val("Portföljöversikt");
+            });
+
+        }, 100);
+
     }
 
     return {

@@ -1,4 +1,4 @@
-define([], function() {
+define(['./alasqlstockdata'], function(alasqlstockdata) {
     
     function createDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS NordnetData (  \
@@ -117,39 +117,23 @@ define([], function() {
     }
 
     function getDividendYearSumBelopp(year) {
-        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
-
-        var belopp = JSON.parse(JSON.stringify(result));
-        if(belopp["0"].Belopp == null) return 0;
-
-        return belopp["0"].Belopp;
     }
 
     function getTaxYearSumBelopp(year) {
-        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT")');
-
-        var belopp = JSON.parse(JSON.stringify(result));
-        if(belopp["0"].Belopp == null) return 0;
-
-        return belopp["0"].Belopp;
     }
 
     function getDepositsYearSumBelopp(year) {
-
-        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING")');
-        
-        var belopp = JSON.parse(JSON.stringify(result));
-        if(belopp["0"].Belopp == null) return 0;
-
-        return belopp["0"].Belopp;
     }
 
     function getTotalDividend(year, addTaxToSum) {
@@ -157,14 +141,9 @@ define([], function() {
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
  
-        var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+        return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");
-                       
-        var belopp = JSON.parse(JSON.stringify(result));
-        if(belopp["0"].Belopp == null) return 0;
-
-        return belopp["0"].Belopp;               
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");              
     }
 
     function getVardepapperTotalDividend(year, addTaxToSum) {
@@ -281,12 +260,55 @@ define([], function() {
     function getReturnedTaxYearSumBelopp(year) {
         return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstext = "UTL KUPSKATT ÅTER"');
-    
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstext = "UTL KUPSKATT ÅTER"');    
+    }
+
+    function getStocksInPortfolio() {
+        var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
+                            FROM NordnetData \
+                            LEFT OUTER JOIN StockData ON StockData.isin = NordnetData.ISIN \
+                            WHERE ([Transaktionstyp] != "UTDELNING" AND [Transaktionstyp] != "MAK UTDELNING" AND [Transaktionstyp] != "UTL KUPSKATT" \
+                            AND [Transaktionstyp] != "RENSNING UTTAG VP" AND [Transaktionstyp] != "EM INLÄGG VP" AND [Transaktionstyp] != "SÅLT" AND [Transaktionstyp] != "TECKNING UT RÄTTER" AND [Transaktionstyp] != "TECKNING LIKVID") \
+                            GROUP BY [Värdepapper] \
+                            HAVING SUM(Antal::NUMBER) > 0 \
+                            ORDER BY [Värdepapper]');
+
+        var resultForReturn = [];
+        result.forEach(function(object) {
+            if(object == null) return;
+            if(object.Antal == null) return;
+            if(Number.isInteger(object.Antal) == false) return;
+
+            // Hämta minusposter
+            var resultMinusPosts = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
+                                           FROM NordnetData \
+                                           WHERE [Värdepapper] = "' + object.Värdepapper + '" AND [Transaktionstyp] = "SÅLT"');
+            
+            var antalAfterMinus = (object.Antal - resultMinusPosts);
+            if(antalAfterMinus == 0) return;
+
+            var newObject = new Object();
+
+            var värdepapperNamn = object.Värdepapper;
+            var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(object.ISIN);
+            if(värdepapperNamnStockData.length != 0)
+                värdepapperNamn = värdepapperNamnStockData[0].namn;
+
+            newObject.Värdepapper = värdepapperNamn;
+            newObject.Antal = antalAfterMinus;
+            newObject.YahooSymbol = object.YahooSymbol;
+            newObject.Bransch = object.Bransch;
+            newObject.Valuta = object.Handlas;
+
+            resultForReturn.push(newObject);
+        });
+        
+        return resultForReturn;
     }
 
     return {
         createDataTable: createDataTable,
+        getStocksInPortfolio: getStocksInPortfolio,
         getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,
