@@ -74,9 +74,14 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 alert("Endast fil med filformat CSV");
                 e.preventDefault();
             }
+
+            console.log(index);
             
             var reader = new FileReader();
             reader.onloadend = function(e) {
+                if(reader.error != null)
+                    console.log(reader.error.message);
+
                 if((index +1) == fileArrayLength) {        
                     appControlHandler.loadControls();                    
                 }
@@ -98,10 +103,13 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('INSERT INTO NordnetData \
                     SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext FROM ?', [nordnetData]);
                 }
+
+                console.log('done', index);
             }
             
+            console.log(value.name);
             setTimeout(function(){ reader.readAsText(value.rawFile, 'ISO-8859-1'); }, timeoutValue);
-            timeoutValue += 50;
+            timeoutValue += 10;
         }); 
     };
 
