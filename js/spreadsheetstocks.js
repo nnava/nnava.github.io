@@ -38,14 +38,14 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
     }
 
     kendo.spreadsheet.defineFunction("yflastprice", function(callback, symbol){
-        fetchLastTradePriceOnly(symbol, function(value){
+        fetchLastTradePriceOnly(symbol, true, function(value){
             callback(value);
         });
     }).argsAsync([
         [ "symbol", "string" ]
     ]);
 
-    function fetchLastTradePriceOnly(symbol, callback) {
+    function fetchLastTradePriceOnly(symbol, retryOnce, callback) {
 
         var queryTemplate = _.template("select * from csv where url='" + historicalUrl + "?s=<%= symbol %>&f=l1' and columns='LastTradePriceOnly'");
 
@@ -55,10 +55,14 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
 
-            console.log(symbol, " calling fetchLastTradePriceOnly");
             var results = response.query.results;
             if(results == null) {
                 if(stockLastTradePriceArray[symbol]) { callback(stockLastTradePriceArray[symbol]); return; };
+
+                if(retryOnce){
+                    fetchLastTradePriceOnly(symbol, false, callback);
+                    return;
+                }
 
                 callback(0); 
                 return;
