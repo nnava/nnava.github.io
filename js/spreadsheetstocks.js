@@ -1,4 +1,4 @@
-define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdataportfolio) {
+define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoliodata, bankdataportfolio) {
 
     var spreadSheetData = [];
     var spreadSheetId;
@@ -7,6 +7,7 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
     var currencyArray = [];
     var mergedCellsArray = [];
     var stockLastTradePriceArray = [];
+    var skipRunningFunctions = false;
 
     kendo.spreadsheet.defineFunction("yfcurrencytosek", function(callback, currency){
         fetchCurrencyToSek(currency, function(value){
@@ -18,6 +19,7 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
 
     function fetchCurrencyToSek(currency, callback) {
 
+        if(skipRunningFunctions) return;
         if(currency === "SEK") { callback(1); return; };
         if(currencyArray[currency] != null) { callback(currencyArray[currency]); return; };
 
@@ -46,6 +48,8 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
     ]);
 
     function fetchLastTradePriceOnly(symbol, retryOnce, callback) {
+
+        if(skipRunningFunctions) return;
 
         var queryTemplate = _.template("select * from csv where url='" + historicalUrl + "?s=<%= symbol %>&f=l1' and columns='LastTradePriceOnly'");
 
@@ -220,7 +224,11 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
                             }
                         ]
                     }
-                ]
+                ],
+                excelExport: function(e) {
+             	    var customFileName = $(".k-spreadsheet-window").find(".k-textbox").val();
+            	    e.workbook.fileName = customFileName;
+                }
             });
 
             $(".k-button-icon > .k-i-file-excel").parent().on("click", function () {
@@ -231,9 +239,37 @@ define(['./alasqlavanza', './bankdataportfolio'], function(alasqlavanza, bankdat
 
     }
 
+    function saveSpreadsheetDataToTable() {
+        skipRunningFunctions = true;
+
+        var spreadsheet = $(spreadSheetId).data("kendoSpreadsheet");
+        var data = spreadsheet.toJSON();
+        var result = data.sheets["0"].rows;
+        var data = [];
+
+        for(var i = 1; i < result.length; i++)
+        {
+            // Skip last
+            if(i == (result.length -1)) break;
+
+            data.push({
+                Värdepapper: result[i].cells["0"].value,
+                Bransch: result[i].cells["1"].value,
+                Antal: result[i].cells["2"].value,
+                SenastePris: result[i].cells["3"].value.toFixed(2),
+                Valuta: result[i].cells["4"].value,
+                Marknadsvärde: result[i].cells["5"].value.toFixed(2)
+            });
+        }
+        
+        alasqlportfoliodata.saveDataToTable(data);
+        skipRunningFunctions = false;
+    }
+
     return {
         setSpreadsheetId: setSpreadsheetId,
         setData: setData,
-        loadSpreadSheet: loadSpreadSheet
+        loadSpreadSheet: loadSpreadSheet,
+        saveSpreadsheetDataToTable: saveSpreadsheetDataToTable
     };
 });

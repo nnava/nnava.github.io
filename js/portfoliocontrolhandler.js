@@ -16,15 +16,12 @@ define(['./spreadsheetstocks'],
         spreadsheetStocks.loadSpreadSheet();
     }
 
-    function getPortfolioData() {
-        var spreadsheet = $("#spreadsheetStocks").data("kendoSpreadsheet");
-        var data = spreadsheet.toJSON();
-
-        console.log(data);
+    function saveSpreadsheetDataToTable() {
+        spreadsheetStocks.saveSpreadsheetDataToTable();
     }
 
     return {
         loadControls: loadControls,
-        getPortfolioData: getPortfolioData
+        saveSpreadsheetDataToTable: saveSpreadsheetDataToTable
     }
 });

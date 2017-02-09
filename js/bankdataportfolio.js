@@ -5,7 +5,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         var nordnetData = alasqlnordnet.getStocksInPortfolio();
         var avanzaData = alasqlavanza.getStocksInPortfolio();
 
-        alasql('CREATE TABLE IF NOT EXISTS PortfolioData (  \
+        alasql('CREATE TABLE IF NOT EXISTS PortfolioBankData (  \
                 [Värdepapper] NVARCHAR(100), \
                 Valuta NVARCHAR(5), \
                 Bransch NVARCHAR(100), \
@@ -13,14 +13,14 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
                 Antal INT \
             );');
 
-        alasql('INSERT INTO PortfolioData SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, Antal \
+        alasql('INSERT INTO PortfolioBankData SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, Antal \
                 FROM ?', [nordnetData]);
 
-        alasql('INSERT INTO PortfolioData SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, Antal \
+        alasql('INSERT INTO PortfolioBankData SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, Antal \
                 FROM ?', [avanzaData]);
 
-        var resultPortfolio = alasql('SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, SUM(Antal) AS Antal FROM PortfolioData GROUP BY [Värdepapper], Valuta, Bransch, YahooSymbol ORDER BY [Värdepapper]');
-        alasql('TRUNCATE TABLE PortfolioData');
+        var resultPortfolio = alasql('SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, SUM(Antal) AS Antal FROM PortfolioBankData GROUP BY [Värdepapper], Valuta, Bransch, YahooSymbol ORDER BY [Värdepapper]');
+        alasql('TRUNCATE TABLE PortfolioBankData');
         return resultPortfolio;       
     }
 
