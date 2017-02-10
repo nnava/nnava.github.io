@@ -8,8 +8,6 @@ define(['./alasqlavanza'], function(alasqlavanza) {
     }
 
     function setData() {
-        if($(multiselectorId).data("kendoMultiSelect")) return;
-
         var avanzaData = alasqlavanza.getPortfolios();
         
         data = [];
@@ -21,8 +19,14 @@ define(['./alasqlavanza'], function(alasqlavanza) {
 
     function loadMultiselector() {
 
-        if($(multiselectorId).data("kendoMultiSelect")) return;
         if(data.length == 0) return;
+        var multiselect = $(multiselectorId).data("kendoMultiSelect");
+        if(multiselect) {
+            multiselect.setDataSource(data);
+            $(multiselectorId).getKendoMultiSelect().value(data);
+            saveValues();
+            return;
+        } 
 
         $('#portfolioSelector').attr("class", "row top15");
         $(multiselectorId).kendoMultiSelect({

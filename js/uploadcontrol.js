@@ -109,7 +109,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
             
             console.log(value.name);
             setTimeout(function(){ reader.readAsText(value.rawFile, 'ISO-8859-1'); }, timeoutValue);
-            timeoutValue += 10;
+            timeoutValue += 100;
         }); 
     };
 

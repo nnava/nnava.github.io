@@ -34,7 +34,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getPortfolios() {
-        return alasql('SELECT Konto FROM AvanzaPortfolio;');
+        return alasql('SELECT Konto FROM AvanzaPortfolio ORDER BY Konto');
     }
 
     function truncatePortfolioData() {

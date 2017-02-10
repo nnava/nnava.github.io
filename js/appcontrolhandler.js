@@ -33,6 +33,8 @@ define(['./chartdonutexpenses',
 
     function loadControls() {
 
+        alasql.options.cache = false;
+
         $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
         $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
         $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
