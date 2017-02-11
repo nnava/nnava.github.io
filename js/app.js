@@ -251,11 +251,11 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             });
         });
     });
-        
+
     function getChartFilename(chartId) {
         var today = new Date().toISOString().slice(0, 10);
         var chartFilename = "NOTFOUND";
-
+        
         switch(chartId) {
             case "chartDividendExpensesMonth":
                 chartFilename = "utdelningar_utgifter";
