@@ -15,10 +15,15 @@ define([], function() {
         createPortfolioDataTable();
         alasql('TRUNCATE TABLE PortfolioData');
         alasql('INSERT INTO PortfolioData SELECT [Värdepapper], Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM ?', [data]);
-    };
+    }
+
+    function getPortfolioAllocation() {
+        return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value] FROM PortfolioData ORDER BY [Värdepapper]')
+    } 
 
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
-        saveDataToTable: saveDataToTable
+        saveDataToTable: saveDataToTable,
+        getPortfolioAllocation: getPortfolioAllocation
     };
 });

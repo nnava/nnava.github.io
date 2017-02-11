@@ -471,10 +471,14 @@
                     <div class="row-fluid">
                         <div class="col-md-12">
                             <button id="btnLoadSpreadsheetPortfolio" class='k-primary k-button'>Ladda portföljöversikt</button>
-                            <button id="btnLoadPortfolioCharts" class='k-primary k-button hidden'>Ladda grafer</button>
+                            <button id="btnLoadPortfolioCharts" class='k-primary k-button'>Ladda grafer</button>
                         </div>
                         <script>
                             $("#btnLoadSpreadsheetPortfolio").kendoButton({
+                                enable: false
+                            });
+
+                            $("#btnLoadPortfolioCharts").kendoButton({
                                 enable: false
                             });
                         </script>
@@ -482,6 +486,24 @@
                     <div class="row-fluid">
                         <div class="col-md-12 top10">
                             <div id="spreadsheetStocks" style="width: 100%;"></div>
+                        </div>
+                    </div>
+
+                    <div id="chartPortfolioAllocationRow" class="row-fluid hidden">
+                        <div class="col-md-12 top15">
+                            <div class="panel panel-default">
+                                <div class="panel-heading clearfix">
+                                <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Fördelning innehav</h4>
+                                    <div class="btn-group pull-right">
+                                        <button id="btn-chartDonutPortfolioAllocationToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
+                                        <button id="btn-chartDonutPortfolioAllocationToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                        <button id="btn-chartDonutPortfolioAllocationToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="chartDonutPortfolioAllocation" style="height: 100%;"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -609,7 +631,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 63;
+            var versionNumber = 64;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

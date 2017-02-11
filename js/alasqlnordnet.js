@@ -287,7 +287,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
                             FROM NordnetData \
                             INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
-                            WHERE ([Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "TECKNING INLÄGG VP") \
+                            WHERE ([Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" OR [Transaktionstyp] = "TECKNING INLÄGG VP") \
                             GROUP BY [Värdepapper] \
                             HAVING SUM(Antal::NUMBER) > 0 \
                             ORDER BY [Värdepapper]');

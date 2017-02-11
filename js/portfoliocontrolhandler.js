@@ -1,6 +1,7 @@
-define(['./spreadsheetstocks'], 
+define(['./spreadsheetstocks', './chartdonutportfolioallocation'], 
      function(
-     spreadsheetStocks) {
+     spreadsheetStocks,
+     chartDonutPortfolioAllocation) {
 
     function loadControls() {
 
@@ -16,12 +17,21 @@ define(['./spreadsheetstocks'],
         spreadsheetStocks.loadSpreadSheet();
     }
 
+    function loadChartDonutPortfolioAllocation() {
+        $('#chartPortfolioAllocationRow').attr("class", "row-fluid");
+
+        chartDonutPortfolioAllocation.setChartId('#chartDonutPortfolioAllocation');
+        chartDonutPortfolioAllocation.setChartData();
+        chartDonutPortfolioAllocation.loadChart();
+    }
+
     function saveSpreadsheetDataToTable() {
         spreadsheetStocks.saveSpreadsheetDataToTable();
     }
 
     return {
         loadControls: loadControls,
-        saveSpreadsheetDataToTable: saveSpreadsheetDataToTable
+        saveSpreadsheetDataToTable: saveSpreadsheetDataToTable,
+        loadChartDonutPortfolioAllocation: loadChartDonutPortfolioAllocation
     }
 });

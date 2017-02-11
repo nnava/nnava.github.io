@@ -73,6 +73,14 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($("#chartCourtageYear"));
         kendo.resize($("#chartDonutDividend"));
         kendo.resize($('#chartTransactionNetYearGrowth'));
+        kendo.resize($('#chartDonutPortfolioAllocation'));        
+    });
+
+    document.getElementById('btnLoadPortfolioCharts').addEventListener('click', function() {            
+        setTimeout(function(){               
+            portfolioControlHandler.saveSpreadsheetDataToTable();
+            portfolioControlHandler.loadChartDonutPortfolioAllocation();
+        }, 1);
     });
 
     document.getElementById('btnLoadSpreadsheetPortfolio').addEventListener('click', function() {
@@ -80,6 +88,12 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         
         setTimeout(function(){               
             portfolioControlHandler.loadControls();
+
+
+            setTimeout(function(){ 
+                $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(true);
+            }, 1000);
+
         }, 1);
     });
 
@@ -237,7 +251,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             });
         });
     });
-
+        
     function getChartFilename(chartId) {
         var today = new Date().toISOString().slice(0, 10);
         var chartFilename = "NOTFOUND";
@@ -274,13 +288,16 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
                 chartFilename = "utdelningar_ackumulerad_total";
                 break;
             case "chartDividendStackedCumulative":
-                chartFilename = "utdelningar_ackumulerad_månad_värdepapper"
+                chartFilename = "utdelningar_ackumulerad_månad_värdepapper";
                 break;
             case "chartCourtageYear":
-                chartFilename = "courtage_år"
+                chartFilename = "courtage_år";
                 break;
             case "chartTransactionNetYearGrowth":
-                chartFilename = "köp_sälj_nettoinvesterat_år"
+                chartFilename = "köp_sälj_nettoinvesterat_år";
+                break;
+            case "chartDonutPortfolioAllocation":
+                chartFilename = "fördelning_innehav";
                 break;
             default:
                 chartFilename = "NOTFOUND";
