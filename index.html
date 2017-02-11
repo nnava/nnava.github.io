@@ -24,12 +24,10 @@
             }
         </script>
 
+        <script src="https://kendo.cdn.telerik.com/2017.1.118/js/jszip.min.js"></script>
         <script src="https://kendo.cdn.telerik.com/2017.1.118/js/kendo.all.min.js"></script>
         <script>
             if (typeof kendo == "undefined") {
-                // checking for loaded CSS files is cumbersome,
-                // that's why we assume that if the scripts have failed, so have the stylesheets
-
                 // fallback to local Kendo UI stylesheets
                 document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.common.min.css" %3C/%3E'));
                 document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.bootstrap.min.css" %3C/%3E'));
@@ -38,11 +36,10 @@
 
                 // fallback to local Kendo UI scripts
                 document.write(decodeURIComponent('%3Cscript src="/js/kendo.all.min.js" %3E%3C/script%3E'));
-                // also add kendo.aspnetmvc.min.js or kendo.timezones.min.js, if needed
+                document.write(decodeURIComponent('%3Cscript src="/js/jszip.min.js" %3E%3C/script%3E'));
             }
         </script>
         <script src="/js/kendo.culture.se-SE.min.js"></script>        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
         
         <script>
 
