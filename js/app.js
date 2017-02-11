@@ -34,6 +34,12 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             width: 250
         });
 
+        window.onresize = resizeObjects;
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            resizeObjects();
+        });
+
         alasqlstockdata.createStockDataTable();
         alasqlstockdata.loadDataFromFileToTable();
     });
@@ -59,7 +65,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         appCookies.createCookie('nnava_inputmonthnumbers', JSON.stringify(inputMonthNumber), 365);
     }
     
-    $(window).on("resize", function() {
+    function resizeObjects() {
         kendo.resize($("#chartYearDeposit"));
         kendo.resize($("#chartDividendYearGrowth"));
         kendo.resize($("#chartDividendYearMonth"));
@@ -75,7 +81,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($('#chartTransactionNetYearGrowth'));
         kendo.resize($('#chartDonutPortfolioAllocation'));
         kendo.resize($('#chartDonutPortfolioCurrency')); 
-    });
+    }
 
     document.getElementById('btnLoadPortfolioCharts').addEventListener('click', function() {            
         setTimeout(function(){               
