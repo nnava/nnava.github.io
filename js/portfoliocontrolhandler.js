@@ -1,9 +1,10 @@
-define(['./spreadsheetstocks', './chartdonutportfolioallocation'], 
+define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutportfoliocurrency'], 
      function(
      spreadsheetStocks,
-     chartDonutPortfolioAllocation) {
+     chartDonutPortfolioAllocation,
+     chartDonutPortfolioCurrency) {
 
-    function loadControls() {
+    function loadSpreadsheetWithProgress() {
 
         setTimeout(function(){   
             loadSpreadsheetStocks();
@@ -17,12 +18,23 @@ define(['./spreadsheetstocks', './chartdonutportfolioallocation'],
         spreadsheetStocks.loadSpreadSheet();
     }
 
-    function loadChartDonutPortfolioAllocation() {
-        $('#chartPortfolioAllocationRow').attr("class", "row-fluid");
-
+    function loadChartDonutPortfolioAllocation() {       
         chartDonutPortfolioAllocation.setChartId('#chartDonutPortfolioAllocation');
         chartDonutPortfolioAllocation.setChartData();
         chartDonutPortfolioAllocation.loadChart();
+    }
+
+    function loadChartDonutPortfolioCurrency() {       
+        chartDonutPortfolioCurrency.setChartId('#chartDonutPortfolioCurrency');
+        chartDonutPortfolioCurrency.setChartData();
+        chartDonutPortfolioCurrency.loadChart();
+    }
+
+    function loadCharts() {
+        $('#chartPortfolioContent').attr("class", "");
+        
+        loadChartDonutPortfolioAllocation();
+        loadChartDonutPortfolioCurrency();
     }
 
     function saveSpreadsheetDataToTable() {
@@ -30,8 +42,8 @@ define(['./spreadsheetstocks', './chartdonutportfolioallocation'],
     }
 
     return {
-        loadControls: loadControls,
+        loadSpreadsheetWithProgress: loadSpreadsheetWithProgress,
         saveSpreadsheetDataToTable: saveSpreadsheetDataToTable,
-        loadChartDonutPortfolioAllocation: loadChartDonutPortfolioAllocation
+        loadCharts: loadCharts
     }
 });

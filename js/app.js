@@ -73,13 +73,14 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($("#chartCourtageYear"));
         kendo.resize($("#chartDonutDividend"));
         kendo.resize($('#chartTransactionNetYearGrowth'));
-        kendo.resize($('#chartDonutPortfolioAllocation'));        
+        kendo.resize($('#chartDonutPortfolioAllocation'));
+        kendo.resize($('#chartDonutPortfolioCurrency')); 
     });
 
     document.getElementById('btnLoadPortfolioCharts').addEventListener('click', function() {            
         setTimeout(function(){               
             portfolioControlHandler.saveSpreadsheetDataToTable();
-            portfolioControlHandler.loadChartDonutPortfolioAllocation();
+            portfolioControlHandler.loadCharts();
         }, 1);
     });
 
@@ -87,8 +88,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.ui.progress($(document.body), true);
         
         setTimeout(function(){               
-            portfolioControlHandler.loadControls();
-
+            portfolioControlHandler.loadSpreadsheetWithProgress();
 
             setTimeout(function(){ 
                 $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(true);
@@ -297,8 +297,11 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
                 chartFilename = "köp_sälj_nettoinvesterat_år";
                 break;
             case "chartDonutPortfolioAllocation":
-                chartFilename = "fördelning_innehav";
+                chartFilename = "portföljöversikt_fördelning_innehav";
                 break;
+            case "chartDonutPortfolioCurrency":
+                chartFilename = "portföljöversikt_fördelning_valuta";
+                break;                
             default:
                 chartFilename = "NOTFOUND";
         }

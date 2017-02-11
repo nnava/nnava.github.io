@@ -19,11 +19,16 @@ define([], function() {
 
     function getPortfolioAllocation() {
         return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value] FROM PortfolioData ORDER BY [Värdepapper]')
-    } 
+    }
+
+    function getPortfolioCurrency() {
+        return alasql('SELECT [Valuta] AS [name], SUM([Marknadsvärde]) AS [value] FROM PortfolioData GROUP BY [Valuta] ORDER BY [Valuta]')
+    }  
 
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
         saveDataToTable: saveDataToTable,
-        getPortfolioAllocation: getPortfolioAllocation
+        getPortfolioAllocation: getPortfolioAllocation,
+        getPortfolioCurrency: getPortfolioCurrency
     };
 });

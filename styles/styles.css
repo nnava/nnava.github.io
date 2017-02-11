@@ -51,12 +51,12 @@ footer {
 }
 @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ 
     .panel-body {
-        height: calc(100vh - 140px);
+        height: calc(100vh - 80px);
     }
 }
 @media (min-width:1281px) { /* hi-res laptops and desktops */
     .panel-body {
-        height: calc(100vh - 140px);
+        height: calc(100vh - 80px);
     }
 }
 
