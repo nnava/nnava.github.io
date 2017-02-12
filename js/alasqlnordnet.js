@@ -287,7 +287,9 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
                             FROM NordnetData \
                             INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
-                            WHERE ([Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" OR [Transaktionstyp] = "TECKNING INLÄGG VP") \
+                            WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
+                            OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" \
+                            OR [Transaktionstyp] = "TECKNING INLÄGG VP") \
                             GROUP BY [Värdepapper] \
                             HAVING SUM(Antal::NUMBER) > 0 \
                             ORDER BY [Värdepapper]');
@@ -301,7 +303,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             // Hämta minusposter
             var resultMinusPosts = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
                                            FROM NordnetData \
-                                           WHERE [Värdepapper] = "' + object.Värdepapper + '" AND ([Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "TECKNING UTTAG VP")');
+                                           WHERE [Värdepapper] = "' + object.Värdepapper + '" AND ([Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "TECKNING UTTAG VP")');
             
             var antalAfterMinus = (object.Antal - resultMinusPosts);
             if(antalAfterMinus <= 0) return;
