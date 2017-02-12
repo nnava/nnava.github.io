@@ -1,8 +1,9 @@
-define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutportfoliocurrency'], 
+define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutportfoliocurrency', './treemapportfoliocurrency'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
-     chartDonutPortfolioCurrency) {
+     chartDonutPortfolioCurrency,
+     treeMapPortfolioCurrency) {
 
     function loadSpreadsheetWithProgress() {
 
@@ -30,11 +31,18 @@ define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutp
         chartDonutPortfolioCurrency.loadChart();
     }
 
+    function loadTreeMapPortfolioCurrency() {
+        treeMapPortfolioCurrency.setChartId('#treeMapPortfolioCurrency');
+        treeMapPortfolioCurrency.setChartData();
+        treeMapPortfolioCurrency.loadChart();
+    }
+
     function loadCharts() {
         $('#chartPortfolioContent').attr("class", "");
         
         loadChartDonutPortfolioAllocation();
         loadChartDonutPortfolioCurrency();
+        loadTreeMapPortfolioCurrency();
     }
 
     function saveSpreadsheetDataToTable() {

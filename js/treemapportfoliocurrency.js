@@ -1,45 +1,48 @@
-define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
+define(['./alasqlportfoliodata', './colors'], function(alasqlportfoliodata, colors) {
 
     var chartData;
     var totalBelopp;
+    var colorArray = colors.getColorArray();
     var chartId;
-    var selectedYear = 0;
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData(year) {
+    function setChartData() {
+        var resultCurrency = alasqlportfoliodata.getPortfolioCurrency();
 
-        selectedYear = year;
+        var data = [];
+        totalBelopp = 0;
+        resultCurrency.forEach(function(object) {
+            if (object == null) return; 
+            if (object.name == null) return;
 
-        var isTaxChecked = $('#checkboxTax').is(":checked");
+            totalBelopp += parseInt(object.value);
 
-        var resultNordnetTotal = alasqlnordnet.getTotalDividend(year, isTaxChecked);
-        var resultAvanzaTotal = alasqlavanza.getTotalDividend(year, isTaxChecked);
+            var currencyItems = alasqlportfoliodata.getPortfolioCurrencyStocks(object.name);
+            data.push( {
+                name: object.name + ' totalt: ' + kendo.toString(parseInt(object.value), "#,0 kr"),
+                value: object.value,
+                items: currencyItems
+            })
+        });
 
-        totalBelopp = resultNordnetTotal + resultAvanzaTotal;
-
-        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year, isTaxChecked);
-        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(year, isTaxChecked);
-
-        var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + kendo.toString(resultAvanzaTotal, "#,0 kr"), value: resultAvanzaTotal, items: resultAvanzaDividend }]
-        var nordnetDividendDataItems = [ { name: 'Nordnet totalt: ' + kendo.toString(resultNordnetTotal, "#,0 kr"), value: resultNordnetTotal, items: resultNordnetDividend }]
-
-        chartData = avanzaDividendDataItems.concat(nordnetDividendDataItems);
+        chartData = data;
     }
 
     function loadChart() {
         $(chartId).kendoTreeMap({
             dataSource: {
                 data: [{
-                    name: 'Utdelningar år ' + selectedYear + ' - totalt: ' + kendo.toString(Math.round(totalBelopp), "#,0 kr"),
+                    name: 'Fördelning valuta - totalt: ' + kendo.toString(totalBelopp, "#,0 kr"),
                     value: totalBelopp,
                     items: chartData
                 }]
             },
             valueField: "value",
             textField: "name",
+            colors: colorArray,
             theme: "bootstrap"
         });
 

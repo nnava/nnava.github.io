@@ -72,6 +72,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($("#chartDividendExpensesMonth"));
         kendo.resize($("#chartDonutDividendTotal"));
         kendo.resize($("#treeMapDividend"));
+        kendo.resize($("#treeMapPortfolioCurrency"));        
         kendo.resize($("#chartTransactionBuyLine"));
         kendo.resize($("#chartTransactionSellLine"));
         kendo.resize($("#chartDividendCumulative"));
@@ -277,6 +278,9 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
                 break;
             case "treeMapDividend":
                 chartFilename = "treemap_utd_år";
+                break;
+            case "treeMapPortfolioCurrency":
+                chartFilename = "portföljöversikt_treemap_fördelning_valuta";
                 break;
             case "chartDonutDividend":
                 chartFilename = "donut_utd_år";

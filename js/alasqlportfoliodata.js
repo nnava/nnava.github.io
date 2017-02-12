@@ -3,10 +3,10 @@ define([], function() {
     function createPortfolioDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS PortfolioData (  \
                 [Värdepapper] STRING, \
-                Bransch STRING,\
+                Bransch STRING, \
                 Antal INT, \
                 SenastePris DECIMAL, \
-                Valuta STRING,\
+                Valuta STRING, \
                 [Marknadsvärde] DECIMAL); \
         ');
     }
@@ -22,13 +22,23 @@ define([], function() {
     }
 
     function getPortfolioCurrency() {
-        return alasql('SELECT [Valuta] AS [name], SUM([Marknadsvärde]) AS [value] FROM PortfolioData GROUP BY [Valuta] ORDER BY [Valuta]')
-    }  
+        return alasql('SELECT Valuta AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData GROUP BY Valuta ORDER BY Valuta')
+    }
+
+    function getPortfolioCurrencyStocks(currency) {
+        return alasql('SELECT [Värdepapper] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData WHERE Valuta = "' + currency + '" GROUP BY [Värdepapper] ORDER BY [Värdepapper]')
+    }
+
+    function getPortfolioIndustry() {
+        return alasql('SELECT [Bransch] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData GROUP BY [Bransch] ORDER BY [Bransch]')
+    }
 
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
         saveDataToTable: saveDataToTable,
         getPortfolioAllocation: getPortfolioAllocation,
-        getPortfolioCurrency: getPortfolioCurrency
+        getPortfolioCurrency: getPortfolioCurrency,
+        getPortfolioIndustry: getPortfolioIndustry,
+        getPortfolioCurrencyStocks: getPortfolioCurrencyStocks
     };
 });
