@@ -40,14 +40,14 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
     }
 
     kendo.spreadsheet.defineFunction("yflastprice", function(callback, symbol){
-        fetchLastTradePriceOnly(symbol, true, function(value){
+        fetchLastTradePriceOnly(symbol, 0, function(value){
             callback(value);
         });
     }).argsAsync([
         [ "symbol", "string" ]
     ]);
 
-    function fetchLastTradePriceOnly(symbol, retryOnce, callback) {
+    function fetchLastTradePriceOnly(symbol, retryNumber, callback) {
 
         if(skipRunningFunctions) return;
 
@@ -63,8 +63,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
             if(results == null) {
                 if(stockLastTradePriceArray[symbol]) { callback(stockLastTradePriceArray[symbol]); return; };
 
-                if(retryOnce){
-                    fetchLastTradePriceOnly(symbol, false, callback);
+                if(retryNumber < 4){
+                    retryNumber++;
+                    fetchLastTradePriceOnly(symbol, retryNumber, callback);
                     return;
                 }
 
