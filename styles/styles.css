@@ -83,3 +83,9 @@ span.k-loading-text
 .k-spreadsheet-sheets-bar .k-spreadsheet-sheets-remove{
   margin-left: -.5em;
 }
+
+.panel-container {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    height:35px;
+}

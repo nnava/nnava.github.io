@@ -87,6 +87,9 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         setTimeout(function(){               
             portfolioControlHandler.saveSpreadsheetDataToTable();
             portfolioControlHandler.loadCharts();
+
+            var panelChartDonutPortfolioAllocation = $('#panelChartDonutPortfolioAllocation').offset();
+            $('html, body').animate({scrollTop: panelChartDonutPortfolioAllocation.top}, "slow");
         }, 1);
     });
 
