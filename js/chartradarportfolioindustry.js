@@ -3,6 +3,7 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
     var chartData;
     var chartId;
     var colorArray = colors.getColorArray();
+    var categoryArray = [];
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -12,17 +13,20 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
         var result = alasqlportfoliodata.getPortfolioIndustry();
 
         var data = [];
+        categoryArray = [];
         result.forEach(function(entry) {
             if(entry == null) return;
             if(entry.name == null) return;
 
-            data.push({ 
-                "category": entry.name,
-                "value": parseInt(entry.value)
-            });
+            categoryArray.push(entry.name);
+            data.push(parseInt(entry.value));
         });
 
-        chartData = data;
+        chartData = [];
+        chartData.push({
+            name: "Fördelning bransch",
+            data: data
+        })
     }
 
     function loadChart() {
@@ -30,30 +34,24 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
             plotArea: {
                 background: ""
             },
-            title: {
-                text: "Fördelning bransch"
-            },
             legend: {
-                visible: false
+                position: "bottom"
             },
             seriesDefaults: {
-                neckRatio: 5,
-                labels: {
-                    template: "#= category # - #= kendo.format('{0:P}', percentage) #",
-                    visible: true,
-                    background: "transparent",
-                    color: "white"
-                },
-                dynamicSlope: false,
-                dynamicHeight: true
+                type: "radarLine"
             },
-            seriesColors: colorArray,
-            series: [{
-                type: "funnel",
-                data: chartData
-            }],
+            series: chartData,
+            categoryAxis: {
+                categories: categoryArray
+            },
+            valueAxis: {
+                labels: {
+                    format: "#,0 kr"
+                }
+            },
             tooltip: {
-                visible: false
+                visible: true,
+                format: "#,0 kr"
             },
             theme: "bootstrap"
         });
