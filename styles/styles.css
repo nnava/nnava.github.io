@@ -89,3 +89,7 @@ span.k-loading-text
     padding-left: 0 !important;
     height:35px;
 }
+
+.km-buttongroup .k-button.km-state-active {
+    background-color: #428bca;
+}
