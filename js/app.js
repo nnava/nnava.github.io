@@ -82,6 +82,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($('#chartTransactionNetYearGrowth'));
         kendo.resize($('#chartDonutPortfolioAllocation'));
         kendo.resize($('#chartDonutPortfolioCurrency')); 
+        kendo.resize($('#chartFunnelPortfolioIndustry'));
     }
 
     document.getElementById('btnLoadPortfolioCharts').addEventListener('click', function() {            
@@ -314,7 +315,10 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
                 break;
             case "chartDonutPortfolioCurrency":
                 chartFilename = "portföljöversikt_fördelning_valuta";
-                break;                
+                break;  
+            case "chartFunnelPortfolioIndustry":
+                chartFilename = "portföljöversikt_fördelning_bransch";
+                break;                              
             default:
                 chartFilename = "NOTFOUND";
         }

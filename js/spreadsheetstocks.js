@@ -253,9 +253,13 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
             // Skip last
             if(i == (result.length -1)) break;
 
+            var bransch = result[i].cells["1"].value;
+            if(bransch.length == 0)
+                bransch = "Övrigt";
+
             data.push({
                 Värdepapper: result[i].cells["0"].value,
-                Bransch: result[i].cells["1"].value,
+                Bransch: bransch,
                 Antal: result[i].cells["2"].value,
                 SenastePris: result[i].cells["3"].value.toFixed(2),
                 Valuta: result[i].cells["4"].value,

@@ -571,6 +571,24 @@
                             </div>
                         </div>
 
+                        <div class="row-fluid">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading clearfix">
+                                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Fördelning bransch</h4>
+                                        <div class="btn-group pull-right">
+                                            <button id="btn-chartFunnelPortfolioIndustryToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
+                                            <button id="btn-chartFunnelPortfolioIndustryToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                            <button id="btn-chartFunnelPortfolioIndustryToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="chartFunnelPortfolioIndustry" style="height: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -698,7 +716,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 74;
+            var versionNumber = 75;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

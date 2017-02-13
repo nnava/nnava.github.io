@@ -294,11 +294,15 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                             HAVING SUM(Antal::NUMBER) > 0 \
                             ORDER BY [Värdepapper]');
 
+                            console.log(result);
+
         var resultForReturn = [];
         result.forEach(function(object) {
             if(object == null) return;
             if(object.Antal == null) return;
             if(Number.isInteger(object.Antal) == false) return;
+
+            console.log(object);
 
             // Hämta minusposter
             var resultMinusPosts = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
@@ -307,7 +311,9 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                                            AND ([Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" \
                                            OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP")');
 
-            var antalAfterMinus = (object.Antal - resultMinusPosts);
+            console.log(resultMinusPosts);
+
+            var antalAfterMinus = object.Antal - resultMinusPosts;
             if(antalAfterMinus <= 0) return;
 
             var newObject = new Object();
