@@ -303,7 +303,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             // Hämta minusposter
             var resultMinusPosts = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
                                            FROM NordnetData \
-                                           WHERE [Värdepapper] = "' + object.Värdepapper + '" AND ([Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "TECKNING UTTAG VP")');
+                                           WHERE [Värdepapper] = "' + object.Värdepapper + '" AND ([Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP")');
             
             var antalAfterMinus = (object.Antal - resultMinusPosts);
             if(antalAfterMinus <= 0) return;
