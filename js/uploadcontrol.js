@@ -1,4 +1,5 @@
-define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet'], function(Papa, appControlHandler, alasqlavanza, alasqlnordnet) {
+define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet', './alasqlbankdataexception'], 
+    function(Papa, appControlHandler, alasqlavanza, alasqlnordnet, alasqlbankdataexception) {
   
     var controlId;
 
@@ -103,6 +104,8 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('INSERT INTO NordnetData \
                     SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext FROM ?', [nordnetData]);
                 }
+
+                alasqlbankdataexception.deleteAvanzaRowsToSkip();
 
                 console.log('done', index);
             }
