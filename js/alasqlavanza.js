@@ -431,11 +431,11 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                             FROM AvanzaData \
                             INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                             INNER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
-                            WHERE ISIN != "-" AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" AND [Värdepapperbeskrivning] != "Utländsk källskatt" \
+                            WHERE ISIN != "-" AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" AND [Typ av transaktion] != "Utdelning. rättelse" AND [Värdepapperbeskrivning] != "Utländsk källskatt" \
                             GROUP BY [Värdepapperbeskrivning] \
                             HAVING SUM(Antal::NUMBER) > 0 \
                             ORDER BY [Värdepapperbeskrivning]');
-        
+
         var resultForReturn = [];
         result.forEach(function(object) {
             if(object == null) return;
