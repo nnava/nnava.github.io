@@ -29,7 +29,10 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
         var datasetValue = [];
         var addedYear = [];        
         var yearWithMonthValues = [];
-        
+        var spacingValue = parseFloat(0.3, 10);
+        if(resultYear.length > 4) 
+            spacingValue = parseFloat(0.8, 10);
+
         resultYear.forEach(function(entry) {
 
             if (entry.Year == null) { return; }
@@ -59,10 +62,10 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
             }
 
             yearWithMonthValues.push({
-                    name: year,
-                    data: monthDataValues,
-                    gap: parseFloat(0.4, 10),
-                    spacing: parseFloat(0.3, 10)
+                name: year,
+                data: monthDataValues,
+                gap: parseFloat(0.3, 10),
+                spacing: spacingValue
             });
 
         });
@@ -72,7 +75,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
 
     function loadChart() {
         var rotation = 0;
-        if(chartData.length > 4) rotation = 310;
+        if(chartData.length > 4) rotation = 270;
         
         $(chartId).kendoChart({
             title: {
