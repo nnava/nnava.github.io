@@ -106,6 +106,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 }
 
                 alasqlbankdataexception.deleteAvanzaRowsToSkip();
+                alasqlbankdataexception.addAvanzaRowsForDividend();
 
                 console.log('done', index);
             }
