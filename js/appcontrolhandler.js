@@ -46,21 +46,19 @@ define(['./chartdonutexpenses',
         loadDropdownDividendYear();
         loadDropdownDonutDividendSort();              
         loadChartDividendStackedCumulative();
-          
+        loadChartDividendExpenses();
+        loadChartDividendYearGrowth(); 
+        loadChartDonutExpenses();
+       
         kendo.ui.progress($(document.body), false);
 
-        loadChartDividendExpenses();
-
-        setTimeout(function(){  
-            loadChartDividendYearGrowth(); 
-            loadChartDonutExpenses();
-        }, 100);
-
+        initChartSettingButtonGroups();
+        
         setTimeout(function(){   
             loadChartDividendYearMonth();
             loadChartDividendCumulative();  
             loadChartDonutDividend(); 
-        }, 500);
+        }, 100);
 
         setTimeout(function(){ 
             loadChartDividendTreemap();
@@ -212,6 +210,39 @@ define(['./chartdonutexpenses',
         chartDividendExpenses.setChartData();
         chartDividendExpenses.loadChart();
     };
+
+    function initChartSettingButtonGroups() {
+        initChartDividendExpensesMonthSettingBtnGroup();
+        initChartDividendYearMonthSettingBtnGroup();
+    }
+
+    function initChartDividendExpensesMonthSettingBtnGroup() {
+        $("#chartDividendExpensesMonthSettingBtnGroup").kendoMobileButtonGroup({
+            select: function(e) {
+                var seriesDefaultType = "column";
+                // This is purely ugly but since only using image...
+                if(e.index === 1)
+                    seriesDefaultType = "bar";
+                    
+                chartDividendExpenses.updateChartOptions(seriesDefaultType);
+            },
+            index: 0
+        });
+    }
+
+    function initChartDividendYearMonthSettingBtnGroup() {
+        $("#chartDividendYearMonthSettingBtnGroup").kendoMobileButtonGroup({
+            select: function(e) {
+                var seriesDefaultType = "column";
+                // This is purely ugly but since only using image...
+                if(e.index === 1)
+                    seriesDefaultType = "bar";
+                    
+                chartDividendYearMonth.updateChartOptions(seriesDefaultType);
+            },
+            index: 0
+        });
+    }
 
     return {
         loadControls: loadControls,

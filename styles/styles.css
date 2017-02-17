@@ -93,3 +93,8 @@ span.k-loading-text
 .km-buttongroup .k-button.km-state-active {
     background-color: #428bca;
 }
+
+.col-xs-4, .col-xs-5 {
+    padding-left: 0px;
+    padding-right: 0px;
+}

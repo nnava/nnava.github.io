@@ -126,9 +126,35 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
         });
     }
 
+    function updateChartOptions(type) {
+        var rotation = 0;
+        if(chartData.length > 4 && type === "column") rotation = 270;
+
+        var chart = $(chartId).data("kendoChart");
+        chart.setOptions({
+            seriesDefaults: {
+                type: type,
+                labels: {
+                    visible: function(e) {
+                        if(e.value < 1) {
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    },
+                    rotation: rotation,
+                    format: "#,0 kr",
+                    background: "none"
+                }
+            }
+        });
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        updateChartOptions: updateChartOptions
     };
 });

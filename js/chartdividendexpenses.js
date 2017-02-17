@@ -151,9 +151,25 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
             return kendo.toString(value, 'n0');
     }
 
+    function updateChartOptions(type) {
+        var chart = $(chartId).data("kendoChart");
+        chart.setOptions({
+            seriesDefaults: {
+                type: type,
+                stack: true,
+                labels: {
+                    visible: true,
+                    background: "transparent",
+                    template: "#= chartDividendExpensesSerieLabels(value) #"
+                }
+            }
+        });
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        updateChartOptions: updateChartOptions
     };
 });
