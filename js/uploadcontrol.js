@@ -83,8 +83,12 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 if(reader.error != null)
                     console.log(reader.error.message);
 
-                if((index +1) == fileArrayLength) {        
-                    appControlHandler.loadControls();                    
+                if((index +1) == fileArrayLength) { 
+
+                    alasqlbankdataexception.deleteAvanzaRowsToSkip();
+                    alasqlbankdataexception.addAvanzaRowsForDividend();
+
+                    setTimeout(function(){  appControlHandler.loadControls(); }, 10);                                       
                 }
             }
  
@@ -104,9 +108,6 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('INSERT INTO NordnetData \
                     SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext FROM ?', [nordnetData]);
                 }
-
-                alasqlbankdataexception.deleteAvanzaRowsToSkip();
-                alasqlbankdataexception.addAvanzaRowsForDividend();
 
                 console.log('done', index);
             }
