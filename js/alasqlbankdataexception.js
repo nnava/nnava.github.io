@@ -52,8 +52,53 @@ define([], function() {
                 WHERE [Värdepapperbeskrivning] = "KINV IL B" AND [Typ av transaktion] = "Sälj"');
     }
 
+    function addNordnetRowsForDividend() {
+
+        // NetEnt SE0008212971
+        alasql('INSERT INTO NordnetData \
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0008212971" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "NET B" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "NET IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        // Creades SE0004390516
+        alasql('INSERT INTO NordnetData \
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0004390516" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "CRED A" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "CRED IL A" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        // Sectra SE0008613970
+        alasql('INSERT INTO NordnetData \
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0008613970" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "SECT B" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "SECT IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        // Betsson SE0008242358
+        alasql('INSERT INTO NordnetData \
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0008242358" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "BETS B" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "BETS IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        // Kinnevik SE0000164626
+        alasql('INSERT INTO NordnetData \
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0000164626" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "KINV B" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "KINV IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+
+        alasql('DELETE FROM AvanzaData \
+                WHERE [Värdepapper] = "NET IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        alasql('DELETE FROM AvanzaData \
+                WHERE [Värdepapper] = "CRED IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        alasql('DELETE FROM AvanzaData \
+                WHERE [Värdepapper] = "SECT IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        alasql('DELETE FROM AvanzaData \
+                WHERE [Värdepapper] = "BETS IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+
+        alasql('DELETE FROM AvanzaData \
+                WHERE [Värdepapper] = "KINV IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+    }
+
     return {
         deleteAvanzaRowsToSkip: deleteAvanzaRowsToSkip,
-        addAvanzaRowsForDividend: addAvanzaRowsForDividend
+        addAvanzaRowsForDividend: addAvanzaRowsForDividend,
+        addNordnetRowsForDividend: addNordnetRowsForDividend
     };
 });
