@@ -60,8 +60,9 @@ define([], function() {
                 WHERE [Värdepapper] = "NET IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
 
         // Creades SE0004390516
-        console.log(alasql('SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0004390516" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "CRED A" AS [Värdepapper], Transaktionstext FROM NordnetData \
-                WHERE [Värdepapper] = "CRED IL A" AND Transaktionstyp = "INLÖSEN LIKVID"'));
+        alasql('INSERT INTO NordnetData \
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0004390516" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "CRED A" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "CRED IL A" AND Transaktionstyp = "INLÖSEN LIKVID"');
 
         // Sectra SE0008613970
         alasql('INSERT INTO NordnetData \
