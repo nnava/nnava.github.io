@@ -309,6 +309,9 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                                            AND ([Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" \
                                            OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP")');
 
+            console.log("Antal +", object.Antal);
+            console.log("Antal -", resultMinusPosts);
+
             var antalAfterMinus = object.Antal - resultMinusPosts;
             if(antalAfterMinus <= 0) return;
 
