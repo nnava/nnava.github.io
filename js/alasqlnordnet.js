@@ -2,6 +2,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     
     function createDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS NordnetData (  \
+                [Id] INT, \
                 [Affärsdag] DATE, \
                 Antal DECIMAL, \
                 Avgifter NVARCHAR(50), \
@@ -15,7 +16,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 Transaktionstyp NVARCHAR(100), \
                 Valuta NVARCHAR(10), \
                 [Värdepapper] NVARCHAR(100), \
-                [Transaktionstext] NVARCHAR(100)); \
+                [Transaktionstext] NVARCHAR(100), \
+                [Totalt antal] INT); \
                 \
                 CREATE INDEX AffarsdagIndex ON NordnetData([Affärsdag]); \
                 CREATE INDEX TransaktionstextIndex ON NordnetData([Transaktionstext]); \
@@ -284,37 +286,25 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getStocksInPortfolio() {
-        var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
+        var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST([Totalt antal]) AS Antal \
                             FROM NordnetData \
                             INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
                             WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
                             OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" \
-                            OR [Transaktionstyp] = "TECKNING INLÄGG VP") \
+                            OR [Transaktionstyp] = "TECKNING INLÄGG VP" OR [Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" \
+                            OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP") \
+                            AND [Värdepapper] NOT LIKE "%TILLDELNING" \
                             GROUP BY [Värdepapper] \
-                            HAVING SUM(Antal::NUMBER) > 0 \
-                            ORDER BY [Värdepapper]');
-
-        console.log(result);
+                            ORDER BY [Id] DESC');
 
         var resultForReturn = [];
         result.forEach(function(object) {
             if(object == null) return;
-            if(object.Antal == null) return;
-            if(Number.isInteger(object.Antal) == false) return;
+            var antal = object.Antal;
+            if(antal == null) return;
+            if(antal <= 0) return;
 
-            // Hämta minusposter
-            var resultMinusPosts = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
-                                           FROM NordnetData \
-                                           WHERE [ISIN] = "' + object.ISIN + '" \
-                                           AND ([Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" \
-                                           OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP")');
-
-            console.log(object.Värdepapper);
-            console.log("Antal +", object.Antal);
-            console.log("Antal -", resultMinusPosts);
-
-            var antalAfterMinus = object.Antal - resultMinusPosts;
-            if(antalAfterMinus <= 0) return;
+            console.log(object.Värdepapper, antal);
 
             var newObject = new Object();
 
@@ -324,14 +314,14 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 värdepapperNamn = värdepapperNamnStockData[0].namn;
 
             newObject.Värdepapper = värdepapperNamn;
-            newObject.Antal = antalAfterMinus;
+            newObject.Antal = antal;
             newObject.YahooSymbol = object.YahooSymbol;
             newObject.Bransch = object.Bransch;
             newObject.Valuta = object.Handlas;
 
             resultForReturn.push(newObject);
         });
-        
+
         return resultForReturn;
     }
 
