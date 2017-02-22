@@ -17,7 +17,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 Valuta NVARCHAR(10), \
                 [Värdepapper] NVARCHAR(100), \
                 [Transaktionstext] NVARCHAR(100), \
-                [Totalt antal] INT); \
+                [Totalt antal] NVARCHAR(50)); \
                 \
                 CREATE INDEX AffarsdagIndex ON NordnetData([Affärsdag]); \
                 CREATE INDEX TransaktionstextIndex ON NordnetData([Transaktionstext]); \
@@ -303,7 +303,9 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             var antal = object.Antal;
             if(antal == null) return;
             if(antal <= 0) return;
-
+            antal = parseInt(antal);
+            if(antal <= 0) return;
+            
             console.log(object.Värdepapper, antal);
 
             var newObject = new Object();

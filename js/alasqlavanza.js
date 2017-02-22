@@ -443,7 +443,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
             var newObject = new Object();
             newObject.Värdepapper = object.Värdepapper;
-            newObject.Antal = object.Antal;
+            newObject.Antal = parseInt(object.Antal);
             newObject.YahooSymbol = object.YahooSymbol;
             newObject.Bransch = object.Bransch;
             newObject.Valuta = object.Handlas;
