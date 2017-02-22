@@ -286,7 +286,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getStocksInPortfolio() {
-        var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST([Totalt antal]) AS Antal \
+        var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST(REPLACE([Totalt antal], " ", "")) AS Antal \
                             FROM NordnetData \
                             INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
                             WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
