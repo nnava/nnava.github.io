@@ -290,7 +290,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT FIRST([Id]) AS [Id], FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST(REPLACE([Totalt antal], " ", "")) AS Antal \
                             FROM NordnetData \
                             INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
-                            WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktiontyp] = "UTTAG VP RESULTAT" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
+                            WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "UTTAG VP RESULTAT" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
                             OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" \
                             OR [Transaktionstyp] = "TECKNING INLÄGG VP" OR [Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" \
                             OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP") \
