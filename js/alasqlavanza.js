@@ -202,17 +202,17 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE Year = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse")');
     }
 
-    function getVärdepapperDividend(year, month, isin, addTaxToSum) {
+    function getVärdepapperDividend(year, month, addTaxToSum) {
 
         var taxSqlWhere = '';
         if(addTaxToSum)
             taxSqlWhere = ' OR [Typ av transaktion] = "Utländsk källskatt 15%" OR [Typ av transaktion] = "Utländsk källskatt 27%"';
 
-        var resultQuery = alasql.compile('SELECT FIRST(ISIN) AS [ISIN], SUM(Belopp::NUMBER) AS [value] \
+        var resultQuery = alasql.compile('SELECT FIRST([ISIN]) AS [ISIN], SUM(Belopp::NUMBER) AS [Belopp] \
                        FROM AvanzaData \
                        JOIN AvanzaPortfolio USING Konto, Konto \
-                       WHERE Year = ' + year + ' AND Month = ' + month + ' AND [ISIN] = "' + isin + '" \
-                       AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning, rättelse"' + taxSqlWhere + ') \
+                       WHERE Year = ' + year + ' AND Month = ' + month + '\
+                       AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse"' + taxSqlWhere + ') \
                        GROUP BY ISIN');
 
         var result = resultQuery();
@@ -227,13 +227,12 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
             var resultNameQuery = alasql.compile('SELECT DISTINCT [Värdepapperbeskrivning] \
                        FROM AvanzaData \
-                       JOIN AvanzaPortfolio USING Konto, Konto \
                        WHERE [ISIN] = "' + object.ISIN + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
 
             var resultName = resultNameQuery();
 
-            newVardepapperObject.name = resultName["0"].Värdepapperbeskrivning;
-            newVardepapperObject.value = object.value;
+            newVardepapperObject.Värdepapper = resultName["0"].Värdepapperbeskrivning;
+            newVardepapperObject.Belopp = object.Belopp;
 
             resultForReturn.push(newVardepapperObject);
         });

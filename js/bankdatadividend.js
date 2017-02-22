@@ -55,46 +55,53 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
     }
     
     function getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked) {
+        
+        var monthNumber = 11;
+        alasql('CREATE TABLE IF NOT EXISTS DivStackedCumulativeVardepapperValues \
+        ([Värdepapper] NVARCHAR(100), Month INT, Belopp DECIMAL);');
+        alasql('TRUNCATE TABLE DivStackedCumulativeVardepapperValues');
+        
+        for(var i=0; i <= monthNumber; i++)
+        {
+            var month = i + 1;
+
+            var resultAvanza = alasqlavanza.getVärdepapperDividend(year, month, isTaxChecked);
+            var resultNordnet = alasqlnordnet.getVärdepapperDividend(year,month, isTaxChecked);
+
+            resultVärdepapper.forEach(function(entry) {
+                if (entry.Vardepapper == null) { return; }
+                var värdepapper = entry.Vardepapper;
+                var isin = entry.ISIN;
+
+                var avanzaVärdepapperValueForMonth = alasql('SELECT VALUE Belopp FROM ? WHERE [Värdepapper] = "' + värdepapper + '"', [resultAvanza]);
+                var nordnetVärdepapperValueForMonth = alasql('SELECT VALUE Belopp FROM ? WHERE [ISIN] = "' + isin + '"', [resultNordnet]);
+                if(isNaN(avanzaVärdepapperValueForMonth))
+                    avanzaVärdepapperValueForMonth = 0;
+
+                if(isNaN(nordnetVärdepapperValueForMonth))
+                    nordnetVärdepapperValueForMonth = 0;
+
+                var total = avanzaVärdepapperValueForMonth + nordnetVärdepapperValueForMonth;
+
+                alasql('INSERT INTO DivStackedCumulativeVardepapperValues VALUES ("' + värdepapper + '", ' + month + ', ' + total + ')');
+            });
+        }
+
         var värdepapperDividendDataValues = [];
         resultVärdepapper.forEach(function(entry) {
             if (entry.Vardepapper == null) { return; }
             var värdepapper = entry.Vardepapper;
             var isin = entry.ISIN;
 
-            var monthNumber = 11;
-            var monthDividendDataValues = [];
-            for(var i=0; i <= monthNumber; i++)
-            {
-                var month = i + 1;
-
-                var resultAvanza = alasqlavanza.getVärdepapperDividend(year, month, isin, isTaxChecked);
-                var resultNordnet = alasqlnordnet.getVärdepapperDividend(year, month, isin, isTaxChecked);
-
-                var nordnetBelopp = resultNordnet[0].value;
-                if(isNaN(nordnetBelopp))
-                    nordnetBelopp = 0;
-
-                var avanzaBelopp = 0;
-                if(resultAvanza.length != 0)
-                    avanzaBelopp = resultAvanza[0].value;
-
-                if(isNaN(avanzaBelopp))
-                    avanzaBelopp = 0;
-
-                var totalBelopp = nordnetBelopp + avanzaBelopp;
-
-                monthDividendDataValues.push(totalBelopp);
-            }
-
             var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(isin);
             if(värdepapperNamnStockData.length != 0)
                 värdepapper = värdepapperNamnStockData[0].namn;
 
+            var monthDividendDataValues = alasql('SELECT COLUMN Belopp FROM DivStackedCumulativeVardepapperValues WHERE [Värdepapper] = "' + entry.Vardepapper + '"');
             värdepapperDividendDataValues.push({
                 name: värdepapper,
                 data: monthDividendDataValues
             });
-
         });
 
         return värdepapperDividendDataValues;

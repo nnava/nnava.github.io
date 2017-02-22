@@ -232,15 +232,15 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
     }
 
-    function getVärdepapperDividend(year, month, isin, addTaxToSum) {
+    function getVärdepapperDividend(year, month, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
-        return alasql('SELECT FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
+        return alasql('SELECT FIRST([ISIN]) AS [ISIN], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [Belopp] \
                        FROM NordnetData \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND [ISIN] = "' + isin + '" AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
-                       GROUP BY [Värdepapper]');
+                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
+                       GROUP BY [ISIN]');
     }
 
     function getCourtageSumSell(year) {
@@ -309,6 +309,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                                            AND ([Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" \
                                            OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP")');
 
+            console.log(object.Värdepapper);
             console.log("Antal +", object.Antal);
             console.log("Antal -", resultMinusPosts);
 
