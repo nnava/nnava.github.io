@@ -9,91 +9,55 @@ define([], function() {
     }
 
     function addAvanzaRowsForDividend() {
+        insertAvanzaDataILStockInfo("NetEnt B", "SE0008212971", "NET IL B");
+        insertAvanzaDataILStockInfo("Creades A", "SE0004390516", "CRED IL A");
+        insertAvanzaDataILStockInfo("SECTRA B", "SE0008613970", "SECT IL B");
+        insertAvanzaDataILStockInfo("Betsson B", "SE0008242358", "BETS IL B");
+        insertAvanzaDataILStockInfo("Kinnevik B", "SE0000164626", "KINV IL B");
+        insertAvanzaDataILStockInfo("Björn Borg", "SE0008242002", "BORG IL");
+        insertAvanzaDataILStockInfo("Cherry B", "SE0005191426", "CHER IL B");
+        insertAvanzaDataILStockInfo("Enea", "SE0008212518", "ENEA IL");
+        insertAvanzaDataILStockInfo("HiQ International", "SE0008135610", "HIQ IL");
+        insertAvanzaDataILStockInfo("Strax", "SE0008008254", "STRAX IL");
+        insertAvanzaDataILStockInfo("Tele2 B", "SE0005190238", "TEL2 IL B");
+        insertAvanzaDataILStockInfo("Vostok New Ventures", "SE0007278965", "VNV SDB IL");
+        insertAvanzaDataILStockInfo("East Capital Explorer", "SE0002158568", "ECEX IL");
+        insertAvanzaDataILStockInfo("Mertiva", "SE0005191806", "MERT MTF IL");
+    }
 
-        // NetEnt
+    function insertAvanzaDataILStockInfo(companyName, isin, ILsymbol) {
         alasql('INSERT INTO AvanzaData \
-                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "SE0008212971" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "NET B" AS [Värdepapperbeskrivning] FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "NET IL B" AND [Typ av transaktion] = "Sälj"');
-
-        // Creades
-        alasql('INSERT INTO AvanzaData \
-                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "SE0004390516" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "CRED A" AS [Värdepapperbeskrivning] FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "CRED IL A" AND [Typ av transaktion] = "Sälj"');
-
-        // Sectra
-        alasql('INSERT INTO AvanzaData \
-                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "SE0008613970" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "SECT B" AS [Värdepapperbeskrivning] FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "SECT IL B" AND [Typ av transaktion] = "Sälj"');
-
-        // Betsson
-        alasql('INSERT INTO AvanzaData \
-                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "SE0008242358" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "BETS B" AS [Värdepapperbeskrivning] FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "BETS IL B" AND [Typ av transaktion] = "Sälj"');    
-
-        // Kinnevik
-        alasql('INSERT INTO AvanzaData \
-                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "SE0000164626" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "KINV B" AS [Värdepapperbeskrivning] FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "KINV IL B" AND [Typ av transaktion] = "Sälj"');    
-
-        // Delete handled rows
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "NET IL B" AND [Typ av transaktion] = "Sälj"');
+                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "' + isin + '" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "' + companyName + '" AS [Värdepapperbeskrivning] FROM AvanzaData \
+                WHERE [Värdepapperbeskrivning] = "' + ILsymbol + '" AND [Typ av transaktion] = "Sälj"');  
 
         alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "CRED IL A" AND [Typ av transaktion] = "Sälj"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "SECT IL B" AND [Typ av transaktion] = "Sälj"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "BETS IL B" AND [Typ av transaktion] = "Sälj"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "KINV IL B" AND [Typ av transaktion] = "Sälj"');
+                WHERE [Värdepapperbeskrivning] = "' + ILsymbol + '" AND [Typ av transaktion] = "Sälj"');
     }
 
     function addNordnetRowsForDividend() {
+        insertNordnetDataILStockInfo("NET B", "SE0008212971", "NET IL B");
+        insertNordnetDataILStockInfo("CRED A", "SE0004390516", "CRED IL A");
+        insertNordnetDataILStockInfo("SECT B", "SE0008613970", "SECT IL B");
+        insertNordnetDataILStockInfo("BETS B", "SE0008242358", "BETS IL B");
+        insertNordnetDataILStockInfo("KINV B", "SE0000164626", "KINV IL B");
+        insertNordnetDataILStockInfo("BORG", "SE0008242002", "BORG IL");
+        insertNordnetDataILStockInfo("CHER B", "SE0005191426", "CHER IL B");
+        insertNordnetDataILStockInfo("ENEA", "SE0008212518", "ENEA IL");
+        insertNordnetDataILStockInfo("HIQ", "SE0008135610", "HIQ IL");
+        insertNordnetDataILStockInfo("STRAX", "SE0008008254", "STRAX IL");
+        insertNordnetDataILStockInfo("TEL2 B", "SE0005190238", "TEL2 IL B");
+        insertNordnetDataILStockInfo("VNV SDB", "SE0007278965", "VNV SDB IL");
+        insertNordnetDataILStockInfo("ECEX", "SE0002158568", "ECEX IL");
+        insertNordnetDataILStockInfo("MERT MTF", "SE0005191806", "MERT MTF IL");
+    }
 
-        // NetEnt SE0008212971
+    function insertNordnetDataILStockInfo(symbol, isin, ILsymbol) {
         alasql('INSERT INTO NordnetData \
-                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0008212971" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "NET B" AS [Värdepapper], Transaktionstext FROM NordnetData \
-                WHERE [Värdepapper] = "NET IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        // Creades SE0004390516
-        alasql('INSERT INTO NordnetData \
-                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0004390516" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "CRED A" AS [Värdepapper], Transaktionstext FROM NordnetData \
-                WHERE [Värdepapper] = "CRED IL A" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        // Sectra SE0008613970
-        alasql('INSERT INTO NordnetData \
-                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0008613970" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "SECT B" AS [Värdepapper], Transaktionstext FROM NordnetData \
-                WHERE [Värdepapper] = "SECT IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        // Betsson SE0008242358
-        alasql('INSERT INTO NordnetData \
-                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0008242358" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "BETS B" AS [Värdepapper], Transaktionstext FROM NordnetData \
-                WHERE [Värdepapper] = "BETS IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        // Kinnevik SE0000164626
-        alasql('INSERT INTO NordnetData \
-                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "SE0000164626" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "KINV B" AS [Värdepapper], Transaktionstext FROM NordnetData \
-                WHERE [Värdepapper] = "KINV IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
+                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "' + isin +'" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "' + symbol +'" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                WHERE [Värdepapper] = "' + ILsymbol + '" AND Transaktionstyp = "INLÖSEN LIKVID"');
 
         alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapper] = "NET IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapper] = "CRED IL A" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapper] = "SECT IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapper] = "BETS IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
-
-        alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapper] = "KINV IL B" AND Transaktionstyp = "INLÖSEN LIKVID"');
+                WHERE [Värdepapper] = "' + ILsymbol + '" AND Transaktionstyp = "INLÖSEN LIKVID"');
     }
 
     return {
