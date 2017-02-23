@@ -39,8 +39,10 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('TRUNCATE TABLE AvanzaData');
                     alasql('TRUNCATE TABLE AvanzaPortfolio;');
                 }
-                else
+                else {
                     alasql('TRUNCATE TABLE NordnetData');
+                    alasql('TRUNCATE TABLE NordnetPortfolio;');
+                }
 
                 appControlHandler.loadControls();
             }
@@ -67,6 +69,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
         alasqlavanza.createDataTable();
         alasqlavanza.createPortfolioTable();
         alasqlnordnet.createDataTable();
+        alasqlnordnet.createPortfolioTable();
 
         $.each(e.files, function (index, value) {
 
@@ -107,7 +110,8 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 else {
                     var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
                     alasql('INSERT INTO NordnetData \
-                    SELECT [Id], [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext, [Totalt antal] FROM ?', [nordnetData]);
+                    SELECT [Id], "' + value.name + '" AS Konto, [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext, [Totalt antal] FROM ?', [nordnetData]);
+                    alasql('INSERT INTO NordnetPortfolio VALUES (' + index + ', "' + value.name + '");');
                 }
 
                 console.log('done', index);

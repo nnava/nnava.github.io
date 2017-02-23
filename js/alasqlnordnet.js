@@ -3,6 +3,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function createDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS NordnetData (  \
                 [Id] NUMBER, \
+                Konto NVARCHAR(100), \
                 [Affärsdag] DATE, \
                 Antal DECIMAL, \
                 Avgifter NVARCHAR(50), \
@@ -26,6 +27,23 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 CREATE INDEX VardepapperIndex ON NordnetData([Värdepapper]); \
                 CREATE INDEX BeloppIndex ON NordnetData([Belopp]); \
         ');        
+    }
+
+    function createPortfolioTable() {
+        alasql('CREATE TABLE IF NOT EXISTS NordnetPortfolio ( \
+                [Id] NUMBER, \
+                Konto NVARCHAR(100)); \
+                \
+                CREATE INDEX KontoIndex ON NordnetPortfolio(Konto); \
+        ');
+    }
+
+    function getPortfolios() {
+        return alasql('SELECT [Id], Konto FROM NordnetPortfolio ORDER BY Konto');
+    }
+
+    function truncatePortfolioData() {
+        alasql('TRUNCATE TABLE NordnetPortfolio;');
     }
 
     function getDividendMaxYear() {
@@ -287,41 +305,50 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
     function getStocksInPortfolio() {
 
-        var result = alasql('SELECT FIRST([Id]) AS [Id], FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST(REPLACE([Totalt antal], " ", "")) AS Antal \
-                            FROM NordnetData \
-                            INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
-                            WHERE [Transaktionstyp] != "UTDELNING" AND [Transaktionstyp] != "MAK UTDELNING" \
-                            AND [Transaktionstyp] != "UTL KUPSKATT" AND [Transaktionstyp] != "MAK UTL KUPSKATT" \
-                            AND [Transaktionstyp] != "TECKNING LIKVID" AND [Transaktionstyp] != "UTDELNING INLÄGG VP" \
-                            AND [Värdepapper] NOT LIKE "%TILLDELNING" \
-                            GROUP BY [Värdepapper] \
-                            ORDER BY [Id] DESC');
-
         var resultForReturn = [];
-        result.forEach(function(object) {
-            if(object == null) return;
-            var antal = object.Antal;
-            if(antal == null) return;
-            if(antal <= 0) return;
-            antal = parseInt(antal);
-            if(antal <= 0) return;
-            
-            console.log(object.Värdepapper, antal);
+        var portfoliosResult = getPortfolios();
 
-            var newObject = new Object();
+        portfoliosResult.forEach(function(portfolioObject) {
 
-            var värdepapperNamn = object.Värdepapper;
-            var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(object.ISIN);
-            if(värdepapperNamnStockData.length != 0)
-                värdepapperNamn = värdepapperNamnStockData[0].namn;
+            var result = alasql('SELECT FIRST([Id]) AS [Id], FIRST([Värdepapper]) AS [Värdepapper], \
+                                FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, \
+                                FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST(REPLACE([Totalt antal], " ", "")) AS Antal \
+                                FROM NordnetData \
+                                INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
+                                WHERE [Transaktionstyp] != "UTDELNING" AND [Transaktionstyp] != "MAK UTDELNING" \
+                                AND [Transaktionstyp] != "UTL KUPSKATT" AND [Transaktionstyp] != "MAK UTL KUPSKATT" \
+                                AND [Transaktionstyp] != "TECKNING LIKVID" AND [Transaktionstyp] != "UTDELNING INLÄGG VP" \
+                                AND [Värdepapper] NOT LIKE "%TILLDELNING" \
+                                AND [Konto] = "' + portfolioObject.Konto + '" \
+                                GROUP BY [Värdepapper] \
+                                ORDER BY [Id] DESC');
 
-            newObject.Värdepapper = värdepapperNamn;
-            newObject.Antal = antal;
-            newObject.YahooSymbol = object.YahooSymbol;
-            newObject.Bransch = object.Bransch;
-            newObject.Valuta = object.Handlas;
+            result.forEach(function(object) {
+                if(object == null) return;
+                var antal = object.Antal;
+                if(antal == null) return;
+                if(antal <= 0) return;
+                antal = parseInt(antal);
+                if(antal <= 0) return;
+                
+                console.log(object.Värdepapper, antal);
 
-            resultForReturn.push(newObject);
+                var newObject = new Object();
+
+                var värdepapperNamn = object.Värdepapper;
+                var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(object.ISIN);
+                if(värdepapperNamnStockData.length != 0)
+                    värdepapperNamn = värdepapperNamnStockData[0].namn;
+
+                newObject.Värdepapper = värdepapperNamn;
+                newObject.Antal = antal;
+                newObject.YahooSymbol = object.YahooSymbol;
+                newObject.Bransch = object.Bransch;
+                newObject.Valuta = object.Handlas;
+
+                resultForReturn.push(newObject);
+            });
+
         });
 
         return resultForReturn;
@@ -329,7 +356,10 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
     return {
         createDataTable: createDataTable,
+        createPortfolioTable: createPortfolioTable,
+        truncatePortfolioData: truncatePortfolioData,
         getStocksInPortfolio: getStocksInPortfolio,
+        getPortfolios: getPortfolios,
         getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,
