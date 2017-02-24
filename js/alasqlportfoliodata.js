@@ -18,7 +18,7 @@ define([], function() {
     }
 
     function getPortfolioAllocation() {
-        return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value] FROM PortfolioData ORDER BY [Värdepapper]')
+        return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value], Antal, SenastePris FROM PortfolioData ORDER BY [Värdepapper]')
     }
 
     function getPortfolioCurrency() {

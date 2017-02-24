@@ -18,7 +18,9 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
 
             donutData.push({ 
                 "category": entry.name,
-                "value": parseInt(entry.value)
+                "value": parseInt(entry.value),
+                "antal": entry.Antal,
+                "senastepris": entry.SenastePris
             });
         });
 
@@ -55,10 +57,14 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
             seriesColors: colorArray,
             tooltip: {
                 visible: true,
-                template: "#= category # - #= kendo.format('{0:P}', percentage) # (#= kendo.toString(value, 'n0') # kr)"
+                template: "#= window.returnPortfolioAllocationTooltipText(category, kendo.format('{0:P}', percentage), value, dataItem) #"
             },
             theme: "bootstrap"
         });
+    }
+
+    window.returnPortfolioAllocationTooltipText = function returnPortfolioAllocationTooltipText(category, percentage, value, dataItem) {
+        return category + " - " + percentage + " (" + kendo.toString(value, 'n0') + ') kr' + "</br>" + "Antal: " + kendo.toString(dataItem.antal, 'n0') + " st á senaste pris: " + dataItem.senastepris + " kr";
     }
 
     return {
