@@ -8,6 +8,15 @@ define([], function() {
                 WHERE Datum = "2017-01-23" AND [Typ av transaktion] = "Utländsk källskatt 15%" AND ISIN = "US40414L1098"');
     }
 
+    function addAvanzaRowsStocksSpecial() {
+        alasql('INSERT INTO AvanzaData \
+                SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "US02079K1079" AS ISIN, Konto, Kurs, "Köp" AS [Typ av transaktion], Valuta, "Alphabet Inc Class C" AS [Värdepapperbeskrivning] FROM AvanzaData \
+                WHERE [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
+
+        alasql('DELETE FROM AvanzaData \
+                WHERE [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
+    }
+
     function addAvanzaRowsForDividend() {
         insertAvanzaDataILStockInfo("NetEnt B", "SE0008212971", "NET IL B");
         insertAvanzaDataILStockInfo("Creades A", "SE0004390516", "CRED IL A");
@@ -53,7 +62,7 @@ define([], function() {
 
     function insertNordnetDataILStockInfo(symbol, isin, ILsymbol) {
         alasql('INSERT INTO NordnetData \
-                SELECT [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "' + isin +'" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "' + symbol +'" AS [Värdepapper], Transaktionstext FROM NordnetData \
+                SELECT Konto, [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], "' + isin +'" AS ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, "UTDELNING" AS Transaktionstyp, Valuta, "' + symbol +'" AS [Värdepapper], Transaktionstext FROM NordnetData \
                 WHERE [Värdepapper] = "' + ILsymbol + '" AND Transaktionstyp = "INLÖSEN LIKVID"');
 
         alasql('DELETE FROM AvanzaData \
@@ -63,6 +72,7 @@ define([], function() {
     return {
         deleteAvanzaRowsToSkip: deleteAvanzaRowsToSkip,
         addAvanzaRowsForDividend: addAvanzaRowsForDividend,
-        addNordnetRowsForDividend: addNordnetRowsForDividend
+        addNordnetRowsForDividend: addNordnetRowsForDividend,
+        addAvanzaRowsStocksSpecial: addAvanzaRowsStocksSpecial
     };
 });

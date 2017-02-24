@@ -91,6 +91,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasqlbankdataexception.deleteAvanzaRowsToSkip();
                     alasqlbankdataexception.addAvanzaRowsForDividend();
                     alasqlbankdataexception.addNordnetRowsForDividend();
+                    alasqlbankdataexception.addAvanzaRowsStocksSpecial();
 
                     setTimeout(function(){  appControlHandler.loadControls(); }, 10);                                       
                 }

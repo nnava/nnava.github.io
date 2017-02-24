@@ -715,8 +715,17 @@ $.each(e.files, function (index, value) {
     
     var reader = new FileReader();
     reader.onloadend = function(e) {
-        if((index +1) == fileArrayLength) {        
-            appControlHandler.loadControls();                    
+        if(reader.error != null)
+            console.log(reader.error.message);
+
+        if((index +1) == fileArrayLength) { 
+
+            alasqlbankdataexception.deleteAvanzaRowsToSkip();
+            alasqlbankdataexception.addAvanzaRowsForDividend();
+            alasqlbankdataexception.addNordnetRowsForDividend();
+            alasqlbankdataexception.addAvanzaRowsStocksSpecial();
+
+            setTimeout(function(){  appControlHandler.loadControls(); }, 10);                                       
         }
     }
 
@@ -759,7 +768,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 101;
+            var versionNumber = 102;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
