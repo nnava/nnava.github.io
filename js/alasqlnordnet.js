@@ -305,42 +305,51 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
     function getStocksInPortfolio() {
 
-        var result = alasql('SELECT FIRST([Id]) AS [Id], FIRST([Värdepapper]) AS [Värdepapper], FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST(REPLACE([Totalt antal], " ", "")) AS Antal \
-                            FROM NordnetData \
-                            INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
-                            WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "UTTAG VP RESULTAT" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
-                            OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" OR [Transaktionstyp] = "INLÄGG FISSION" \
-                            OR [Transaktionstyp] = "TECKNING INLÄGG VP" OR [Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" \
-                            OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP") \
-                            AND [Värdepapper] NOT LIKE "%TILLDELNING" \
-                            GROUP BY [ISIN] \
-                            ORDER BY [Id] DESC');     
-                            
         var resultForReturn = [];
-        result.forEach(function(object) {
-            if(object == null) return;
-            var antal = object.Antal;
-            if(antal == null) return;
-            if(antal <= 0) return;
-            antal = parseInt(antal);
-            if(antal <= 0) return;
-            
-            console.log(object.Värdepapper, antal);
+        var portfoliosResult = getPortfolios();
 
-            var newObject = new Object();
+        portfoliosResult.forEach(function(portfolioObject) {
 
-            var värdepapperNamn = object.Värdepapper;
-            var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(object.ISIN);
-            if(värdepapperNamnStockData.length != 0)
-                värdepapperNamn = värdepapperNamnStockData[0].namn;
+            var result = alasql('SELECT FIRST([Id]) AS [Id], FIRST([Värdepapper]) AS [Värdepapper], \
+                                FIRST(NordnetData.ISIN) AS ISIN, FIRST(StockData.handlas) AS Handlas, \
+                                FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, FIRST(REPLACE([Totalt antal], " ", "")) AS Antal \
+                                FROM NordnetData \
+                                INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
+                                WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "UTTAG VP RESULTAT" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
+                                OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" OR [Transaktionstyp] = "INLÄGG FISSION" \
+                                OR [Transaktionstyp] = "TECKNING INLÄGG VP" OR [Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" \
+                                OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP") \
+                                AND [Värdepapper] NOT LIKE "%TILLDELNING" \
+                                AND [Konto] = "' + portfolioObject.Konto + '" \
+                                GROUP BY [ISIN] \
+                                ORDER BY [Id] DESC');     
 
-            newObject.Värdepapper = värdepapperNamn;
-            newObject.Antal = antal;
-            newObject.YahooSymbol = object.YahooSymbol;
-            newObject.Bransch = object.Bransch;
-            newObject.Valuta = object.Handlas;
+            result.forEach(function(object) {
+                if(object == null) return;
+                var antal = object.Antal;
+                if(antal == null) return;
+                if(antal <= 0) return;
+                antal = parseInt(antal);
+                if(antal <= 0) return;
+                
+                console.log(object.Värdepapper, antal);
 
-            resultForReturn.push(newObject);
+                var newObject = new Object();
+
+                var värdepapperNamn = object.Värdepapper;
+                var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(object.ISIN);
+                if(värdepapperNamnStockData.length != 0)
+                    värdepapperNamn = värdepapperNamnStockData[0].namn;
+
+                newObject.Värdepapper = värdepapperNamn;
+                newObject.Antal = antal;
+                newObject.YahooSymbol = object.YahooSymbol;
+                newObject.Bransch = object.Bransch;
+                newObject.Valuta = object.Handlas;
+
+                resultForReturn.push(newObject);
+            });
+
         });
 
         return resultForReturn;
