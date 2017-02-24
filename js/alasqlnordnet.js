@@ -309,15 +309,13 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                             FROM NordnetData \
                             INNER JOIN StockData ON StockData.isin = NordnetData.ISIN \
                             WHERE ([Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "UTTAG VP RESULTAT" OR [Transaktionstyp] = "EM INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP" \
-                            OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" \
+                            OR [Transaktionstyp] = "SPLIT INLÄGG VP" OR [Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "INLÄGG VP" OR [Transaktionstyp] = "INLÄGG FISSION" \
                             OR [Transaktionstyp] = "TECKNING INLÄGG VP" OR [Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" \
                             OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP") \
                             AND [Värdepapper] NOT LIKE "%TILLDELNING" \
                             GROUP BY [ISIN] \
                             ORDER BY [Id] DESC');     
-
-                            console.log(result);   
-
+                            
         var resultForReturn = [];
         result.forEach(function(object) {
             if(object == null) return;
