@@ -36,7 +36,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
 
             var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
             var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
-
+            
             if ($('#checkboxTax').is(":checked")) {
                 var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, month);
                 var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, month);
@@ -56,6 +56,11 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
             category: "Utdelningar",
             value: totalYearDividends,
         });
+
+        // Koll om värde större än 0? Annars har vi inga utgifter, sätt som 0
+        totalYearExpenses = totalYearExpenses - totalYearDividends;
+        if(totalYearExpenses <= 0) 
+            totalYearExpenses = 0;
 
         donutData.push({
             category: "Utgifter",
@@ -87,7 +92,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
             }],
             tooltip: {
                 visible: true,
-                template: "#= category # - #= kendo.format('{0:P}', percentage) #"
+                template: "#= category # - #= kendo.format('{0:P}', percentage) # - #= kendo.toString(value, 'n2') # kr"
             },
             theme: "bootstrap",
             transitions: false
