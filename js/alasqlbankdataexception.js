@@ -11,10 +11,10 @@ define([], function() {
     function addAvanzaRowsStocksSpecial() {
         alasql('INSERT INTO AvanzaData \
                 SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "US02079K1079" AS ISIN, Konto, Kurs, "Köp" AS [Typ av transaktion], Valuta, "Alphabet Inc Class C" AS [Värdepapperbeskrivning] FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
+                WHERE Datum = "2015-05-13" AND [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
 
         alasql('DELETE FROM AvanzaData \
-                WHERE [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
+                WHERE Datum = "2015-05-13" AND [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
     }
 
     function addAvanzaRowsForDividend() {
@@ -32,6 +32,16 @@ define([], function() {
         insertAvanzaDataILStockInfo("Vostok New Ventures", "SE0007278965", "VNV SDB IL");
         insertAvanzaDataILStockInfo("East Capital Explorer", "SE0002158568", "ECEX IL");
         insertAvanzaDataILStockInfo("Mertiva", "SE0005191806", "MERT MTF IL");
+
+        insertAvanzaDataILStockInfo("Bure Equity", "SE0000195810", "BURE IL");
+        insertAvanzaDataILStockInfo("I.A.R Systems Group", "SE0005851706", "IAR IL B");
+        insertAvanzaDataILStockInfo("Atlas Copco B", "SE0006886768", "ATCO IL B");
+        insertAvanzaDataILStockInfo("Atlas Copco A", "SE0006886750", "ATCO IL A");
+        insertAvanzaDataILStockInfo("SKF B", "SE0000108227", "SKF IL B");
+        insertAvanzaDataILStockInfo("SKF A", "SE0000108201", "SKF IL A");
+        insertAvanzaDataILStockInfo("Boliden", "SE0000869646", "BOL IL");
+        insertAvanzaDataILStockInfo("Haldex", "SE0000105199", "HLDX IL");
+        insertAvanzaDataILStockInfo("KappAhl", "SE0001630880", "KAHL IL");
     }
 
     function insertAvanzaDataILStockInfo(companyName, isin, ILsymbol) {
@@ -58,6 +68,15 @@ define([], function() {
         insertNordnetDataILStockInfo("VNV SDB", "SE0007278965", "VNV SDB IL");
         insertNordnetDataILStockInfo("ECEX", "SE0002158568", "ECEX IL");
         insertNordnetDataILStockInfo("MERT MTF", "SE0005191806", "MERT MTF IL");
+        insertNordnetDataILStockInfo("BURE", "SE0000195810", "BURE IL");
+        insertNordnetDataILStockInfo("IAR B", "SE0005851706", "IAR IL B");
+        insertNordnetDataILStockInfo("ATCO B", "SE0006886768", "ATCO IL B");
+        insertNordnetDataILStockInfo("ATCO A", "SE0006886750", "ATCO IL A");
+        insertNordnetDataILStockInfo("SKF B", "SE0000108227", "SKF IL B");
+        insertNordnetDataILStockInfo("SKF A", "SE0000108201", "SKF IL A");
+        insertNordnetDataILStockInfo("BOL", "SE0000869646", "BOL IL");
+        insertNordnetDataILStockInfo("HLDX", "SE0000105199", "HLDX IL");
+        insertNordnetDataILStockInfo("KAHL", "SE0001630880", "KAHL IL");
     }
 
     function insertNordnetDataILStockInfo(symbol, isin, ILsymbol) {
