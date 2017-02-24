@@ -313,8 +313,10 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                             OR [Transaktionstyp] = "TECKNING INLÄGG VP" OR [Transaktionstyp] = "BYTE UTTAG VP" OR [Transaktionstyp] = "MAK SPLIT INLÄGG VP" \
                             OR [Transaktionstyp] = "MAK SPLIT UTTAG VP" OR [Transaktionstyp] = "SPLIT UTTAG VP" OR [Transaktionstyp] = "SÅLT" OR [Transaktionstyp] = "UTTAG VP") \
                             AND [Värdepapper] NOT LIKE "%TILLDELNING" \
-                            GROUP BY [Värdepapper] \
-                            ORDER BY [Id] DESC');        
+                            GROUP BY [ISIN] \
+                            ORDER BY [Id] DESC');     
+
+                            console.log(result);   
 
         var resultForReturn = [];
         result.forEach(function(object) {
