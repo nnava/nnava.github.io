@@ -199,6 +199,14 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
         setTimeout(function(){  
             $(spreadSheetId).kendoSpreadsheet({
                 theme: "bootstrap",
+                toolbar: {
+                    home: ["open",
+                    "exportAs",
+                    [ "cut", "copy", "paste" ]
+                    ], 
+                    insert: [[ "addRowBelow", "addRowAbove" ]], 
+                    data: false 
+                },
                 sheets: [
                     {
                         name: "Aktier",
