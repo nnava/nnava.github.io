@@ -332,8 +332,6 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 antal = parseInt(antal);
                 if(antal <= 0) return;
                 
-                console.log(object.Värdepapper, antal);
-
                 var newObject = new Object();
 
                 var värdepapperNamn = object.Värdepapper;

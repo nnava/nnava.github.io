@@ -6,6 +6,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
     var historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
     var currencyArray = [];
     var mergedCellsArray = [];
+    var filterCells;
     var stockLastTradePriceArray = [];
     var skipRunningFunctions = false;
 
@@ -187,6 +188,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
 
         // Merge cells, to show totaltext
         mergedCellsArray.push(("D#ROW#:E#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
+        filterCells = "A1:F#ROW#".replace("#ROW#", indexCount);
     }
 
     function loadSpreadSheet() {
@@ -211,6 +213,10 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
                     {
                         name: "Aktier",
                         mergedCells: mergedCellsArray,
+                        filter: {
+                            ref: filterCells,
+                            columns:[]
+                        },
                         rows: spreadSheetData,
                         columns: [
                             {
@@ -226,7 +232,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
                                 width: 100
                             },
                             {
-                                width: 40
+                                width: 60
                             },
                             {
                                 width: 110

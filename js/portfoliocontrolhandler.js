@@ -1,11 +1,18 @@
-define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutportfoliocurrency', './treemapportfoliocurrency', './chartfunnelportfolioindustry', './chartradarportfolioindustry'], 
+define(['./spreadsheetstocks', 
+        './chartdonutportfolioallocation', 
+        './chartdonutportfoliocurrency', 
+        './treemapportfoliocurrency', 
+        './chartfunnelportfolioindustry', 
+        './chartradarportfolioindustry',
+        './dropdowndonutportfolioallocation'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
      chartDonutPortfolioCurrency,
      treeMapPortfolioCurrency,
      chartFunnelPortfolioIndustry,
-     chartRadarPortfolioIndustry) {
+     chartRadarPortfolioIndustry,
+     dropdownDonutPortfolioAllocation) {
 
     function loadSpreadsheetWithProgress() {
 
@@ -13,6 +20,18 @@ define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutp
             loadSpreadsheetStocks();
             kendo.ui.progress($(document.body), false);
         }, 10);
+    }
+
+    function loadDropdownDonutPortfolioAllocationSelectSort() {
+        dropdownDonutPortfolioAllocation.setDropdownId('#dropdownDonutPortfolioAllocationSelectSort');
+        dropdownDonutPortfolioAllocation.setDropdownData();
+        dropdownDonutPortfolioAllocation.loadDropdown();
+
+        $("#dropdownDonutPortfolioAllocationSelectSort").data("kendoDropDownList").bind("change", dropDownListDonutPortfolioAllocation_Change);
+    }
+
+    function dropDownListDonutPortfolioAllocation_Change(e) {
+        loadChartDonutPortfolioAllocation();
     }
 
     function loadSpreadsheetStocks() {
@@ -33,9 +52,13 @@ define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutp
         chartFunnelPortfolioIndustry.loadChart();
     }
 
-    function loadChartDonutPortfolioAllocation() {       
+    function loadChartDonutPortfolioAllocation() {  
+        var sort = dropdownDonutPortfolioAllocation.getValue();
+        if(sort == null || sort == '')
+            sort = "name";
+
         chartDonutPortfolioAllocation.setChartId('#chartDonutPortfolioAllocation');
-        chartDonutPortfolioAllocation.setChartData();
+        chartDonutPortfolioAllocation.setChartData(sort);
         chartDonutPortfolioAllocation.loadChart();
     }
 
@@ -54,6 +77,7 @@ define(['./spreadsheetstocks', './chartdonutportfolioallocation', './chartdonutp
     function loadCharts() {
         $('#chartPortfolioContent').attr("class", "");
         
+        loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
         loadChartDonutPortfolioCurrency();
         loadTreeMapPortfolioCurrency();

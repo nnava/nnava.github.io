@@ -8,15 +8,36 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
         chartId = fieldId;
     }
 
-    function setChartData() {
-        var result = alasqlportfoliodata.getPortfolioAllocation();
+    function setChartData(sort) {
+        var resultAllocation = alasqlportfoliodata.getPortfolioAllocation(sort);
+        var resultIndustry = alasqlportfoliodata.getPortfolioIndustrySort(sort);
 
+        var industryData = [];
+        var allocationData = [];
         var donutData = [];
-        result.forEach(function(entry) {
+
+        resultIndustry.forEach(function(entry) {
             if(entry == null) return;
             if(entry.name == null) return;
 
-            donutData.push({ 
+            industryData.push({ 
+                "category": entry.name,
+                "value": parseInt(entry.value),
+                "antal": 0,
+                "senastepris":0
+            });
+        });
+
+        donutData.push({ 
+            name: "Bransch",
+            data: industryData
+        });
+
+        resultAllocation.forEach(function(entry) {
+            if(entry == null) return;
+            if(entry.name == null) return;
+
+            allocationData.push({ 
                 "category": entry.name,
                 "value": parseInt(entry.value),
                 "antal": entry.Antal,
@@ -24,6 +45,17 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
             });
         });
 
+        donutData.push({ 
+            name: "Innehav",
+            data: allocationData,
+            labels: {
+                visible: true,
+                background: "transparent",
+                position: "outsideEnd",
+                template: "#= category # - #= kendo.format('{0:P}', percentage) #"
+            }
+        });
+        
         chartData = donutData;
     }
 
@@ -44,16 +76,7 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
             seriesDefaults: {
                 type: "donut"
             },
-            series: [{
-                name: "Data",
-                data: chartData,
-                labels: {
-                    visible: true,
-                    background: "transparent",
-                    position: "outsideEnd",
-                    template: "#= category # - #= kendo.format('{0:P}', percentage) #"
-                }
-            }],
+            series: chartData,
             seriesColors: colorArray,
             tooltip: {
                 visible: true,
@@ -64,7 +87,10 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
     }
 
     window.returnPortfolioAllocationTooltipText = function returnPortfolioAllocationTooltipText(category, percentage, value, dataItem) {
-        return category + " - " + percentage + " (" + kendo.toString(value, 'n0') + ') kr' + "</br>" + "Antal: " + kendo.toString(dataItem.antal, 'n0') + " st á senaste pris: " + dataItem.senastepris + " kr";
+        if(dataItem.antal === 0 && dataItem.senastepris === 0)
+            return category + " - " + percentage + " (" + kendo.toString(value, 'n0') + ') kr';
+        else
+            return category + " - " + percentage + " (" + kendo.toString(value, 'n0') + ') kr' + "</br>" + "Antal: " + kendo.toString(dataItem.antal, 'n0') + " st á senaste pris: " + dataItem.senastepris + " kr";
     }
 
     return {

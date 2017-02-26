@@ -17,8 +17,12 @@ define([], function() {
         alasql('INSERT INTO PortfolioData SELECT [Värdepapper], Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM ?', [data]);
     }
 
-    function getPortfolioAllocation() {
-        return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value], Antal, SenastePris FROM PortfolioData ORDER BY [Värdepapper]')
+    function getPortfolioAllocation(sort) {
+        var sortExpression = " ORDER BY [Värdepapper]";
+        if(sort == "size")
+            sortExpression = " ORDER BY CAST([Marknadsvärde] AS NUMBER) DESC";
+
+        return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value], Antal, SenastePris FROM PortfolioData' + sortExpression)
     }
 
     function getPortfolioCurrency() {
@@ -33,12 +37,21 @@ define([], function() {
         return alasql('SELECT [Bransch] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData GROUP BY [Bransch] ORDER BY SUM([Marknadsvärde]::NUMBER)')
     }
 
+    function getPortfolioIndustrySort(sort) {
+        var sortExpression = " ORDER BY [Bransch] DESC";
+        if(sort == "size")
+            sortExpression = " ORDER BY SUM([Marknadsvärde]::NUMBER) DESC";
+            
+        return alasql('SELECT [Bransch] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData GROUP BY [Bransch]' + sortExpression);
+    }
+
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
         saveDataToTable: saveDataToTable,
         getPortfolioAllocation: getPortfolioAllocation,
         getPortfolioCurrency: getPortfolioCurrency,
         getPortfolioIndustry: getPortfolioIndustry,
+        getPortfolioIndustrySort: getPortfolioIndustrySort,
         getPortfolioCurrencyStocks: getPortfolioCurrencyStocks
     };
 });
