@@ -26,6 +26,8 @@
 
         <script src="https://kendo.cdn.telerik.com/2017.1.223/js/jszip.min.js"></script>
         <script src="https://kendo.cdn.telerik.com/2017.1.223/js/kendo.all.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2017.1.223/js/kendo.timezones.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2017.1.223/js/messages/kendo.messages.sv-SE.min.js"></script>
         <script>
             if (typeof kendo == "undefined") {
                 // fallback to local Kendo UI stylesheets
@@ -36,10 +38,12 @@
 
                 // fallback to local Kendo UI scripts
                 document.write(decodeURIComponent('%3Cscript src="/js/kendo.all.min.js" %3E%3C/script%3E'));
+                document.write(decodeURIComponent('%3Cscript src="/js/kendo.timezones.min.js" %3E%3C/script%3E'));
+                document.write(decodeURIComponent('%3Cscript src="/js/kendo.messages.sv-SE.js" %3E%3C/script%3E'));
                 document.write(decodeURIComponent('%3Cscript src="/js/jszip.min.js" %3E%3C/script%3E'));
             }
         </script>
-        <script src="/js/kendo.culture.se-SE.min.js"></script>        
+        <script src="/js/kendo.culture.se-SE.min.js"></script> 
         
         <script>
 
@@ -48,7 +52,7 @@
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-            ga('create', 'UA-89223659-1', 'auto');
+            ga('create', 'UA-89118659-1', 'auto');
             ga('send', 'pageview');
 
         </script>
@@ -768,7 +772,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 105;
+            var versionNumber = 106;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
