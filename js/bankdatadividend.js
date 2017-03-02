@@ -1,4 +1,4 @@
-define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alasqlavanza, alasqlnordnet, alasqlstockdata) {
+define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstockdividenddata'], function(alasqlavanza, alasqlnordnet, alasqlstockdata, alasqlstockdividenddata) {
 
 
     function getTotalDividend(year, isTaxChecked) {
@@ -107,10 +107,62 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata'], function(alas
         return värdepapperDividendDataValues;
     }
 
+    function getReceivedDividendCurrentYearToDate(portfolioObject, currentYear, today, isin) {
+        var avanzaReceivedDividendData = alasqlavanza.getReceivedDividendCurrentYearToDate(currentYear, today, isin);
+        var nordnetReceivedDividendData = alasqlnordnet.getReceivedDividendCurrentYearToDate(currentYear, today, isin);
+
+        var avanzaResult = receivedDividendDataForeach(portfolioObject, avanzaReceivedDividendData, isin);
+        var nordnetResult = receivedDividendDataForeach(portfolioObject, nordnetReceivedDividendData, isin);
+
+        var result = avanzaResult.concat(nordnetResult);
+        return alasql('SELECT FIRST(ISIN) AS ISIN, FIRST([Månad]) AS [Månad], \
+                            FIRST([Värdepapper]) AS [Värdepapper], FIRST(Typ) AS Typ, \
+                            FIRST(Utdelningaktiedecimal) AS Utdelningaktiedecimal, FIRST(Utdelningsdag) AS Utdelningsdag, SUM(Belopp::NUMBER) AS Belopp, SUM(Antal::NUMBER) AS Antal \
+                            FROM ?', [result]);
+    }
+
+    function receivedDividendDataForeach(portfolioObject, receivedDividendData, isin) {
+        var resultForReturn = [];
+        
+        receivedDividendData.forEach(function(receivedDividendDataObject) {
+            if(receivedDividendDataObject == null) return;
+            if(receivedDividendDataObject.Antal == null) return;
+
+            var typ = alasqlstockdividenddata.getDividendTyp(receivedDividendDataObject.Datum, isin);
+            if(typ == null)
+                typ = "Utdelning";
+
+            var newObject = createStockDividendObject(portfolioObject, 
+                                                        receivedDividendDataObject.Antal, 
+                                                        typ,
+                                                        receivedDividendDataObject.Kurs,
+                                                        receivedDividendDataObject.Månad,
+                                                        receivedDividendDataObject.Datum,
+                                                        receivedDividendDataObject.Belopp);
+            resultForReturn.push(newObject);
+        });
+
+        return resultForReturn;
+    }
+
+    function createStockDividendObject(portfolioObject, antal, typ, utdelningaktiedecimal, månad, utdelningsdag, belopp) {
+        var newObject = new Object();
+        newObject.Värdepapper = portfolioObject.Värdepapper;
+        newObject.Antal = parseInt(antal);
+        newObject.ISIN = portfolioObject.ISIN;
+        newObject.Typ = typ;
+        newObject.Utdelningaktiedecimal = utdelningaktiedecimal;
+        newObject.Månad = månad;
+        newObject.Utdelningsdag = utdelningsdag;
+        newObject.Belopp = belopp;
+        return newObject;
+    }
+
     return { 
         getVärdepapperTotalDividend: getVärdepapperTotalDividend,
         getVärdepapperForYear: getVärdepapperForYear,
         getVärdepapperDividendData: getVärdepapperDividendData,
-        getTotalDividend: getTotalDividend
+        getTotalDividend: getTotalDividend,
+        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate
     };
 });

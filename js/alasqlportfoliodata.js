@@ -3,18 +3,20 @@ define([], function() {
     function createPortfolioDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS PortfolioData (  \
                 [Värdepapper] STRING, \
+                ISIN NVARCHAR(100), \
                 Bransch STRING, \
                 Antal INT, \
                 SenastePris DECIMAL, \
                 Valuta STRING, \
                 [Marknadsvärde] DECIMAL); \
+                CREATE INDEX isinIndex ON PortfolioData(ISIN); \
         ');
     }
 
     function saveDataToTable(data) {
         createPortfolioDataTable();
         alasql('TRUNCATE TABLE PortfolioData');
-        alasql('INSERT INTO PortfolioData SELECT [Värdepapper], Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM ?', [data]);
+        alasql('INSERT INTO PortfolioData SELECT [Värdepapper], ISIN, Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM ?', [data]);
     }
 
     function getPortfolioAllocation(sort) {
@@ -23,6 +25,10 @@ define([], function() {
             sortExpression = " ORDER BY CAST([Marknadsvärde] AS NUMBER) DESC";
 
         return alasql('SELECT [Värdepapper] AS [name], [Marknadsvärde] AS [value], Antal, SenastePris FROM PortfolioData' + sortExpression)
+    }
+
+    function getPortfolioData() {
+        return alasql('SELECT [Värdepapper], ISIN, Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM PortfolioData');
     }
 
     function getPortfolioCurrency() {
@@ -48,6 +54,7 @@ define([], function() {
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
         saveDataToTable: saveDataToTable,
+        getPortfolioData: getPortfolioData,
         getPortfolioAllocation: getPortfolioAllocation,
         getPortfolioCurrency: getPortfolioCurrency,
         getPortfolioIndustry: getPortfolioIndustry,

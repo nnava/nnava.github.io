@@ -44,6 +44,14 @@
             }
         </script>
         <script src="/js/kendo.culture.se-SE.min.js"></script> 
+        <script> 
+            kendo.pdf.defineFont({
+                "DejaVu Sans"             : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans.ttf",
+                "DejaVu Sans|Bold"        : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Bold.ttf",
+                "DejaVu Sans|Bold|Italic" : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf",
+                "DejaVu Sans|Italic"      : "https://kendo.cdn.telerik.com/2016.2.607/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf"
+            });
+        </script>
         
         <script>
 
@@ -516,7 +524,8 @@
                         <input type="image" src="https://www.paypalobjects.com/sv_SE/SE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - Det tryggare, enklare sättet att betala online!">
                         <img alt="" border="0" src="https://www.paypalobjects.com/sv_SE/i/scr/pixel.gif" width="1" height="1">
                     </form>
-                    <h6><small>Finansiella instrument kan både öka och minska i värde. Det finns en risk att du inte får tillbaka de pengar du investerar. Innan du investerar i en aktie bör du själv läsa på fakta och bilda dig en uppfattning.</small></h6>
+                    <h6><small>Finansiella instrument kan både öka och minska i värde. Det finns en risk att du inte får tillbaka de pengar du investerar. Innan du investerar i en aktie bör du själv läsa på fakta och bilda dig en uppfattning. </br>
+                        Ingen av den information som presenteras på sidan kan anses som tillförlitlig då sidan är under ständig utveckling. Gör alltid egna kontroller och återkom gärna till skaparen på lill4ekonomen (a) gmail.com om du hittar något fel.</small></h6>
                 </footer>
 
             </div>
@@ -645,6 +654,16 @@
                                         <div id="chartRadarPortfolioIndustry" style="height: 100%;"></div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                            <div class="col-md-12">
+                                <h3>Erhållna/förväntade utdelningar <span id="spangridportfoliodividendinfo" class="k-icon k-i-info" align="left"></span></h3>
+                                <div class="alert alert-info">
+                                    <strong>Information!</strong> Under utveckling - Läs info-ruta. Återkoppla gärna till lill4ekonomen(@).gmail.com eller via Twitter (@nnava_se) vid ev idéer/fel.
+                                </div>                                
+                                <div id="gridPortfolioDividend"></div>
                             </div>
                         </div>
 
@@ -785,7 +804,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 107;
+            var versionNumber = 108;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

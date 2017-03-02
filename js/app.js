@@ -26,13 +26,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         alasql.options.cache = false;
         kendo.culture("se-SE");
 
-        $("#spantaxinfo").kendoTooltip({
-            content: "Påverkar ej diagrammen <br/>Utdelningar/kostnader - nuvarande år <br/> \
-                    Utdelningar/kostnader - total <br/> \
-                    Utdelning och utdelningstillväxt per år",
-            position: "bottom",
-            width: 250
-        });
+        loadSpantaxinfo();
 
         window.onresize = resizeObjects;
 
@@ -43,6 +37,19 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         alasqlstockdata.createStockDataTable();
         alasqlstockdata.loadDataFromFileToTable();
     });
+
+    function loadSpantaxinfo() {
+        $("#spantaxinfo").kendoTooltip({
+            content: "<p align=\"left\">Påverkar ej diagrammen: <br/> \
+                      <ul>\
+                           <li>Utdelningar/kostnader - nuvarande år <br/> </li>\
+                           <li>Utdelningar/kostnader - total <br/> </li> \
+                           <li>Utdelning och utdelningstillväxt per år</li> \
+                      </ul></p>",
+            position: "bottom",
+            width: 350
+        });
+    }
 
     function setInputMonthNumberFromCookie() {
         var inputMonthNumberCookie = appCookies.getCookieValue('nnava_inputmonthnumbers');

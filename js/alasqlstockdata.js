@@ -11,6 +11,7 @@ define([], function() {
                 handlas STRING); \
                 \
                 CREATE INDEX isinIndex ON StockData(isin); \
+                CREATE INDEX namnIndex ON StockData(namn); \
         ');
     }
 
@@ -20,6 +21,10 @@ define([], function() {
             alasql('INSERT INTO StockData SELECT namn, kortnamn, yahoosymbol, isin, marknad, bransch, handlas FROM ?', [jsonResult]);
         });
     };
+
+    function getISINFromNamn(namn) {
+        return alasql('SELECT VALUE isin FROM StockData WHERE namn ="' + namn + '"');
+    }
 
     function getVärdepapperNamn(isin) {
         return alasql('SELECT namn FROM StockData WHERE isin ="' + isin + '"');
@@ -38,6 +43,7 @@ define([], function() {
         loadDataFromFileToTable: loadDataFromFileToTable,
         getVärdepapperNamn: getVärdepapperNamn,
         getVärdepapperHandlas: getVärdepapperHandlas,
-        getYahooSymbol: getYahooSymbol
+        getYahooSymbol: getYahooSymbol,
+        getISINFromNamn: getISINFromNamn
     };
 });

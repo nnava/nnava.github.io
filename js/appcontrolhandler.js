@@ -13,7 +13,9 @@ define(['./chartdonutexpenses',
      './chartcourtageyear',
      './dropdowndonutdividendsort',
      './charttransactionnetyeargrowth',
-     './multiselectorportfolio'], 
+     './multiselectorportfolio',
+     './alasqlcurrencydata',
+     './currencydataservice'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -29,7 +31,9 @@ define(['./chartdonutexpenses',
      chartCourtageYear,
      dropdownDonutDividendSort,
      chartTransactionNetYearGrowth,
-     multiselectorPortfolio) {
+     multiselectorPortfolio,
+     alasqlcurrencydata,
+     currencydataservice) {
 
     function loadControls() {
 
@@ -49,6 +53,7 @@ define(['./chartdonutexpenses',
         loadChartDividendExpenses();
         loadChartDividendYearGrowth(); 
         loadChartDonutExpenses();
+        loadCurrencyData();
        
         kendo.ui.progress($(document.body), false);
 
@@ -79,6 +84,11 @@ define(['./chartdonutexpenses',
 
     function saveSettings() {
         multiselectorPortfolio.saveValues();
+    }
+
+    function loadCurrencyData() {
+        alasqlcurrencydata.createCurrencyDataTable();
+        currencydataservice.fillCurrencyDataFromYahooFinance();
     }
 
     function loadChartDividendStackedCumulative() {

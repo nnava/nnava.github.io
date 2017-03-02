@@ -19,6 +19,9 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function createNordnetDemoData() {
+        alasql('INSERT INTO NordnetData VALUES (44, "test_nordnet.csv", "2017-01-18", 100, "0", "825", "2017-01-07", "SE0000936478", "Aktie", 8.25, "2017-01-06", "", "UTDELNING", "SEK", "IJ", "", "0");');
+
+        // 2016
         alasql('INSERT INTO NordnetData VALUES (43, "test_nordnet.csv", "2016-11-18", 78, "0", "-85.31", "2016-12-07", "US4781601046", "Aktie", 0, "2016-12-06", "", "UTL KUPSKATT", "SEK", "JNJ", "", "0");');
         alasql('INSERT INTO NordnetData VALUES (42, "test_nordnet.csv", "2016-11-18", 78, "0", "568.7", "2016-12-07", "US4781601046", "Aktie", 0.8, "2016-12-06", "", "UTDELNING", "SEK", "JNJ", "", "0");');
         alasql('INSERT INTO NordnetData VALUES (41, "test_nordnet.csv", "2016-11-22", 40, "0", "-47,52", "2016-11-04", "US95040Q1040", "Aktie", 0, "2016-11-21", "", "UTL KUPSKATT", "SEK", "HCN", "", "0");');
@@ -69,6 +72,9 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function createAvanzaDemoData() {
+        alasql('INSERT INTO AvanzaData VALUES (200, 1650, "2017-01-26", 2017, 1, "SE0000936478", "ISK", 8.25, "Utdelning", "SEK", "Intrum Justitia");');
+
+        alasql('INSERT INTO AvanzaData VALUES (10, -3005, "2016-11-30", 2016, 11, "SE0005936713", "ISK", 300, "Köp", "SEK", "Akelius Residential Pref");');
         alasql('INSERT INTO AvanzaData VALUES (100, -90000, "2015-05-30", 2015, 5, "US4781601046", "KF", 100.00, "Köp", "SEK", "Johnson & Johnson");');
         alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-11-30", 2016, 11, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
         alasql('INSERT INTO AvanzaData VALUES (6, -1890, "2016-10-28", 2016, 10, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');

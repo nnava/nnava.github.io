@@ -100,7 +100,7 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                 data: avanzaBuyValues
             });
         };
-
+0
         if(avanzaSellValues.some(isBiggerThan0)) {
             data.push({
                 type: "column",

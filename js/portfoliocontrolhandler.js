@@ -4,7 +4,9 @@ define(['./spreadsheetstocks',
         './treemapportfoliocurrency', 
         './chartfunnelportfolioindustry', 
         './chartradarportfolioindustry',
-        './dropdowndonutportfolioallocation'], 
+        './dropdowndonutportfolioallocation',
+        './gridportfoliodividend',
+        './alasqlstockdividenddata'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
@@ -12,10 +14,15 @@ define(['./spreadsheetstocks',
      treeMapPortfolioCurrency,
      chartFunnelPortfolioIndustry,
      chartRadarPortfolioIndustry,
-     dropdownDonutPortfolioAllocation) {
+     dropdownDonutPortfolioAllocation,
+     gridPortfolioDividend,
+     alasqlStockDividendData) {
 
     function loadSpreadsheetWithProgress() {
 
+        alasqlStockDividendData.createStockDividendDataTable();
+        alasqlStockDividendData.loadDataFromFileToTable();
+        
         setTimeout(function(){   
             loadSpreadsheetStocks();
             kendo.ui.progress($(document.body), false);
@@ -74,15 +81,36 @@ define(['./spreadsheetstocks',
         treeMapPortfolioCurrency.loadChart();
     }
 
+    function loadGridPortfolioDividend() {
+        gridPortfolioDividend.setId("#gridPortfolioDividend");
+        gridPortfolioDividend.setData();
+        gridPortfolioDividend.load();
+    }
+
+    function loadSpangridportfoliodividendinfo() {
+        $("#spangridportfoliodividendinfo").kendoTooltip({
+            content: "<p align=\"left\">Erhållna/förväntad utdelningar. !! Under utveckling !! </br> \
+                      Utdelningsinformation rörande kanadensiska innehav saknas för stunden. </br> \
+                      Förväntade utdelningar utgår från de antal aktier som presenteras i kalkylark portföljöversikt. </br> \
+                      För utländska innehav beräknas utdelningen utifrån dagens växelkurs och utan beräkning av den källskatt som dras. </br> \
+                      För utländska innehav som presenteras som erhållen utdelning är källskatten avdragen från beloppet. </br> \
+                      Du kan alltså inte förlita dig på att denna information är 100% tillförlitlig men den ska ge en god översiktlig bild över dina utdelningar för året.</p>",
+            position: "bottom",
+            width: 500
+        });
+    }
+
     function loadCharts() {
         $('#chartPortfolioContent').attr("class", "");
-        
+
+        loadGridPortfolioDividend();
         loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
         loadChartDonutPortfolioCurrency();
         loadTreeMapPortfolioCurrency();
         loadChartFunnelPortfolioIndustry();
         loadChartRadarPortfolioIndustry();
+        loadSpangridportfoliodividendinfo();
     }
 
     function saveSpreadsheetDataToTable() {

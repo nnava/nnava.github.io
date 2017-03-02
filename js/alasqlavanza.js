@@ -179,6 +179,13 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE Year = ' + year + ' AND ([Typ av transaktion] = "Insättning" OR [Typ av transaktion] = "Uttag")');
     }
 
+    function getReceivedDividendCurrentYearToDate(year, today, isin) {
+        return alasql('SELECT FIRST(Datum) AS Datum, FIRST(Antal) AS Antal, FIRST(Kurs) AS Kurs, MONTH(FIRST(Datum)) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE Year = ' + year + ' AND Datum <= "' + today + '" AND ISIN = "' + isin + '" AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse" OR [Värdepapperbeskrivning] = "Utländsk källskatt")')
+    }
+
     function getTotalDividend(year, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
@@ -484,6 +491,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getCourtageYears: getCourtageYears,
         getCourtageSumBuy: getCourtageSumBuy,
         getCourtageSumSell: getCourtageSumSell,
-        getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp
+        getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp,
+        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate
     };
 });

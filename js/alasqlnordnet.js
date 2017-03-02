@@ -112,6 +112,13 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        ORDER BY 1');
     }
 
+    function getReceivedDividendCurrentYearToDate(year, today, isin) {
+        return alasql('SELECT FIRST([Bokföringsdag]) AS Datum, FIRST(Antal) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST([Bokföringsdag])) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
+                       FROM NordnetData \
+                       WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
+                       AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" AND ISIN = "' + isin + '"');
+    }
+
     function getDividendMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
@@ -382,6 +389,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getCourtageYears: getCourtageYears,
         getBuyTransactionSumBelopp: getBuyTransactionSumBelopp,
         getSellTransactionSumBelopp: getSellTransactionSumBelopp,
-        getTransactionYears: getTransactionYears
+        getTransactionYears: getTransactionYears,
+        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate
     };
 });

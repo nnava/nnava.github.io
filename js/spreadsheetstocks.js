@@ -1,4 +1,4 @@
-define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoliodata, bankdataportfolio) {
+define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './alasqlcurrencydata'], function(alasqlportfoliodata, bankdataportfolio, alasqlstockdata, alasqlcurrencydata) {
 
     var spreadSheetData = [];
     var spreadSheetId;
@@ -24,20 +24,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
         if(currency === "SEK") { callback(1); return; };
         if(currencyArray[currency] != null) { callback(currencyArray[currency]); return; };
 
-        var queryParams = "&f=c4l1&s=#FX#SEK=X".replace("#FX#", currency.toUpperCase());
-        var queryTemplate = "select * from csv where url='" + historicalUrl + "?e=.csv" + queryParams + "'";
-
-        $.ajax({
-            url: yqlUrl,
-            data: {q: queryTemplate, format: 'json'}
-        }).done(function(output) {
-            var response = _.isString(output) ? JSON.parse(output) : output;
-            var currencyValue = response.query.results.row.col1;
-            currencyArray[currency] = currencyValue;
-            callback(currencyValue);
-        }).fail(function(err) {
-            console.log(err.responseText);
-        }); 
+        var currencyValue = alasqlcurrencydata.getCurrencyExchangeRateValue(currency);
+        currencyArray[currency] = currencyValue;
+        callback(currencyValue);
     }
 
     kendo.spreadsheet.defineFunction("yflastprice", function(callback, symbol){
@@ -271,8 +260,11 @@ define(['./alasqlportfoliodata', './bankdataportfolio'], function(alasqlportfoli
             if(bransch.length == 0)
                 bransch = "Övrigt";
 
+            var isin = alasqlstockdata.getISINFromNamn(result[i].cells["0"].value);
+
             data.push({
                 Värdepapper: result[i].cells["0"].value,
+                ISIN: isin,
                 Bransch: bransch,
                 Antal: result[i].cells["2"].value,
                 SenastePris: result[i].cells["3"].value.toFixed(2),

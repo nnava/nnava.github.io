@@ -98,3 +98,11 @@ span.k-loading-text
     padding-left: 0px;
     padding-right: 0px;
 }
+
+.k-grid {
+    font-family: "DejaVu Sans", "Arial", sans-serif;
+}
+
+.grid-ok-row {
+    background-color: #ced;
+}
