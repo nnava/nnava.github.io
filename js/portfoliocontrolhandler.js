@@ -103,14 +103,19 @@ define(['./spreadsheetstocks',
     function loadCharts() {
         $('#chartPortfolioContent').attr("class", "");
 
-        //loadGridPortfolioDividend();
         loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
         loadChartDonutPortfolioCurrency();
         loadTreeMapPortfolioCurrency();
         loadChartFunnelPortfolioIndustry();
-        loadChartRadarPortfolioIndustry();
-        //loadSpangridportfoliodividendinfo();
+        loadChartRadarPortfolioIndustry();        
+        
+        $(document).keypress(function(e) {
+            if(e.charCode == 103) {
+                loadSpangridportfoliodividendinfo();
+                loadGridPortfolioDividend();
+            }
+        });
     }
 
     function saveSpreadsheetDataToTable() {
