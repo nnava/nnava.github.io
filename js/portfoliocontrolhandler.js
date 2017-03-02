@@ -103,14 +103,14 @@ define(['./spreadsheetstocks',
     function loadCharts() {
         $('#chartPortfolioContent').attr("class", "");
 
-        loadGridPortfolioDividend();
+        //loadGridPortfolioDividend();
         loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
         loadChartDonutPortfolioCurrency();
         loadTreeMapPortfolioCurrency();
         loadChartFunnelPortfolioIndustry();
         loadChartRadarPortfolioIndustry();
-        loadSpangridportfoliodividendinfo();
+        //loadSpangridportfoliodividendinfo();
     }
 
     function saveSpreadsheetDataToTable() {
