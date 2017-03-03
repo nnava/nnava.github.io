@@ -19,56 +19,56 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function createNordnetDemoData() {
-        alasql('INSERT INTO NordnetData VALUES (44, "test_nordnet.csv", "2017-01-18", 100, "0", "825", "2017-01-07", "SE0000936478", "Aktie", 8.25, "2017-01-06", "", "UTDELNING", "SEK", "IJ", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (44, "test_nordnet.csv", "2017-01-18", "1 000", "0", "825", "2017-01-07", "SE0000936478", "Aktie", 8.25, "2017-01-06", "", "UTDELNING", "SEK", "IJ", "", "0");');
 
         // 2016
-        alasql('INSERT INTO NordnetData VALUES (43, "test_nordnet.csv", "2016-11-18", 78, "0", "-85.31", "2016-12-07", "US4781601046", "Aktie", 0, "2016-12-06", "", "UTL KUPSKATT", "SEK", "JNJ", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (42, "test_nordnet.csv", "2016-11-18", 78, "0", "568.7", "2016-12-07", "US4781601046", "Aktie", 0.8, "2016-12-06", "", "UTDELNING", "SEK", "JNJ", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (41, "test_nordnet.csv", "2016-11-22", 40, "0", "-47,52", "2016-11-04", "US95040Q1040", "Aktie", 0, "2016-11-21", "", "UTL KUPSKATT", "SEK", "HCN", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (40, "test_nordnet.csv", "2016-11-22", 40, "0", "316.8", "2016-11-04", "US95040Q1040", "Aktie", 0.86, "2016-11-21", "", "UTDELNING", "SEK", "HCN", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (39, "test_nordnet.csv", "2016-11-08", 5, "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "60");');
-        alasql('INSERT INTO NordnetData VALUES (38, "test_nordnet.csv", "2016-02-08", 5, "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "55");');
-        alasql('INSERT INTO NordnetData VALUES (37, "test_nordnet.csv", "2016-02-08", 5, "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "50");');
-        alasql('INSERT INTO NordnetData VALUES (36, "test_nordnet.csv", "2016-01-08", 5, "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "45");');
-        alasql('INSERT INTO NordnetData VALUES (35, "test_nordnet.csv", "2016-11-09", 0, "0", "15 000.00", "2016-11-09", "", "Aktie", 0, "2016-11-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (34, "test_nordnet.csv", "2016-10-09", 0, "0", "14 000.00", "2016-10-09", "", "Aktie", 0, "2016-10-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (33, "test_nordnet.csv", "2016-09-09", 0, "0", "12 000.00", "2016-09-09", "", "Aktie", 0, "2016-09-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (32, "test_nordnet.csv", "2016-08-09", 0, "0", "11 000.00", "2016-08-09", "", "Aktie", 0, "2016-08-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (31, "test_nordnet.csv", "2016-09-13", 19, "0", "-26.9", "2016-08-17", "US88579Y1010", "Aktie", 0, "2016-09-12", "", "UTL KUPSKATT", "SEK", "MMM", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (30, "test_nordnet.csv", "2016-09-13", 19, "0", "179.36", "2016-08-17", "US88579Y1010", "Aktie", 1.11, "2016-09-12", "", "UTDELNING", "SEK", "MMM", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (29, "test_nordnet.csv", "2016-05-03", 45, "0", "-25.66", "2016-04-06", "US00206R1023", "Aktie", 0, "2016-05-02", "", "UTL KUPSKATT", "SEK", "T", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (28, "test_nordnet.csv", "2016-05-03", 45, "0", "171.08", "2016-04-06", "US00206R1023", "Aktie", 0.48, "2016-05-02", "", "UTDELNING", "SEK", "T", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (27, "test_nordnet.csv", "2016-05-03", 115, "0", "-28.7", "2016-04-06", "US7561091049", "Aktie", 0, "2016-05-02", "", "UTL KUPSKATT", "SEK", "O", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (26, "test_nordnet.csv", "2016-05-03", 115, "0", "191.08", "2016-04-06", "US7561091049", "Aktie", 0.1905, "2016-05-02", "", "UTDELNING", "SEK", "O", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (25, "test_nordnet.csv", "2016-04-03", 115, "0", "-28.7", "2016-03-06", "US7561091049", "Aktie", 0, "2016-05-02", "", "UTL KUPSKATT", "SEK", "O", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (24, "test_nordnet.csv", "2016-04-03", 115, "0", "191.08", "2016-03-06", "US7561091049", "Aktie", 0.1905, "2016-05-02", "", "UTDELNING", "SEK", "O", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (23, "test_nordnet.csv", "2016-03-08", 5, "10.93", "-4 055.47", "2016-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "40");');
-        alasql('INSERT INTO NordnetData VALUES (22, "test_nordnet.csv", "2016-03-08", 5, "10.93", "-4 055.47", "2016-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "35");');
-        alasql('INSERT INTO NordnetData VALUES (21, "test_nordnet.csv", "2016-04-08", 18, "12.99", "-5 055.47", "2016-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "72");');
-        alasql('INSERT INTO NordnetData VALUES (20, "test_nordnet.csv", "2016-04-08", 11, "11.93", "-4 055.47", "2016-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "44");');
-        alasql('INSERT INTO NordnetData VALUES (19, "test_nordnet.csv", "2016-05-08", 18, "12.99", "-5 055.47", "2016-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "54");');
-        alasql('INSERT INTO NordnetData VALUES (18, "test_nordnet.csv", "2016-05-08", 11, "11.93", "-4 055.47", "2016-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "33");');
+        alasql('INSERT INTO NordnetData VALUES (43, "test_nordnet.csv", "2016-11-18", "78", "0", "-85.31", "2016-12-07", "US4781601046", "Aktie", 0, "2016-12-06", "", "UTL KUPSKATT", "SEK", "JNJ", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (42, "test_nordnet.csv", "2016-11-18", "78", "0", "568.7", "2016-12-07", "US4781601046", "Aktie", 0.8, "2016-12-06", "", "UTDELNING", "SEK", "JNJ", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (41, "test_nordnet.csv", "2016-11-22", "40", "0", "-47,52", "2016-11-04", "US95040Q1040", "Aktie", 0, "2016-11-21", "", "UTL KUPSKATT", "SEK", "HCN", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (40, "test_nordnet.csv", "2016-11-22", "40", "0", "316.8", "2016-11-04", "US95040Q1040", "Aktie", 0.86, "2016-11-21", "", "UTDELNING", "SEK", "HCN", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (39, "test_nordnet.csv", "2016-11-08", "5", "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "60");');
+        alasql('INSERT INTO NordnetData VALUES (38, "test_nordnet.csv", "2016-02-08", "5", "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "55");');
+        alasql('INSERT INTO NordnetData VALUES (37, "test_nordnet.csv", "2016-02-08", "5", "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "50");');
+        alasql('INSERT INTO NordnetData VALUES (36, "test_nordnet.csv", "2016-01-08", "5", "12.61", "-5 055.47", "2016-12-13", "US4781601046", "Aktie", 110.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "45");');
+        alasql('INSERT INTO NordnetData VALUES (35, "test_nordnet.csv", "2016-11-09", "0", "0", "15 000.00", "2016-11-09", "", "Aktie", 0, "2016-11-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (34, "test_nordnet.csv", "2016-10-09", "0", "0", "14 000.00", "2016-10-09", "", "Aktie", 0, "2016-10-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (33, "test_nordnet.csv", "2016-09-09", "0", "0", "12 000.00", "2016-09-09", "", "Aktie", 0, "2016-09-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (32, "test_nordnet.csv", "2016-08-09", "0", "0", "11 000.00", "2016-08-09", "", "Aktie", 0, "2016-08-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (31, "test_nordnet.csv", "2016-09-13", "19", "0", "-26.9", "2016-08-17", "US88579Y1010", "Aktie", 0, "2016-09-12", "", "UTL KUPSKATT", "SEK", "MMM", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (30, "test_nordnet.csv", "2016-09-13", "19", "0", "179.36", "2016-08-17", "US88579Y1010", "Aktie", 1.11, "2016-09-12", "", "UTDELNING", "SEK", "MMM", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (29, "test_nordnet.csv", "2016-05-03", "45", "0", "-25.66", "2016-04-06", "US00206R1023", "Aktie", 0, "2016-05-02", "", "UTL KUPSKATT", "SEK", "T", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (28, "test_nordnet.csv", "2016-05-03", "45", "0", "171.08", "2016-04-06", "US00206R1023", "Aktie", 0.48, "2016-05-02", "", "UTDELNING", "SEK", "T", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (27, "test_nordnet.csv", "2016-05-03", "115", "0", "-28.7", "2016-04-06", "US7561091049", "Aktie", 0, "2016-05-02", "", "UTL KUPSKATT", "SEK", "O", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (26, "test_nordnet.csv", "2016-05-03", "115", "0", "191.08", "2016-04-06", "US7561091049", "Aktie", 0.1905, "2016-05-02", "", "UTDELNING", "SEK", "O", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (25, "test_nordnet.csv", "2016-04-03", "115", "0", "-28.7", "2016-03-06", "US7561091049", "Aktie", 0, "2016-05-02", "", "UTL KUPSKATT", "SEK", "O", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (24, "test_nordnet.csv", "2016-04-03", "115", "0", "191.08", "2016-03-06", "US7561091049", "Aktie", 0.1905, "2016-05-02", "", "UTDELNING", "SEK", "O", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (23, "test_nordnet.csv", "2016-03-08", "5", "10.93", "-4 055.47", "2016-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "40");');
+        alasql('INSERT INTO NordnetData VALUES (22, "test_nordnet.csv", "2016-03-08", "5", "10.93", "-4 055.47", "2016-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "35");');
+        alasql('INSERT INTO NordnetData VALUES (21, "test_nordnet.csv", "2016-04-08", "18", "12.99", "-5 055.47", "2016-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "72");');
+        alasql('INSERT INTO NordnetData VALUES (20, "test_nordnet.csv", "2016-04-08", "11", "11.93", "-4 055.47", "2016-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "44");');
+        alasql('INSERT INTO NordnetData VALUES (19, "test_nordnet.csv", "2016-05-08", "18", "12.99", "-5 055.47", "2016-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "54");');
+        alasql('INSERT INTO NordnetData VALUES (18, "test_nordnet.csv", "2016-05-08", "11", "11.93", "-4 055.47", "2016-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "33");');
 
         // 2015
-        alasql('INSERT INTO NordnetData VALUES (17, "test_nordnet.csv", "2015-03-08", 5, "10.93", "-4 055.47", "2015-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "30");');
-        alasql('INSERT INTO NordnetData VALUES (16, "test_nordnet.csv", "2015-03-08", 5, "10.93", "-4 055.47", "2015-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "25");');
-        alasql('INSERT INTO NordnetData VALUES (15, "test_nordnet.csv", "2015-04-08", 18, "12.99", "-5 055.47", "2015-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "36");');
-        alasql('INSERT INTO NordnetData VALUES (14, "test_nordnet.csv", "2015-04-08", 11, "11.93", "-4 055.47", "2015-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "22");');
-        alasql('INSERT INTO NordnetData VALUES (13, "test_nordnet.csv", "2015-05-08", 18, "12.99", "-5 055.47", "2015-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "18");');
-        alasql('INSERT INTO NordnetData VALUES (12, "test_nordnet.csv", "2015-05-08", 11, "11.93", "-4 055.47", "2015-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "11");');
-        alasql('INSERT INTO NordnetData VALUES (11, "test_nordnet.csv", "2015-10-09", 0, "0", "14 000.00", "2015-10-09", "", "Aktie", 0, "2016-10-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (10, "test_nordnet.csv", "2015-09-09", 0, "0", "12 000.00", "2015-09-09", "", "Aktie", 0, "2016-09-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (9, "test_nordnet.csv", "2015-08-09", 0, "0", "11 000.00", "2015-08-09", "", "Aktie", 0, "2016-08-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (8, "test_nordnet.csv", "2015-05-08", 18, "12.99", "-5 055.47", "2015-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "SÅLT", "SEK", "T", "", "0");');
-        alasql('INSERT INTO NordnetData VALUES (7, "test_nordnet.csv", "2015-05-08", 11, "11.93", "-4 055.47", "2015-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "SÅLT", "SEK", "O", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (17, "test_nordnet.csv", "2015-03-08", "5", "10.93", "-4 055.47", "2015-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "30");');
+        alasql('INSERT INTO NordnetData VALUES (16, "test_nordnet.csv", "2015-03-08", "5", "10.93", "-4 055.47", "2015-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "25");');
+        alasql('INSERT INTO NordnetData VALUES (15, "test_nordnet.csv", "2015-04-08", "18", "12.99", "-5 055.47", "2015-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "36");');
+        alasql('INSERT INTO NordnetData VALUES (14, "test_nordnet.csv", "2015-04-08", "11", "11.93", "-4 055.47", "2015-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "22");');
+        alasql('INSERT INTO NordnetData VALUES (13, "test_nordnet.csv", "2015-05-08", "18", "12.99", "-5 055.47", "2015-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "18");');
+        alasql('INSERT INTO NordnetData VALUES (12, "test_nordnet.csv", "2015-05-08", "11", "11.93", "-4 055.47", "2015-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "11");');
+        alasql('INSERT INTO NordnetData VALUES (11, "test_nordnet.csv", "2015-10-09", "0", "0", "14 000.00", "2015-10-09", "", "Aktie", 0, "2016-10-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (10, "test_nordnet.csv", "2015-09-09", "0", "0", "12 000.00", "2015-09-09", "", "Aktie", 0, "2016-09-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (9, "test_nordnet.csv", "2015-08-09", "0", "0", "11 000.00", "2015-08-09", "", "Aktie", 0, "2016-08-09", "", "PREMIEINBETALNING", "SEK", "", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (8, "test_nordnet.csv", "2015-05-08", "18", "12.99", "-5 055.47", "2015-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "SÅLT", "SEK", "T", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (7, "test_nordnet.csv", "2015-05-08", "11", "11.93", "-4 055.47", "2015-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "SÅLT", "SEK", "O", "", "0");');
 
         // 2014
-        alasql('INSERT INTO NordnetData VALUES (6, "test_nordnet.csv", "2014-03-08", 5, "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "20");');
-        alasql('INSERT INTO NordnetData VALUES (5, "test_nordnet.csv", "2014-03-08", 5, "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "15");');
-        alasql('INSERT INTO NordnetData VALUES (4, "test_nordnet.csv", "2014-04-08", 18, "12.99", "-5 055.47", "2014-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "18");');
-        alasql('INSERT INTO NordnetData VALUES (3, "test_nordnet.csv", "2014-04-08", 11, "11.93", "-4 055.47", "2014-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "11");');
-        alasql('INSERT INTO NordnetData VALUES (2, "test_nordnet.csv", "2014-03-08", 5, "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "SÅLT", "SEK", "JNJ", "", "10");');
-        alasql('INSERT INTO NordnetData VALUES (1, "test_nordnet.csv", "2014-03-08", 5, "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "SÅLT", "SEK", "JNJ", "", "5");');
+        alasql('INSERT INTO NordnetData VALUES (6, "test_nordnet.csv", "2014-03-08", "5", "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "20");');
+        alasql('INSERT INTO NordnetData VALUES (5, "test_nordnet.csv", "2014-03-08", "5", "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "KÖPT", "SEK", "JNJ", "", "15");');
+        alasql('INSERT INTO NordnetData VALUES (4, "test_nordnet.csv", "2014-04-08", "18", "12.99", "-5 055.47", "2014-12-13", "US00206R1023", "Aktie", 33.01, "2016-12-12", "", "KÖPT", "SEK", "T", "", "18");');
+        alasql('INSERT INTO NordnetData VALUES (3, "test_nordnet.csv", "2014-04-08", "11", "11.93", "-4 055.47", "2014-12-13", "US7561091049", "Aktie", 48.28, "2016-12-12", "", "KÖPT", "SEK", "O", "", "11");');
+        alasql('INSERT INTO NordnetData VALUES (2, "test_nordnet.csv", "2014-03-08", "5", "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "SÅLT", "SEK", "JNJ", "", "10");');
+        alasql('INSERT INTO NordnetData VALUES (1, "test_nordnet.csv", "2014-03-08", "5", "10.93", "-4 055.47", "2014-12-13", "US4781601046", "Aktie", 101.12, "2016-12-12", "", "SÅLT", "SEK", "JNJ", "", "5");');
     }
 
     function createAvanzaDemoData() {

@@ -5,7 +5,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 [Id] NUMBER, \
                 Konto NVARCHAR(100), \
                 [Affärsdag] DATE, \
-                Antal DECIMAL, \
+                Antal NVARCHAR(50), \
                 Avgifter NVARCHAR(50), \
                 Belopp NVARCHAR(50), \
                 [Bokföringsdag] DATE, \
@@ -125,7 +125,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                         AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
                         AND Konto = "' + portfolioObject.Konto + '" \
                         GROUP BY ISIN, [Bokföringsdag]');
-                        
+
             result.forEach(function(object) {
                 if(object == null) return;
                 if(object.Antal == null) return;
