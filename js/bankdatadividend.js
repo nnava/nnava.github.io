@@ -121,7 +121,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
                             FIRST(Valuta) AS Valuta, \
                             SUM(Belopp::NUMBER) AS Belopp, SUM(Antal::NUMBER) AS Antal \
                             FROM ? \
-                            GROUP BY ISIN', [result]);
+                            GROUP BY ISIN, [Månad]', [result]);
     }
 
     function receivedDividendDataForeach(receivedDividendData) {

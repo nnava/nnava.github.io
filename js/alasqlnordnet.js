@@ -124,8 +124,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                         WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
                         AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
                         AND Konto = "' + portfolioObject.Konto + '" \
-                        GROUP BY ISIN');
-
+                        GROUP BY ISIN, [Bokföringsdag]');
+                        
             result.forEach(function(object) {
                 if(object == null) return;
                 if(object.Antal == null) return;
