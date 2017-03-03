@@ -123,8 +123,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                         FROM NordnetData \
                         WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
                         AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
-                        AND Konto = "' + portfolioObject.Konto + '" \
-                        GROUP BY ISIN, [Bokföringsdag]');
+                        AND Konto = "' + portfolioObject.Konto + '" AND ISIN != "" \
+                        GROUP BY ISIN, MONTH([Bokföringsdag])');
 
             result.forEach(function(object) {
                 if(object == null) return;
