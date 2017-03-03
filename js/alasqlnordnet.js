@@ -112,11 +112,39 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        ORDER BY 1');
     }
 
-    function getReceivedDividendCurrentYearToDate(year, today, isin) {
-        return alasql('SELECT FIRST([Bokföringsdag]) AS Datum, FIRST(REPLACE(Antal, " ", "")) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST([Bokföringsdag])) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
-                       FROM NordnetData \
-                       WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
-                       AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" AND ISIN = "' + isin + '"');
+    function getReceivedDividendCurrentYearToDate(year, today) {
+
+        var resultForReturn = [];
+        var portfoliosResult = getPortfolios();
+
+        portfoliosResult.forEach(function(portfolioObject) {
+
+            var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(ISIN) AS ISIN, FIRST([Bokföringsdag]) AS Datum, FIRST(REPLACE(Antal, " ", "")) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST([Bokföringsdag])) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
+                        FROM NordnetData \
+                        WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
+                        AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
+                        AND Konto = "' + portfolioObject.Konto + '" \
+                        GROUP BY ISIN');
+
+            result.forEach(function(object) {
+                if(object == null) return;
+                if(object.Antal == null) return;
+                
+                var newObject = new Object();
+                newObject.Värdepapper = object.Värdepapper;
+                newObject.ISIN = object.ISIN;
+                newObject.Datum = object.Datum;
+                newObject.Antal = object.Antal;
+                newObject.Kurs = object.Kurs;
+                newObject.Månad = object.Månad;
+                newObject.Belopp = object.Belopp;
+
+                resultForReturn.push(newObject);
+            });
+
+        });
+
+        return resultForReturn;
     }
 
     function getDividendMonthSumBelopp(year, month) {
