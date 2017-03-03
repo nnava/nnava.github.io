@@ -119,12 +119,14 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         portfoliosResult.forEach(function(portfolioObject) {
 
-            var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(ISIN) AS ISIN, FIRST([Bokföringsdag]) AS Datum, FIRST(REPLACE(Antal, " ", "")) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST([Bokföringsdag])) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
-                        FROM NordnetData \
-                        WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
-                        AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
-                        AND Konto = "' + portfolioObject.Konto + '" AND ISIN != "" \
-                        GROUP BY ISIN, MONTH([Bokföringsdag])');
+            var result = alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], FIRST(ISIN) AS ISIN, FIRST([Bokföringsdag]) AS Datum, \
+                                FIRST(REPLACE(Antal, " ", "")) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST([Bokföringsdag])) AS [Månad], \
+                                SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
+                                FROM NordnetData \
+                                WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
+                                AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
+                                AND Konto = "' + portfolioObject.Konto + '" AND ISIN != "" \
+                                GROUP BY ISIN, MONTH([Bokföringsdag])');
 
             result.forEach(function(object) {
                 if(object == null) return;
