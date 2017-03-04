@@ -180,7 +180,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getReceivedDividendCurrentYearToDate(year, today) {
-        return alasql('SELECT LAST([Värdepapperbeskrivning]) AS [Värdepapper], LAST(ISIN) AS ISIN, FIRST(Datum) AS Datum, SUM(Antal::NUMBER) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST(Datum)) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
+        return alasql('SELECT LAST([Värdepapperbeskrivning]) AS [Värdepapper], LAST(ISIN) AS ISIN, FIRST(Datum) AS Datum, LAST(Antal) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST(Datum)) AS [Månad], SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                        WHERE Year = ' + year + ' AND Datum <= "' + today + '" AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse" OR [Värdepapperbeskrivning] = "Utländsk källskatt") \
