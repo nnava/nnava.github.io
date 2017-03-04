@@ -113,7 +113,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
 
         var avanzaResult = receivedDividendDataForeach(avanzaReceivedDividendData);
         var nordnetResult = receivedDividendDataForeach(nordnetReceivedDividendData);
-
+        
         var result = avanzaResult.concat(nordnetResult);
         return alasql('SELECT FIRST(ISIN) AS ISIN, FIRST([Månad]) AS [Månad], \
                               FIRST([Värdepapper]) AS [Värdepapper], FIRST(Typ) AS Typ, \
@@ -121,7 +121,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
                               FIRST(Valuta) AS Valuta, \
                               SUM(Belopp::NUMBER) AS Belopp, SUM(Antal::NUMBER) AS Antal \
                               FROM ? \
-                              GROUP BY ISIN, [Månad]', [result]);
+                              GROUP BY ISIN, [Månad], [Värdepapper], Typ, Utdelningaktiedecimal, Utdelningsdag, Valuta', [result]);
     }
 
     function receivedDividendDataForeach(receivedDividendData) {
