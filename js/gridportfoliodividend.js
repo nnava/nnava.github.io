@@ -105,9 +105,9 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             pageable: false,
             columns: [
                 { field: "Månad", groupHeaderTemplate: "#= value.substring(2, value.length) #", hidden: true },
-                { field: "Name", title: "Värdepapper",  width: "200px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
-                { field: "Utdelningsdatum", title: "Datum", format: "{0:yyyy-MM-dd}", width: "50px" },
-                { field: "Typ", title: "Typ", width: "70px" },
+                { field: "Name", title: "Värdepapper",  width: "180px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
+                { field: "Utdelningsdatum", title: "Datum", format: "{0:yyyy-MM-dd}", width: "60px" },
+                { field: "Typ", title: "Typ", width: "80px" },
                 { field: "Antal", title: "Antal", format: "{0} st", width: "50px" },
                 { field: "Utdelningsbelopp", title: "Utdelning/aktie", width: "60px" }, 
                 { field: "Utdelningtotal", title: "Belopp", width: "100px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: "Totalt förväntat belopp: #= kendo.toString(sum, 'n2') # kr", groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
@@ -126,13 +126,15 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
     }
 
     function gridUtdelningtotalGroupFooterTemplate(e) {
+        var groupNameValue = e.Name.group.value;
+        var monthName = groupNameValue.substring(2, groupNameValue.length)
         var groupMonthValue = months.indexOf(e.Name.group.value);  
         var sum = kendo.toString(e.Utdelningtotal.sum, 'n2') + " kr";      
         if(currentMonth <= groupMonthValue) {
-            return "Förväntat belopp för månad: " + sum;
+            return "Förväntat belopp för "+ monthName + ": " + sum;
         }
         else {
-            return "Erhållet belopp för månad: " + sum;
+            return "Erhållet belopp för "+ monthName + ": " + sum;
         }        
     }
 

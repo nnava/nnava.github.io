@@ -109,13 +109,8 @@ define(['./spreadsheetstocks',
         loadTreeMapPortfolioCurrency();
         loadChartFunnelPortfolioIndustry();
         loadChartRadarPortfolioIndustry();        
-        
-        $(document).keypress(function(e) {
-            if(e.charCode == 103) {
-                loadSpangridportfoliodividendinfo();
-                loadGridPortfolioDividend();
-            }
-        });
+        loadSpangridportfoliodividendinfo();
+        loadGridPortfolioDividend();
     }
 
     function saveSpreadsheetDataToTable() {

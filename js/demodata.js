@@ -19,7 +19,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function createNordnetDemoData() {
-        alasql('INSERT INTO NordnetData VALUES (44, "test_nordnet.csv", "2017-01-18", "1 000", "0", "825", "2017-01-07", "SE0000936478", "Aktie", 8.25, "2017-01-06", "", "UTDELNING", "SEK", "IJ", "", "0");');
+        alasql('INSERT INTO NordnetData VALUES (44, "test_nordnet.csv", "2017-01-18", "1 000", "0", "8 250", "2017-01-07", "SE0000936478", "Aktie", 8.25, "2017-01-06", "", "UTDELNING", "SEK", "IJ", "", "0");');
 
         // 2016
         alasql('INSERT INTO NordnetData VALUES (43, "test_nordnet.csv", "2016-11-18", "78", "0", "-85.31", "2016-12-07", "US4781601046", "Aktie", 0, "2016-12-06", "", "UTL KUPSKATT", "SEK", "JNJ", "", "0");');
