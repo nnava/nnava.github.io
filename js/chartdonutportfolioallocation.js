@@ -3,6 +3,8 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
     var chartData;
     var chartId;
     var colorArray = colors.getColorArray();
+    var maxCountIndustryVisualChange = 8;
+    var maxCountAllocationVisualChange = 45;
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -24,13 +26,26 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
                 "category": entry.name,
                 "value": parseInt(entry.value),
                 "antal": 0,
-                "senastepris":0
+                "senastepris": 0
             });
         });
 
         donutData.push({ 
             name: "Bransch",
-            data: industryData
+            data: industryData,
+            labels: {
+                visible: function(e) {
+                    var percentage = (e.percentage * 100);
+                    if(industryData.length > maxCountIndustryVisualChange && percentage < 1)
+                        return false;
+                    else
+                        return true;
+                },
+                background: "transparent",
+                rotation: 320,
+                position: "center",
+                template: "#= category # - #= kendo.format('{0:P}', percentage) #"
+            }
         });
 
         resultAllocation.forEach(function(entry) {
@@ -45,12 +60,17 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
             });
         });
 
+        var labelDistance = 35;
+        if(allocationData.length > maxCountAllocationVisualChange)
+            labelDistance = 45;
+
         donutData.push({ 
             name: "Innehav",
             data: allocationData,
             labels: {
                 visible: true,
                 background: "transparent",
+                distance: labelDistance,
                 position: "outsideEnd",
                 template: "#= category # - #= kendo.format('{0:P}', percentage) #"
             }
@@ -60,6 +80,14 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
     }
 
     function loadChart() {
+
+        var legendVisible = true;
+        var seriesDefaultsPadding = 45;
+        if(chartData[1].data.length > maxCountAllocationVisualChange) {
+            legendVisible = false;
+            seriesDefaultsPadding = 30;
+        }
+            
         $(chartId).kendoChart({
             plotArea: {
                 background: ""
@@ -68,13 +96,20 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
                 text: "Fördelning innehav"
             },
             legend: {
-                position: "top"
+                visible: legendVisible,
+                position: "top",
+                margin: 4,
+                padding: 2,
+                labels: {
+                    font: "10px Verdana"
+                }
             },
             chartArea: {
                 background: ""
             },
             seriesDefaults: {
-                type: "donut"
+                type: "donut",
+                padding: 45
             },
             series: chartData,
             seriesColors: colorArray,
