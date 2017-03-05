@@ -67,7 +67,7 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
                        FIRST(ISIN) AS ISIN, FIRST(Typ) AS Typ, FIRST(Utdelningaktiedecimal) AS Utdelningaktiedecimal, \
                        FIRST(UtdelningaktieValuta) AS UtdelningaktieValuta, FIRST([Månad]) AS [Månad], \
                        FIRST(Utdelningsdag) AS Utdelningsdag, FIRST(Valuta) AS Valuta, SUM(Belopp::NUMBER) AS Belopp FROM ? \
-                       GROUP BY [Månad], ISIN', [resultForReturn]);
+                       GROUP BY [Värdepapper], ISIN, Typ, Utdelningaktiedecimal, UtdelningaktieValuta, Utdelningsdag, Valuta', [resultForReturn]);
     }
 
     function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, belopp) {
