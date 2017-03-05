@@ -40,14 +40,14 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
 
     function loadSpantaxinfo() {
         $("#spantaxinfo").kendoTooltip({
-            content: "<p align=\"left\">Påverkar ej diagrammen: <br/> \
+            content: "<div style=\"text-align:left\">Påverkar ej graferna: <br/> \
                       <ul>\
-                           <li>Utdelningar/kostnader - nuvarande år <br/> </li>\
-                           <li>Utdelningar/kostnader - total <br/> </li> \
+                           <li>Utdelningar/kostnader - nuvarande år</li> \
+                           <li>Utdelningar/kostnader - total</li> \
                            <li>Utdelning och utdelningstillväxt per år</li> \
-                      </ul></p>",
+                      </ul></div>",
             position: "bottom",
-            width: 350
+            width: 300
         });
     }
 

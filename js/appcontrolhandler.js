@@ -60,6 +60,7 @@ define(['./chartdonutexpenses',
         initChartSettingButtonGroups();
         
         setTimeout(function(){   
+            loadSpandividendyearinfo();
             loadChartDividendYearMonth();
             loadChartDividendCumulative();  
             loadChartDonutDividend(); 
@@ -68,18 +69,31 @@ define(['./chartdonutexpenses',
         setTimeout(function(){ 
             loadChartDividendTreemap();
             loadChartTransactionBuyLine();
-        }, 2000);
+        }, 1500);
 
         setTimeout(function(){    
             loadChartTransactionNetYearGrowth();           
             loadChartTransactionSellLine();            
-        }, 3000);
+        }, 2200);
 
         setTimeout(function(){                           
             loadChartCourtageYear();            
             loadChartYearDeposit();
             $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
-        }, 4000);
+        }, 3200);
+    }
+
+    function loadSpandividendyearinfo() {
+        $("#spandividendyearinfo").kendoTooltip({
+            content: "<div style=\"text-align:left\">Påverkar graferna: <br/> \
+                      <ul>\
+                           <li>Utdelning per månad/värdepapper - år</li> \
+                           <li>Treemap utdelningar - år</li> \
+                           <li>Donut utdelningar - år</li> \
+                      </ul></div>",
+            position: "bottom",
+            width: 300
+        });
     }
 
     function saveSettings() {
