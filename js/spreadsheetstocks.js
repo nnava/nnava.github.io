@@ -55,7 +55,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
 
                 if(retryNumber < 4){
                     retryNumber++;
-                    fetchLastTradePriceOnly(symbol, retryNumber, callback);
+                    setTimeout(function(){ fetchLastTradePriceOnly(symbol, retryNumber, callback); }, 50);
                     return;
                 }
 

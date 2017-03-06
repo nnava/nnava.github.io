@@ -30,7 +30,7 @@ define(['./spreadsheetstocks',
 
         setTimeout(function(){ 
             $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(true);
-        }, 1000);
+        }, 1500);
     }
 
     function loadDropdownDonutPortfolioAllocationSelectSort() {
