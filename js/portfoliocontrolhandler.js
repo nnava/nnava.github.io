@@ -27,6 +27,10 @@ define(['./spreadsheetstocks',
             loadSpreadsheetStocks();
             kendo.ui.progress($(document.body), false);
         }, 10);
+
+        setTimeout(function(){ 
+            $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(true);
+        }, 1000);
     }
 
     function loadDropdownDonutPortfolioAllocationSelectSort() {
@@ -120,6 +124,7 @@ define(['./spreadsheetstocks',
     return {
         loadSpreadsheetWithProgress: loadSpreadsheetWithProgress,
         saveSpreadsheetDataToTable: saveSpreadsheetDataToTable,
-        loadCharts: loadCharts
+        loadCharts: loadCharts,
+        loadSpreadsheetWithProgress: loadSpreadsheetWithProgress
     }
 });

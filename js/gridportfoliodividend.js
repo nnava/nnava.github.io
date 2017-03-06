@@ -127,7 +127,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
 
     function gridUtdelningtotalGroupFooterTemplate(e) {
         var groupNameValue = e.Name.group.value;
-        var monthName = groupNameValue.substring(2, groupNameValue.length)
+        var monthName = groupNameValue.substring(2, groupNameValue.length).toLowerCase()
         var groupMonthValue = months.indexOf(e.Name.group.value);  
         var sum = kendo.toString(e.Utdelningtotal.sum, 'n2') + " kr";      
         if(currentMonth <= groupMonthValue) {

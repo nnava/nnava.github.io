@@ -79,7 +79,6 @@ define(['./chartdonutexpenses',
         setTimeout(function(){                           
             loadChartCourtageYear();            
             loadChartYearDeposit();
-            $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
         }, 3200);
     }
 

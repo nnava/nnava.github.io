@@ -151,8 +151,15 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
         return JSON.stringify(parsedResult.data);
     }
 
+    function getFilesCount() {
+        var uploadControl = $(controlId).data("kendoUpload"),
+                            files = uploadControl.getFiles();
+        return files.length;
+    }
+
     return {
         setControlId: setControlId,
+        getFilesCount: getFilesCount,
         load: load
     }
 

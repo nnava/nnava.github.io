@@ -31,12 +31,26 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         window.onresize = resizeObjects;
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if(e.delegateTarget.hash === "#portfolio" && uploadControl.getFilesCount() !== 0)
+                runLoadSpreadhsheetStocksOnce();
+
             resizeObjects();
         });
 
         alasqlstockdata.createStockDataTable();
         alasqlstockdata.loadDataFromFileToTable();
     });
+
+    var runLoadSpreadhsheetStocksOnce = (function() {
+        var executed = false;
+        return function () {
+            if (!executed) {
+                executed = true;
+                $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
+                portfolioControlHandler.loadSpreadsheetWithProgress();
+            }
+        };
+    })();
 
     function loadSpantaxinfo() {
         $("#spantaxinfo").kendoTooltip({
@@ -104,17 +118,16 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
     });
 
     document.getElementById('btnLoadSpreadsheetPortfolio').addEventListener('click', function() {
+        loadSpreadsheetPortfolio();
+    });
+
+    function loadSpreadsheetPortfolio() {
         kendo.ui.progress($(document.body), true);
         
         setTimeout(function(){               
             portfolioControlHandler.loadSpreadsheetWithProgress();
-
-            setTimeout(function(){ 
-                $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(true);
-            }, 1000);
-
         }, 1);
-    });
+    }
 
     document.getElementById('btnReloadPortfolio').addEventListener('click', function() {
 
@@ -135,6 +148,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         setTimeout(function(){               
             demodata.createDemoData();
             appControlHandler.loadControls();
+            $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
         }, 1);
 
     });
