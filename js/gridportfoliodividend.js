@@ -54,14 +54,16 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
     }
 
     function load() {
+        var today = new Date().toISOString().slice(0, 10);
+
         $(gridId).kendoGrid({
-            toolbar: ["pdf"],
+            toolbar: ["excel", "pdf"],
             excel: {
-                fileName: "förväntade_utdelningar.xlsx",
+                fileName: "förväntade_utdelningar" + "_" + today + ".xlsx",
                 filterable: true
             },
             pdf: {
-                fileName: "förväntade_utdelningar.pdf",
+                fileName: "förväntade_utdelningar" + "_" + today + ".pdf",
                 allPages: true,
                 avoidLinks: true,
                 paperSize: "A4",
@@ -88,11 +90,13 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 },
                 group: {
                     field: "Månad", dir: "asc", aggregates: [
+                        { field: "Månad", aggregate: "sum" },
                         { field: "Name", aggregate: "count" },
                         { field: "Utdelningtotal", aggregate: "sum"}
                     ]
                 },
-                aggregate: [ { field: "Name", aggregate: "count" },
+                aggregate: [ { field: "Månad", aggregate: "sum" },
+                             { field: "Name", aggregate: "count" },
                              { field: "Utdelningtotal", aggregate: "sum" }
                 ],
                 sort: ({ field: "Utdelningsdatum", dir: "asc" }),                        
@@ -111,12 +115,54 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 { field: "Antal", title: "Antal", format: "{0} st", width: "50px" },
                 { field: "Utdelningsbelopp", title: "Utdelning/aktie", width: "60px" }, 
                 { field: "Utdelningtotal", title: "Belopp", width: "100px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: "Totalt förväntat belopp: #= kendo.toString(sum, 'n2') # kr", groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
-            ]
+            ],
+            excelExport: function(e) {
+                var sheet = e.workbook.sheets[0];
+                for (var i = 0; i < sheet.columns.length; i++) {
+                    sheet.columns[i].width = getExcelColumnWidth(i);
+                }
+            }
         });
     }
 
+    function getExcelColumnWidth(index) {
+        var columnWidth = 150;
+        
+        switch(index) {
+            case 0: // Månad
+                columnWidth = 80;
+                break;
+            case 1: // Värdepapper
+                columnWidth = 220;
+                break;   
+            case 2: // Datum
+                columnWidth = 80;
+                break;     
+            case 3: // Typ
+                columnWidth = 130;
+                break;     
+            case 4: // Antal
+                columnWidth = 70;
+                break;  
+            case 5: // Utdelning/aktie
+                columnWidth = 120;
+                break;  
+            case 6: // Belopp
+                columnWidth = 260;
+                break;                               
+            default:
+                columnWidth = 150;
+        }
+
+        return columnWidth;
+    }
+
     function gridNameGroupFooterTemplate(e) {
-        var groupMonthValue = months.indexOf(e.Name.group.value);        
+        var groupNameValue = e.Månad.sum;
+        if(typeof e.Name.group !== 'undefined')
+            groupNameValue = e.Name.group.value;
+
+        var groupMonthValue = months.indexOf(groupNameValue);        
         if(currentMonth <= groupMonthValue) {
             return "Antal förväntade utdelningar: " + e.Name.count + " st";
         }
@@ -126,15 +172,18 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
     }
 
     function gridUtdelningtotalGroupFooterTemplate(e) {
-        var groupNameValue = e.Name.group.value;
-        var monthName = groupNameValue.substring(2, groupNameValue.length).toLowerCase()
-        var groupMonthValue = months.indexOf(e.Name.group.value);  
+        var groupNameValue = e.Månad.sum;
+        if(typeof e.Name.group !== 'undefined')
+            groupNameValue = e.Name.group.value;
+
+        var monthName = groupNameValue.substring(3, groupNameValue.length).toLowerCase();
+        var groupMonthValue = months.indexOf(groupNameValue);  
         var sum = kendo.toString(e.Utdelningtotal.sum, 'n2') + " kr";      
         if(currentMonth <= groupMonthValue) {
-            return "Förväntat belopp för "+ monthName + ": " + sum;
+            return "Förväntat belopp för " + monthName + ": " + sum;
         }
         else {
-            return "Erhållet belopp för "+ monthName + ": " + sum;
+            return "Erhållet belopp för " + monthName + ": " + sum;
         }        
     }
 
