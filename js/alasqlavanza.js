@@ -235,7 +235,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
             var resultNameQuery = alasql.compile('SELECT DISTINCT [Värdepapperbeskrivning] \
                        FROM AvanzaData \
-                       WHERE [ISIN] = "' + object.ISIN + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
+                       WHERE [ISIN] = "' + object.ISIN + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt" AND [Typ av transaktion] != "Prelskatt utdelningar"');
 
             var resultName = resultNameQuery();
 
@@ -269,7 +269,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             var avanzaVardepapperQuery = alasql.compile('SELECT DISTINCT [Värdepapperbeskrivning] \
                        FROM AvanzaData \
                        JOIN AvanzaPortfolio USING Konto, Konto \
-                       WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
+                       WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt" AND [Typ av transaktion] != "Prelskatt utdelningar"');
 
             var resultName = avanzaVardepapperQuery();
 
