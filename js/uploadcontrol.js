@@ -109,9 +109,19 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    
                 else {
-                    var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
-                    alasql('INSERT INTO NordnetData \
-                    SELECT [Id], "' + value.name + '" AS Konto, [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext, [Totalt antal] FROM ?', [nordnetData]);
+                    var isFileNordnetNorway = readerResultString.startsWith("Id;Bokføringsdag;Handelsdag");
+                    
+                    if(isFileNordnetNorway) {
+                        var nordnetData = JSON.parse(getBankSourceJsonData(replaceNorwegianTransaktionstyperToSwedish(readerResultString)));
+                        alasql('INSERT INTO NordnetData \
+                        SELECT [Id], "' + value.name + '" AS Konto, Handelsdag AS [Affärsdag], Antall AS Antal, Avgifter, [Beløp] AS Belopp, [Bokføringsdag] AS [Bokföringsdag], ISIN, Instrumenttyp, Kurs, [Oppgjørsdag] AS Likviddag, [Makuleringsdato] AS Makuleringsdatum, [Transaksjonstype] AS Transaktionstyp, Valuta, Verdipapir AS [Värdepapper], Transaksjonstekst AS Transaktionstext, [Totalt antall] AS [Totalt antal] FROM ?', [nordnetData]);
+                    }
+                    else {
+                        var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
+                        alasql('INSERT INTO NordnetData \
+                        SELECT [Id], "' + value.name + '" AS Konto, [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext, [Totalt antal] FROM ?', [nordnetData]);
+                    }
+                    
                     alasql('INSERT INTO NordnetPortfolio VALUES (' + index + ', "' + value.name + '");');
                 }
 
@@ -123,6 +133,34 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
             timeoutValue += 100;
         }); 
     };
+
+    function replaceNorwegianTransaktionstyperToSwedish(stringValue) {
+        stringValue = replaceAll(stringValue, "UTBYTTE", "UTDELNING");
+        stringValue = replaceAll(stringValue, "INNSKUDD KONTANTER", "UTDELNING");
+        stringValue = replaceAll(stringValue, "MAK UTBYTTE", "MAK UTDELNING");
+        stringValue = replaceAll(stringValue, "KJØPT", "KÖPT");
+        stringValue = replaceAll(stringValue, "SALG", "SÅLT");
+        stringValue = replaceAll(stringValue, "UTTAK", "UTTAG");
+        stringValue = replaceAll(stringValue, "INNSKUDD", "INSÄTTNING");
+        stringValue = replaceAll(stringValue, "PREMIEINNBETALING", "PREMIEINBETALNING");
+        stringValue = replaceAll(stringValue, "KUPONGSKATT", "UTL KUPSKATT");
+        stringValue = replaceAll(stringValue, "MAK UTENLANDSK KILDE", "MAK UTL KUPSKATT");
+        stringValue = replaceAll(stringValue, "OMVANDLING INNLEGG VP", "OMVANDLING INLÄGG VP");
+        stringValue = replaceAll(stringValue, "UTTAK VP RESULTAT", "UTTAG VP RESULTAT");
+        stringValue = replaceAll(stringValue, "EMISJON INNLEGG VP", "EM INLÄGG VP");
+        stringValue = replaceAll(stringValue, "BYTTE INNLEGG VP", "BYTE INLÄGG VP");
+        stringValue = replaceAll(stringValue, "SPLITT INNLEGG VP", "SPLIT INLÄGG VP	");
+        stringValue = replaceAll(stringValue, "INNLEGG VP", "INLÄGG VP");
+        stringValue = replaceAll(stringValue, "INNLEGG FISJON", "INLÄGG FISSION");
+        stringValue = replaceAll(stringValue, "TILDELING INNLEGG VP", "TECKNING INLÄGG VP");
+        stringValue = replaceAll(stringValue, "BYTTE UTTAK VP", "BYTE UTTAG VP");
+        stringValue = replaceAll(stringValue, "MAK SPLITT INNLEGG VP", "MAK SPLIT INLÄGG VP");
+        stringValue = replaceAll(stringValue, "MAK SPLITT UTTAK VP", "MAK SPLIT UTTAG VP");
+        stringValue = replaceAll(stringValue, "SPLITT UTTAK VP", "SPLIT UTTAG VP");
+        stringValue = replaceAll(stringValue, "UTTAK VP", "UTTAG VP");
+        stringValue = replaceAll(stringValue, "TILDELING INNLEGG", "TILLDELNING INLÄGG");
+        return stringValue;
+    }
 
     function replaceAll(str, find, replace) {
         return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
