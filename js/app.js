@@ -5,6 +5,9 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
 
     $(document).ready(function() {
 
+        uploadControl.setControlId('#dataFiles');
+        uploadControl.load();
+
         $(".inputMonthNumber").kendoNumericTextBox({
             format: "#,0 kr",
             change: function() {
@@ -14,15 +17,13 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             }
         });
 
+        setInputMonthNumberFromCookie();
+        setCheckboxAutoLoadFromCookie();
+
         $(".inputMonthNumberParent").kendoNumericTextBox({
             format: "#,0 kr"
         });
-        
-        setInputMonthNumberFromCookie();
 
-        uploadControl.setControlId('#dataFiles');
-        uploadControl.load();
-                
         alasql.options.cache = false;
         kendo.culture("se-SE");
 
@@ -65,6 +66,12 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         });
     }
 
+    function setCheckboxAutoLoadFromCookie() {
+        var checkboxAutoLoadCookie = appCookies.getCookieValue('nnava_cbxautoload');
+        if(checkboxAutoLoadCookie == null) return;
+        $('#checkboxAutoLoad').prop('checked', checkboxAutoLoadCookie);
+    }
+
     function setInputMonthNumberFromCookie() {
         var inputMonthNumberCookie = appCookies.getCookieValue('nnava_inputmonthnumbers');
         if(inputMonthNumberCookie == null) return;
@@ -85,6 +92,10 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
 
         appCookies.createCookie('nnava_inputmonthnumbers', JSON.stringify(inputMonthNumber), 365);
     }
+
+    document.getElementById('checkboxAutoLoad').addEventListener('change', function(e) {
+        appCookies.createCookie('nnava_cbxautoload', e.target.checked, 365);
+    });
     
     function resizeObjects() {
         kendo.resize($("#chartYearDeposit"));
@@ -136,7 +147,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.ui.progress($(document.body), true);
         
         setTimeout(function(){               
-            appControlHandler.loadControls();
+            appControlHandler.loadControlsFull();
         }, 1);
 
     });
@@ -147,7 +158,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         
         setTimeout(function(){               
             demodata.createDemoData();
-            appControlHandler.loadControls();
+            appControlHandler.loadControlsFull();
             $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
         }, 1);
 

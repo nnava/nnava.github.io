@@ -35,17 +35,14 @@ define(['./chartdonutexpenses',
      alasqlcurrencydata,
      currencydataservice) {
 
-    function loadControls() {
-
-        alasql.options.cache = false;
-
+    function enableExportReloadButtons() {
         $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
         $("#btnExportToPng").kendoButton().data("kendoButton").enable(true);
         $("#btnExportToSvg").kendoButton().data("kendoButton").enable(true);
         $("#btnReloadPortfolio").kendoButton().data("kendoButton").enable(true);
+    }
 
-        $('#mainContainer').attr("class", "container-fluid");
-
+    function loadControlsWithTimeout() {
         loadMultiselectorPortfolio();
         loadDropdownDividendYear();
         loadDropdownDonutDividendSort();              
@@ -80,6 +77,27 @@ define(['./chartdonutexpenses',
             loadChartCourtageYear();            
             loadChartYearDeposit();
         }, 3200);
+    }
+
+    function loadControlsFull() {
+
+        alasql.options.cache = false;
+        enableExportReloadButtons();
+        $('#mainContainer').attr("class", "container-fluid");
+
+        loadControlsWithTimeout();
+    }
+
+    function loadControlsUploadComplete() {
+        var isAutoLoadChecked = $('#checkboxAutoLoad').is(":checked");
+        if(isAutoLoadChecked) {
+            loadControlsFull();
+        } else {
+            alasql.options.cache = false;
+            loadMultiselectorPortfolio();
+            $("#btnReloadPortfolio").kendoButton().data("kendoButton").enable(true);
+            kendo.ui.progress($(document.body), false);
+        }
     }
 
     function loadSpandividendyearinfo() {
@@ -268,7 +286,8 @@ define(['./chartdonutexpenses',
     }
 
     return {
-        loadControls: loadControls,
+        loadControlsFull: loadControlsFull,
+        loadControlsUploadComplete: loadControlsUploadComplete,
         loadChartDividendExpenses: loadChartDividendExpenses,
         loadChartDonutExpenses: loadChartDonutExpenses,
         loadChartDividendYearMonth: loadChartDividendYearMonth,

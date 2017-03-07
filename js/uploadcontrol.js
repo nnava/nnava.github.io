@@ -93,7 +93,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasqlbankdataexception.addNordnetRowsForDividend();
                     alasqlbankdataexception.addAvanzaRowsStocksSpecial();
 
-                    setTimeout(function(){  appControlHandler.loadControls(); }, 10);                                       
+                    setTimeout(function(){  appControlHandler.loadControlsUploadComplete(); }, 10);                                       
                 }
             }
  
@@ -171,15 +171,12 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
     }
 
     function replaceToNeededCharacters(stringValue) {
-
         stringValue = replaceAll(stringValue, "/", "");
         stringValue = replaceAll(stringValue, ",", ".");
-
         return stringValue;
     }
 
     function getBankSourceJsonData(stringValue) {
-
         var config = {
             header: true,
             skipEmtyLines: true
