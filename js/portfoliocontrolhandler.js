@@ -94,7 +94,6 @@ define(['./spreadsheetstocks',
     function loadSpangridportfoliodividendinfo() {
         $("#spangridportfoliodividendinfo").kendoTooltip({
             content: "<p align=\"left\">Erhållna/förväntad utdelningar. !! Under utveckling !! </br> \
-                      Utdelningsinformation rörande kanadensiska innehav saknas för stunden. </br> \
                       Förväntade utdelningar utgår från de antal aktier som presenteras i kalkylark portföljöversikt. </br> \
                       För utländska innehav beräknas utdelningen utifrån dagens växelkurs och utan beräkning av den källskatt som dras. </br> \
                       För utländska innehav som presenteras som erhållen utdelning är källskatten avdragen från beloppet. </br> \
