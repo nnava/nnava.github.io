@@ -109,9 +109,9 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             pageable: false,
             columns: [
                 { field: "Månad", groupHeaderTemplate: "#= value.substring(2, value.length) #", hidden: true },
-                { field: "Name", title: "Värdepapper",  width: "180px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
-                { field: "Utdelningsdatum", title: "Datum", format: "{0:yyyy-MM-dd}", width: "60px" },
-                { field: "Typ", title: "Typ", width: "80px" },
+                { field: "Name", title: "Värdepapper",  width: "170px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
+                { field: "Utdelningsdatum", title: "Utd/Handl. utan utd", format: "{0:yyyy-MM-dd}", width: "75px" },
+                { field: "Typ", title: "Typ", width: "70px" },
                 { field: "Antal", title: "Antal", format: "{0} st", width: "50px" },
                 { field: "Utdelningsbelopp", title: "Utdelning/aktie", width: "60px" }, 
                 { field: "Utdelningtotal", title: "Belopp", width: "100px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: "Totalt förväntat belopp: #= kendo.toString(sum, 'n2') # kr", groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },

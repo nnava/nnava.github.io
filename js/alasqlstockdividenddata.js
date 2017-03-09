@@ -24,16 +24,16 @@ define([], function() {
     };
 
     function getUpcomingDividendsForYear(year, today, isin) {
-        return alasql('SELECT typ, utdelningaktiedecimal, MONTH(utdelningsdag) AS [Månad], utdelningsdag \
+        return alasql('SELECT typ, utdelningaktiedecimal, MONTH(handlasutanutdelning) AS [Månad], handlasutanutdelning \
                        FROM StockDividendData \
-                       WHERE YEAR(utdelningsdag) = ' + year + ' AND utdelningsdag >= "' + today + '" \
+                       WHERE YEAR(handlasutanutdelning) = ' + year + ' AND handlasutanutdelning >= "' + today + '" \
                        AND ISIN = "' + isin + '"');
     }
 
-    function getDividendTyp(utdelningsdag, isin) {
+    function getDividendTyp(handlasutanutdelning, isin) {
         return alasql('SELECT VALUE typ \
                        FROM StockDividendData \
-                       WHERE utdelningsdag = "' + utdelningsdag + '" \
+                       WHERE handlasutanutdelning = "' + handlasutanutdelning + '" \
                        AND ISIN = "' + isin + '"');
     }
 

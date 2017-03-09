@@ -16,7 +16,8 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
             var stockUpcomingDividendData = alasqlstockdividenddata.getUpcomingDividendsForYear(currentYear, today, portfolioObject.ISIN);
             stockUpcomingDividendData.forEach(function(stockDividendDataObject) {
                 if(stockDividendDataObject == null) return;
-                if(stockDividendDataObject.utdelningsdag == null) return;
+                if(stockDividendDataObject.handlasutanutdelning == null) return;
+                if(stockDividendDataObject.utdelningaktiedecimal == 0) return;
 
                 var valutaKurs = 1;
                 var currency = portfolioObject.Valuta;
@@ -37,7 +38,7 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
                                                           stockDividendDataObject.utdelningaktiedecimal, 
                                                           utdelningaktieMedValuta,
                                                           stockDividendDataObject.Månad, 
-                                                          stockDividendDataObject.utdelningsdag,
+                                                          stockDividendDataObject.handlasutanutdelning,
                                                           portfolioObject.Valuta,
                                                           belopp);
                 resultForReturn.push(newObject);
