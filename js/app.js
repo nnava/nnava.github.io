@@ -2,6 +2,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
      function(uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata, portfolioControlHandler) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
+    var today = new Date().toISOString().slice(0, 10);
 
     $(document).ready(function() {
 
@@ -216,11 +217,8 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         });
     });
 
-    document.getElementById('btnExportToPdf').addEventListener('click', function() {
-
-        var today = new Date().toISOString().slice(0, 10);
-
-        kendo.drawing.drawDOM($(".content-wrapper"))
+    function DOMToPdf(id, fileName) {
+        kendo.drawing.drawDOM($(id))
         .then(function(group) {
             return kendo.drawing.exportPDF(group, {
                 paperSize: "auto",
@@ -230,9 +228,20 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         .done(function(data) {
             kendo.saveAs({
                 dataURI: data,
-                fileName: "nnava_" + today + ".pdf"
+                fileName: fileName
             });
         });
+    }
+
+    document.getElementById('btnExportToPdf').addEventListener('click', function() {
+        var fileName = "nnava_" + today + ".pdf";
+        DOMToPdf(".content-wrapper", fileName);
+    });
+
+    $(".export-DOMToPdf").click(function() {
+        var chartId = "#" + this.id.toString().replace("btn-", "").replace("ToPdf", "");
+        var chartFilename = getChartFilename(chartId) + ".pdf";
+        DOMToPdf(chartId, chartFilename);
     });
 
     $(".export-chartToSvg").click(function() {
@@ -307,8 +316,8 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
     });
 
     function getChartFilename(chartId) {
-        var today = new Date().toISOString().slice(0, 10);
         var chartFilename = "NOTFOUND";
+        chartId = chartId.replace("#", "");
         
         switch(chartId) {
             case "chartDividendExpensesMonth":

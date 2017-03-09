@@ -394,6 +394,7 @@
                                         <div class="panel-heading clearfix">
                                         <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap utdelningar - år</h4>
                                             <div class="btn-group pull-right">
+                                                <button id="btn-treeMapDividendToPdf" type="button" class="k-button btn-xs k-primary export-DOMToPdf" title="Till PDF">Till PDF</button>
                                                 <button id="btn-treeMapDividendToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg" title="Till SVG">Till SVG</button>
                                                 <button id="btn-treeMapDividendToImg" type="button" class="k-button btn-xs k-primary export-DOMToImg" title="Till PNG">Till PNG</button>
                                             </div>
@@ -619,6 +620,7 @@
                                     <div class="panel-heading clearfix">
                                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap fördelning valuta</h4>
                                         <div class="btn-group pull-right">
+                                            <button id="btn-treeMapPortfolioCurrencyToPdf" type="button" class="k-button btn-xs k-primary export-DOMToPdf" title="Till PDF">Till PDF</button>
                                             <button id="btn-treeMapPortfolioCurrencyToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg" title="Till SVG">Till SVG</button>
                                             <button id="btn-treeMapPortfolioCurrencyToImg" type="button" class="k-button btn-xs k-primary export-DOMToImg" title="Till PNG">Till PNG</button>
                                         </div>
@@ -813,7 +815,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 133;
+            var versionNumber = 134;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
