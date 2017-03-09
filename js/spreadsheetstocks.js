@@ -1,4 +1,5 @@
-define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './alasqlcurrencydata'], function(alasqlportfoliodata, bankdataportfolio, alasqlstockdata, alasqlcurrencydata) {
+define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './alasqlcurrencydata', './alasqllocalization'], 
+    function(alasqlportfoliodata, bankdataportfolio, alasqlstockdata, alasqlcurrencydata, alasqllocalization) {
 
     var spreadSheetData = [];
     var spreadSheetId;
@@ -10,18 +11,19 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
     var stockLastTradePriceArray = [];
     var skipRunningFunctions = false;
 
-    kendo.spreadsheet.defineFunction("yfcurrencytosek", function(callback, currency){
-        fetchCurrencyToSek(currency, function(value){
+    kendo.spreadsheet.defineFunction("YFCURRENCYTOUSERCURRENCY", function(callback, currency){
+        fetchCurrencyToUserCurrency(currency, function(value){
             callback(value);
         });
     }).argsAsync([
         [ "currency", "string" ]
     ]);
 
-    function fetchCurrencyToSek(currency, callback) {
+    function fetchCurrencyToUserCurrency(currency, callback) {
 
         if(skipRunningFunctions) return;
-        if(currency === "SEK") { callback(1); return; };
+        var userCurrency = alasqllocalization.getUserCurrency();
+        if(currency === userCurrency) { callback(1); return; };
         if(currencyArray[currency] != null) { callback(currencyArray[currency]); return; };
 
         var currencyValue = alasqlcurrencydata.getCurrencyExchangeRateValue(currency);
@@ -119,7 +121,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         var indexCount = 1;
         portfolioData.forEach(function(object) {
 
-            var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOSEK(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
+            var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOUSERCURRENCY(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "C#rowCount#*D#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
 
             spreadSheetData.push({

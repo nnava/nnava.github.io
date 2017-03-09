@@ -1,13 +1,16 @@
-define([], function() {
+define(['./alasqllocalization'], function(alasqllocalization) {
 
     var yqlUrl = 'https://query.yahooapis.com/v1/public/yql';
     var historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
-    var currencyArray = ['USD', 'CAD', 'EUR', 'NOK', 'DKK'];
+    var currencyArray = ['USD', 'CAD', 'EUR', 'NOK', 'SEK', 'DKK'];
 
     function fillCurrencyDataFromYahooFinance() {
+        var userCurrency = alasqllocalization.getUserCurrency();
 
         currencyArray.forEach(function(currency) {
-            var queryParams = "&f=c4l1&s=#FX#SEK=X".replace("#FX#", currency);
+            if(userCurrency == currency) return;
+            
+            var queryParams = ("&f=c4l1&s=#FX#" + userCurrency + "=X").replace("#FX#", currency);
             var queryTemplate = "select * from csv where url='" + historicalUrl + "?e=.csv" + queryParams + "'";
 
             $.ajax({

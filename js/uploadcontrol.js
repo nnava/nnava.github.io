@@ -1,5 +1,5 @@
-define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet', './alasqlbankdataexception'], 
-    function(Papa, appControlHandler, alasqlavanza, alasqlnordnet, alasqlbankdataexception) {
+define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet', './alasqlbankdataexception', './applocalization'], 
+    function(Papa, appControlHandler, alasqlavanza, alasqlnordnet, alasqlbankdataexception, applocalization) {
   
     var controlId;
 
@@ -104,6 +104,8 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                 readerResultString = replaceToNeededCharacters(readerResultString);
 
                 if(isFileAvanza) {
+                    applocalization.loadLanguage("se");
+
                     alasql('INSERT INTO AvanzaData \
                     SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, ISIN, Konto, Kurs, [Typ av transaktion], Valuta, [Värdepapperbeskrivning] FROM CSV(?, {separator:";"})', [readerResultString]);
                     alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
@@ -112,11 +114,15 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     var isFileNordnetNorway = readerResultString.startsWith("Id;Bokføringsdag;Handelsdag");
                     
                     if(isFileNordnetNorway) {
+                        applocalization.loadLanguage("no");
+
                         var nordnetData = JSON.parse(getBankSourceJsonData(replaceNorwegianTransaktionstyperToSwedish(readerResultString)));
                         alasql('INSERT INTO NordnetData \
                         SELECT [Id], "' + value.name + '" AS Konto, Handelsdag AS [Affärsdag], Antall AS Antal, Avgifter, [Beløp] AS Belopp, [Bokføringsdag] AS [Bokföringsdag], ISIN, Instrumenttyp, Kurs, [Oppgjørsdag] AS Likviddag, [Makuleringsdato] AS Makuleringsdatum, [Transaksjonstype] AS Transaktionstyp, Valuta, Verdipapir AS [Värdepapper], Transaksjonstekst AS Transaktionstext, [Totalt antall] AS [Totalt antal] FROM ?', [nordnetData]);
                     }
                     else {
+                        applocalization.loadLanguage("se");
+                        
                         var nordnetData = JSON.parse(getBankSourceJsonData(readerResultString));
                         alasql('INSERT INTO NordnetData \
                         SELECT [Id], "' + value.name + '" AS Konto, [Affärsdag], Antal, Avgifter, Belopp, [Bokföringsdag], ISIN, Instrumenttyp, Kurs, Likviddag, Makuleringsdatum, Transaktionstyp, Valuta, [Värdepapper], Transaktionstext, [Totalt antal] FROM ?', [nordnetData]);

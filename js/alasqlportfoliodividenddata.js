@@ -1,11 +1,12 @@
-define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividend', './alasqlcurrencydata'], 
-    function(alasqlstockdividenddata, alasqlportfoliodata, bankdatadividend, alasqlcurrencydata) {
+define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividend', './alasqlcurrencydata', './alasqllocalization'], 
+    function(alasqlstockdividenddata, alasqlportfoliodata, bankdatadividend, alasqlcurrencydata, alasqllocalization) {
 
     var currentYear = new Date().getFullYear();
     var today = new Date().toISOString().slice(0, 10);
 
     function getPortfolioDividends(year) {
         var result = alasqlportfoliodata.getPortfolioData();
+        var userCurrency = alasqllocalization.getUserCurrency();
 
         var resultForReturn = [];
         result.forEach(function(portfolioObject) {
@@ -21,7 +22,7 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
                 var currency = portfolioObject.Valuta;
                 var utdelningaktieMedValuta = (stockDividendDataObject.utdelningaktiedecimal + " " + currency).replace(".", ",");
 
-                if(portfolioObject.Valuta !== "SEK") {
+                if(portfolioObject.Valuta !== userCurrency) {
                     valutaKurs = alasqlcurrencydata.getCurrencyExchangeRateValue(currency);
                 }
 
