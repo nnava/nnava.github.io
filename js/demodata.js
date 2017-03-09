@@ -1,6 +1,7 @@
-define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
+define(['./alasqlavanza', './alasqlnordnet', './applocalization'], function(alasqlavanza, alasqlnordnet, applocalization) {
 
     function createDemoData() {
+        applocalization.loadLanguage("se");
         createTables();
         truncateTables();
         createAvanzaDemoData();
