@@ -56,7 +56,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
     function load() {
         var today = new Date().toISOString().slice(0, 10);
 
-        $(gridId).kendoGrid({
+        var grid = $(gridId).kendoGrid({
             toolbar: ["excel", "pdf"],
             excel: {
                 fileName: "förväntade_utdelningar" + "_" + today + ".xlsx",
@@ -121,6 +121,14 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 for (var i = 0; i < sheet.columns.length; i++) {
                     sheet.columns[i].width = getExcelColumnWidth(i);
                 }
+            }
+        }).data("kendoGrid");
+
+        grid.thead.kendoTooltip({
+            filter: "th",
+            content: function (e) {
+                var target = e.target; 
+                return $(target).text();
             }
         });
     }
