@@ -50,7 +50,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             data: {q: queryTemplate({symbol:symbol}), format: 'json'}
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
-
             var results = response.query.results;
             if(results == null) {
                 if(stockLastTradePriceArray[symbol]) { callback(stockLastTradePriceArray[symbol]); return; };
@@ -66,12 +65,36 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             }
 
             var lastTradePriceOnly = results.row.LastTradePriceOnly;
-            if(lastTradePriceOnly === "N/A")
-                lastTradePriceOnly = 0;
+            if(lastTradePriceOnly === "N/A") {
+                var link = "https://www.avanza.se" + alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
+                var queryYqlAvanzaTemplate = _.template("select * from html where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
+                
+                $.ajax({
+                    url: yqlUrl,
+                    async: true,
+                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'}
+                }).done(function(output) {
+                    if(output == null) { callback(0); return; };
+                    var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
+                    if(yqlAvanzaResponse.query.count === 0) { callback(0); return; };
+                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.replace(",", ".")).toFixed(2);
 
-            stockLastTradePriceArray[symbol] = lastTradePriceOnly;
+                    stockLastTradePriceArray[symbol] = resultValue;
+                    lastTradePriceOnly = resultValue;
+                    callback(resultValue);
+                    return;
 
-            callback(lastTradePriceOnly);
+                }).fail(function(err) {
+                    console.log(err.responseText);
+                    callback(0);
+                    return;
+                }); 
+            } else {
+
+                stockLastTradePriceArray[symbol] = lastTradePriceOnly;
+                callback(lastTradePriceOnly);
+            }
+
         }).fail(function(err) {
             console.log(err.responseText);
         }); 
