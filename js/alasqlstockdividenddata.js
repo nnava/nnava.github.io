@@ -5,10 +5,8 @@ define([], function() {
                 ISIN NVARCHAR(100), \
                 handlas STRING,\
                 typ STRING, \
-                [utdelningaktiesträng] STRING,\
                 utdelningaktiedecimal DECIMAL,\
-                handlasutanutdelning DATE,\
-                utdelningsdag DATE); \
+                utd_handlasutanutdelning DATE); \
                 \
                 CREATE INDEX isinIndex ON StockDividendData(ISIN); \
         ');
@@ -18,22 +16,22 @@ define([], function() {
         var resultCount = alasql('SELECT VALUE COUNT(*) FROM StockDividendData');
         if(resultCount == 0) {
             alasql("SELECT * FROM JSON('stockdividenddata.json')",[],function(jsonResult){
-                alasql('INSERT INTO StockDividendData SELECT isin AS ISIN, handlas, typ, [utdelningaktiesträng], utdelningaktiedecimal, handlasutanutdelning, utdelningsdag FROM ?', [jsonResult]);
+                alasql('INSERT INTO StockDividendData SELECT isin AS ISIN, handlas, typ, utdelningaktiedecimal, utd_handlasutanutdelning FROM ?', [jsonResult]);
             });
         }
     };
 
     function getUpcomingDividendsForYear(year, today, isin) {
-        return alasql('SELECT typ, utdelningaktiedecimal, MONTH(handlasutanutdelning) AS [Månad], handlasutanutdelning \
+        return alasql('SELECT typ, utdelningaktiedecimal, MONTH(utd_handlasutanutdelning) AS [Månad], utd_handlasutanutdelning \
                        FROM StockDividendData \
-                       WHERE YEAR(handlasutanutdelning) = ' + year + ' AND handlasutanutdelning >= "' + today + '" \
+                       WHERE YEAR(utd_handlasutanutdelning) = ' + year + ' AND utd_handlasutanutdelning >= "' + today + '" \
                        AND ISIN = "' + isin + '"');
     }
 
-    function getDividendTyp(handlasutanutdelning, isin) {
+    function getDividendTyp(utd_handlasutanutdelning, isin) {
         return alasql('SELECT VALUE typ \
                        FROM StockDividendData \
-                       WHERE handlasutanutdelning = "' + handlasutanutdelning + '" \
+                       WHERE utd_handlasutanutdelning = "' + utd_handlasutanutdelning + '" \
                        AND ISIN = "' + isin + '"');
     }
 
