@@ -89,6 +89,17 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
                     visible: true
                 }
             },
+            pannable: {
+                lock: "y"
+            },
+            zoomable: {
+                mousewheel: {
+                    lock: "y"
+                },
+                selection: {
+                    lock: "y"
+                }
+            },
             tooltip: {
                 visible: true,
                 template: "#= series.name # - (#= kendo.toString(value, 'n2') # kr)"

@@ -117,6 +117,17 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
                     visible: true
                 }
             },
+            pannable: {
+                lock: "y"
+            },
+            zoomable: {
+                mousewheel: {
+                    lock: "y"
+                },
+                selection: {
+                    lock: "y"
+                }
+            },
             tooltip: {
                 visible: true,
                 format: "#,0 kr"
