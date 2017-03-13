@@ -71,7 +71,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
     function loadSpanAutoloadInfo() {
         $("#spanautoloadinfo").kendoTooltip({
             content: "<div style=\"text-align:left\">Inställning styr om grafer ska laddas in automatiskt efter att filer är tillagda. \
-                      Urkryssad ruta gör det möjligt att välja portföljer (Avanza) och därefter ladda in grafer via klick på knappen Ladda om.</div>",
+                      Urkryssad ruta gör det möjligt att välja portföljer och därefter ladda in grafer via klick på knappen Ladda om.</div>",
             position: "bottom",
             width: 300
         });

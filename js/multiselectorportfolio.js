@@ -1,6 +1,7 @@
-define(['./alasqlavanza'], function(alasqlavanza) {
+define(['./alasqlavanza', './alasqlnordnet', './alasqlportfolio'], function(alasqlavanza, alasqlnordnet, alasqlportfolio) {
 
     var data = [];
+    var dataSelected = [];
     var multiselectorId;
 
     function setMultiselectorId(fieldId) {
@@ -8,12 +9,21 @@ define(['./alasqlavanza'], function(alasqlavanza) {
     }
 
     function setData() {
-        var avanzaData = alasqlavanza.getPortfolios();
+        var portfolioData = alasqlportfolio.getPortfolios();
+        var nordnetData = alasqlnordnet.getSelectedPortfolios();
+        var avanzaData = alasqlavanza.getSelectedPortfolios();
+        var bankDataSelectedPortfolios = nordnetData.concat(avanzaData);
         
         data = [];
-        avanzaData.forEach(function(entry) {
+        portfolioData.forEach(function(entry) {
             if (entry.Konto == null) { return; }
             data.push({ text: entry.Konto, value: entry.Konto });
+        });
+
+        dataSelected = [];
+        bankDataSelectedPortfolios.forEach(function(entry) {
+            if (entry.Konto == null) { return; }
+            dataSelected.push({ text: entry.Konto, value: entry.Konto });
         });
     }
 
@@ -23,7 +33,7 @@ define(['./alasqlavanza'], function(alasqlavanza) {
         var multiselect = $(multiselectorId).data("kendoMultiSelect");
         if(multiselect) {
             multiselect.setDataSource(data);
-            $(multiselectorId).getKendoMultiSelect().value(data);
+            $(multiselectorId).getKendoMultiSelect().value(dataSelected);
             saveValues();
             return;
         } 
@@ -54,13 +64,20 @@ define(['./alasqlavanza'], function(alasqlavanza) {
 
     function saveValues() {
         alasqlavanza.truncatePortfolioData();
+        alasqlnordnet.truncatePortfolioData();
 
         var multiselect = $(multiselectorId).data("kendoMultiSelect");
         if(multiselect) {
             var dataItems = multiselect.dataItems();
             if(dataItems == null) return;
+            var i = 0;
             dataItems.forEach(function(entry) {
-                alasqlavanza.insertPortfolioData(entry.value);
+                if(entry.value.endsWith("csv")) {
+                    alasqlnordnet.insertPortfolioData(i, entry.value);
+                    i++;
+                } else {
+                    alasqlavanza.insertPortfolioData(entry.value);
+                }        
             });  
         }
     }

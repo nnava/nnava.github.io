@@ -33,7 +33,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         ');
     }
 
-    function getPortfolios() {
+    function getSelectedPortfolios() {
         return alasql('SELECT Konto FROM AvanzaPortfolio ORDER BY Konto');
     }
 
@@ -468,7 +468,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         insertPortfolioData: insertPortfolioData,
         truncatePortfolioData: truncatePortfolioData,
         getStocksInPortfolio: getStocksInPortfolio,
-        getPortfolios: getPortfolios,
+        getSelectedPortfolios: getSelectedPortfolios,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,
         getDividendMonthSumBelopp: getDividendMonthSumBelopp,

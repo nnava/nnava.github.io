@@ -1,4 +1,4 @@
-define(['./alasqlavanza', './alasqlnordnet', './applocalization'], function(alasqlavanza, alasqlnordnet, applocalization) {
+define(['./alasqlavanza', './alasqlnordnet', './applocalization', './alasqlportfolio'], function(alasqlavanza, alasqlnordnet, applocalization, alasqlportfolio) {
 
     function createDemoData() {
         applocalization.loadLanguage("se");
@@ -11,12 +11,15 @@ define(['./alasqlavanza', './alasqlnordnet', './applocalization'], function(alas
     };
 
     function createAvanzaPortfolioData() {
-        alasql('INSERT INTO AvanzaPortfolio VALUES ("ISK")');
-        alasql('INSERT INTO AvanzaPortfolio VALUES ("KF")');
+        alasqlavanza.insertPortfolioData("ISK");
+        alasqlavanza.insertPortfolioData("KF");
+        alasqlportfolio.insertPortfolioData("ISK");
+        alasqlportfolio.insertPortfolioData("KF");
     }
 
     function createNordnetPortfolioData() {
-        alasql('INSERT INTO NordnetPortfolio VALUES (0, "test_nordnet.csv")');
+        alasqlnordnet.insertPortfolioData(0, "test_nordnet.csv");
+        alasqlportfolio.insertPortfolioData("test_nordnet.csv");
     }
 
     function createNordnetDemoData() {
@@ -137,6 +140,7 @@ define(['./alasqlavanza', './alasqlnordnet', './applocalization'], function(alas
         alasqlavanza.createPortfolioTable();
         alasqlnordnet.createDataTable();
         alasqlnordnet.createPortfolioTable();
+        alasqlportfolio.createPortfolioTable();
     }
 
     function truncateTables() {

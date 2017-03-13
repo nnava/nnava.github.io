@@ -1,5 +1,5 @@
-define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet', './alasqlbankdataexception', './applocalization'], 
-    function(Papa, appControlHandler, alasqlavanza, alasqlnordnet, alasqlbankdataexception, applocalization) {
+define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnordnet', './alasqlbankdataexception', './applocalization', './alasqlportfolio'], 
+    function(Papa, appControlHandler, alasqlavanza, alasqlnordnet, alasqlbankdataexception, applocalization, alasqlportfolio) {
   
     var controlId;
 
@@ -70,6 +70,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
         alasqlavanza.createPortfolioTable();
         alasqlnordnet.createDataTable();
         alasqlnordnet.createPortfolioTable();
+        alasqlportfolio.createPortfolioTable();
 
         $.each(e.files, function (index, value) {
 
@@ -109,6 +110,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('INSERT INTO AvanzaData \
                     SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, ISIN, Konto, Kurs, [Typ av transaktion], Valuta, [Värdepapperbeskrivning] FROM CSV(?, {separator:";"})', [readerResultString]);
                     alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
+                    alasql('INSERT INTO Portfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    
                 else {
                     var isFileNordnetNorway = readerResultString.startsWith("Id;Bokføringsdag;Handelsdag");
@@ -129,6 +131,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     }
                     
                     alasql('INSERT INTO NordnetPortfolio VALUES (' + index + ', "' + value.name + '");');
+                    alasqlportfolio.insertPortfolioData(value.name);
                 }
 
                 console.log('done', index);

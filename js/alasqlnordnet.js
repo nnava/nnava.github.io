@@ -38,7 +38,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         ');
     }
 
-    function getPortfolios() {
+    function getSelectedPortfolios() {
         return alasql('SELECT [Id], Konto FROM NordnetPortfolio ORDER BY Konto');
     }
 
@@ -46,15 +46,21 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         alasql('TRUNCATE TABLE NordnetPortfolio;');
     }
 
+    function insertPortfolioData(id, konto) {
+        alasql('INSERT INTO NordnetPortfolio VALUES (' + id + ',"' + konto + '");');
+    }
+
     function getDividendMaxYear() {
         return alasql('SELECT MAX(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE Transaktionstyp = "UTDELNING"');
     }
 
     function getDividendYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE Transaktionstyp = "UTDELNING" \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1');
@@ -63,6 +69,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getBuyTransactionYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE Transaktionstyp = "KÖPT" \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1');
@@ -71,6 +78,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getSellTransactionYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE Transaktionstyp = "SÅLT" \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1');
@@ -79,6 +87,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getTransactionYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                 FROM NordnetData \
+                JOIN NordnetPortfolio USING Konto, Konto \
                 WHERE (Transaktionstyp = "SÅLT" OR Transaktionstyp = "KÖPT") \
                 GROUP BY YEAR([Bokföringsdag]) \
                 ORDER BY 1');
@@ -87,6 +96,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getDepositYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING") \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1');
@@ -95,6 +105,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getCourtageYears() {
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE (Transaktionstyp = "KÖPT" OR Transaktionstyp = "SÅLT") \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1');
@@ -107,6 +118,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere +') \
                        GROUP BY YEAR([Bokföringsdag]) \
                        ORDER BY 1');
@@ -115,7 +127,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getReceivedDividendCurrentYearToDate(year, today) {
 
         var resultForReturn = [];
-        var portfoliosResult = getPortfolios();
+        var portfoliosResult = getSelectedPortfolios();
 
         portfoliosResult.forEach(function(portfolioObject) {
 
@@ -152,6 +164,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getDividendMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
 
@@ -164,6 +177,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getTaxMonthSumBelopp(year, month) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT")');
 
@@ -176,6 +190,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getDividendYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
 
@@ -188,6 +203,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getTaxYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
                        AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT")');
 
@@ -200,6 +216,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getDepositsYearSumBelopp(year) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "KORR PREMIEINB." OR Transaktionstyp = "UTTAG" OR Transaktionstyp = "INSÄTTNING" OR Transaktionstyp = "PREMIEINBETALNING")');
         
         var belopp = JSON.parse(JSON.stringify(result));
@@ -215,6 +232,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
  
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");
 
         var belopp = JSON.parse(JSON.stringify(result));
@@ -230,6 +248,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var result = alasql('SELECT FIRST([ISIN]) AS [ISIN], FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [belopp] \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY [ISIN]');
 
@@ -261,6 +280,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND Transaktionstyp = "KÖPT"');
 
@@ -274,6 +294,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var result = alasql('SELECT COUNT(*) AS TransactionCount \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
                        AND Transaktionstyp = "SÅLT"');
 
@@ -286,6 +307,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getVärdepapperForYear(year) {
         return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper, [ISIN] AS ISIN \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
     }
 
@@ -296,6 +318,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         return alasql('SELECT FIRST([ISIN]) AS [ISIN], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [Belopp] \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY [ISIN]');
     }
@@ -303,6 +326,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getCourtageSumSell(year) {
         var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "SÅLT"');
 
         var courtage = JSON.parse(JSON.stringify(result));
@@ -314,6 +338,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getCourtageSumBuy(year) {
         var result = alasql('SELECT SUM(REPLACE(Avgifter, " ", "")::NUMBER) AS [value] \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "KÖPT"');
 
         var courtage = JSON.parse(JSON.stringify(result));
@@ -325,25 +350,28 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getBuyTransactionSumBelopp(year) {
         return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "KÖPT"');
     }
 
     function getSellTransactionSumBelopp(year) {
         return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [value] \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstyp = "SÅLT"');
     }
 
     function getReturnedTaxYearSumBelopp(year) {
         return alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
+                       JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND Transaktionstext = "UTL KUPSKATT ÅTER"');    
     }
 
     function getStocksInPortfolio() {
 
         var resultForReturn = [];
-        var portfoliosResult = getPortfolios();
+        var portfoliosResult = getSelectedPortfolios();
 
         portfoliosResult.forEach(function(portfolioObject) {
 
@@ -395,7 +423,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         createPortfolioTable: createPortfolioTable,
         truncatePortfolioData: truncatePortfolioData,
         getStocksInPortfolio: getStocksInPortfolio,
-        getPortfolios: getPortfolios,
+        getSelectedPortfolios: getSelectedPortfolios,
+        insertPortfolioData: insertPortfolioData,
         getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp,
         getDividendMaxYear: getDividendMaxYear,
         getDividendYears: getDividendYears,
