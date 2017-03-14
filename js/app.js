@@ -130,9 +130,13 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
     }
 
     document.getElementById('btnLoadPortfolioCharts').addEventListener('click', function() {            
+        kendo.ui.progress($(document.body), true);
+        
         setTimeout(function(){               
             portfolioControlHandler.saveSpreadsheetDataToTable();
             portfolioControlHandler.loadCharts();
+
+            kendo.ui.progress($(document.body), false);
 
             var panelChartDonutPortfolioAllocation = $('#panelChartDonutPortfolioAllocation').offset();
             $('html, body').animate({scrollTop: panelChartDonutPortfolioAllocation.top}, "slow");
