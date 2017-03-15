@@ -6,7 +6,8 @@ define(['./spreadsheetstocks',
         './chartradarportfolioindustry',
         './dropdowndonutportfolioallocation',
         './gridportfoliodividend',
-        './alasqlstockdividenddata'], 
+        './alasqlstockdividenddata',
+        './chartdividendstackedcumulativeportfolio'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
@@ -16,7 +17,8 @@ define(['./spreadsheetstocks',
      chartRadarPortfolioIndustry,
      dropdownDonutPortfolioAllocation,
      gridPortfolioDividend,
-     alasqlStockDividendData) {
+     alasqlStockDividendData,
+     chartDividendStackedCumulativePortfolio) {
 
     function loadSpreadsheetWithProgress() {
 
@@ -91,6 +93,12 @@ define(['./spreadsheetstocks',
         gridPortfolioDividend.load();
     }
 
+    function loadChartDividendStackedCumulativePortfolio() {       
+        chartDividendStackedCumulativePortfolio.setChartId('#chartDividendStackedCumulativePortfolio');
+        chartDividendStackedCumulativePortfolio.setChartData();
+        chartDividendStackedCumulativePortfolio.loadChart();
+    }
+
     function loadSpangridportfoliodividendinfo() {
         $("#spangridportfoliodividendinfo").kendoTooltip({
             content: "<p align=\"left\">Erhållna/förväntad utdelningar. !! Under utveckling !! </br> \
@@ -114,6 +122,7 @@ define(['./spreadsheetstocks',
         loadChartRadarPortfolioIndustry();        
         loadSpangridportfoliodividendinfo();
         loadGridPortfolioDividend();
+        loadChartDividendStackedCumulativePortfolio();
     }
 
     function saveSpreadsheetDataToTable() {

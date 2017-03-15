@@ -61,8 +61,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
         ([Värdepapper] NVARCHAR(100), Month INT, Belopp DECIMAL);');
         alasql('TRUNCATE TABLE DivStackedCumulativeVardepapperValues');
         
-        for(var i=0; i <= monthNumber; i++)
-        {
+        for(var i=0; i <= monthNumber; i++) {
             var month = i + 1;
 
             var resultAvanza = alasqlavanza.getVärdepapperDividend(year, month, isTaxChecked);

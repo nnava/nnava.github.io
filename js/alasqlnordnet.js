@@ -145,7 +145,13 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 if(object.Antal == null) return;
                 
                 var newObject = new Object();
-                newObject.Värdepapper = object.Värdepapper;
+
+                var värdepapperNamn = object.Värdepapper;
+                var värdepapperNamnStockData = alasqlstockdata.getVärdepapperNamn(object.ISIN);
+                if(värdepapperNamnStockData.length != 0)
+                    värdepapperNamn = värdepapperNamnStockData[0].namn;
+
+                newObject.Värdepapper = värdepapperNamn;
                 newObject.ISIN = object.ISIN;
                 newObject.Datum = object.Datum;
                 newObject.Antal = object.Antal;
