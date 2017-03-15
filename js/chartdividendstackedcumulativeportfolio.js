@@ -99,10 +99,17 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
             },
             tooltip: {
                 visible: true,
-                template: "#= series.name # - (#= kendo.toString(value, 'n2') # kr)"
+                template: "#= chartDividendStackedCumulativePortfolioTooltip(series.name, kendo.toString(value, 'n2'), dataItem) #"
             },
             theme: "bootstrap"
         });
+    }
+
+    window.chartDividendStackedCumulativePortfolioTooltip = function chartDividendStackedCumulativePortfolioTooltip(seriesName, value, dataItem) {
+        if(dataItem.IsDividendReceived)
+            return seriesName + " - Erhållet " + value + " kr";
+        else 
+            return seriesName + " - Förväntat " + value + " kr";
     }
 
     return {
