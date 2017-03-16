@@ -21,6 +21,7 @@ define(['./spreadsheetstocks',
      chartDividendStackedCumulativePortfolio) {
 
     function loadSpreadsheetWithProgress() {
+        kendo.ui.progress($(document.body), true);
 
         alasqlStockDividendData.createStockDividendDataTable();
         alasqlStockDividendData.loadDataFromFileToTable();
