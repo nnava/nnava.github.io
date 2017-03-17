@@ -112,9 +112,28 @@ define(['./spreadsheetstocks',
         });
     }
 
-    function loadCharts() {
+    function initChartDividendStackedCumulativePortfolioSettingBtnGroup() {
+        $("#chartDividendStackedCumulativePortfolioSettingBtnGroup").kendoMobileButtonGroup({
+            select: function(e) {
+                var seriesDefaultType = "column";
+                // This is purely ugly but since only using image...
+                if(e.index === 1)
+                    seriesDefaultType = "bar";
+                    
+                chartDividendStackedCumulativePortfolio.updateChartOptions(seriesDefaultType);
+            },
+            index: 0
+        });
+    }
+
+    function saveSpreadsheetDataToTable() {
+        spreadsheetStocks.saveSpreadsheetDataToTable();
+    }
+
+    function loadControls() {
         $('#chartPortfolioContent').attr("class", "");
 
+        initChartDividendStackedCumulativePortfolioSettingBtnGroup();
         loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
         loadChartDonutPortfolioCurrency();
@@ -126,14 +145,10 @@ define(['./spreadsheetstocks',
         loadChartDividendStackedCumulativePortfolio();
     }
 
-    function saveSpreadsheetDataToTable() {
-        spreadsheetStocks.saveSpreadsheetDataToTable();
-    }
-
     return {
         loadSpreadsheetWithProgress: loadSpreadsheetWithProgress,
         saveSpreadsheetDataToTable: saveSpreadsheetDataToTable,
-        loadCharts: loadCharts,
+        loadControls: loadControls,
         loadSpreadsheetWithProgress: loadSpreadsheetWithProgress
     }
 });

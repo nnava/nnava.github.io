@@ -18,7 +18,6 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
         var dividendData = alasqlportfoliodividenddata.getPortfolioDividendsYearMonthValues(currentYear);
         dividendData.forEach(function(entry) {
             chartData.push({
-                type: "column",
                 name: entry.name,
                 data: entry.data,
                 visual: function (e) {
@@ -105,6 +104,20 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
         });
     }
 
+    function updateChartOptions(type) {
+        var chart = $(chartId).data("kendoChart");
+        chart.setOptions({
+            seriesDefaults: {
+                type: type,
+                stack: true,
+                labels: {
+                    visible: false,
+                    background: "transparent"
+                }
+            }
+        });
+    }
+
     window.chartDividendStackedCumulativePortfolioTooltip = function chartDividendStackedCumulativePortfolioTooltip(seriesName, value, dataItem) {
         if(dataItem.IsDividendReceived)
             return seriesName + " - Erhållet " + value + " kr";
@@ -115,6 +128,7 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        updateChartOptions: updateChartOptions
     };
 });

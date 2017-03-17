@@ -135,7 +135,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         
         setTimeout(function(){               
             portfolioControlHandler.saveSpreadsheetDataToTable();
-            portfolioControlHandler.loadCharts();
+            portfolioControlHandler.loadControls();
 
             kendo.ui.progress($(document.body), false);
 
