@@ -255,6 +255,21 @@ define(['./chartdonutexpenses',
     function initChartSettingButtonGroups() {
         initChartDividendExpensesMonthSettingBtnGroup();
         initChartDividendYearMonthSettingBtnGroup();
+        initChartDividendStackedCumulativeSettingBtnGroup();
+    }
+
+    function initChartDividendStackedCumulativeSettingBtnGroup() {
+        $("#chartDividendStackedCumulativeSettingBtnGroup").kendoMobileButtonGroup({
+            select: function(e) {
+                var seriesDefaultType = "column";
+                // This is purely ugly but since only using image...
+                if(e.index === 1)
+                    seriesDefaultType = "bar";
+                    
+                chartDividendStackedCumulative.updateChartOptions(seriesDefaultType);
+            },
+            index: 0
+        });
     }
 
     function initChartDividendExpensesMonthSettingBtnGroup() {

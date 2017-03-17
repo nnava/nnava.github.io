@@ -22,7 +22,6 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
         var dividendData = bankdatadividend.getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked);
         dividendData.forEach(function(entry) {
             chartData.push({
-                type: "column",
                 name: entry.name,
                 data: entry.data                
             });
@@ -108,9 +107,24 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
         });
     }
 
+    function updateChartOptions(type) {
+        var chart = $(chartId).data("kendoChart");
+        chart.setOptions({
+            seriesDefaults: {
+                type: type,
+                stack: true,
+                labels: {
+                    visible: false,
+                    background: "transparent"
+                }
+            }
+        });
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        updateChartOptions: updateChartOptions
     };
 });
