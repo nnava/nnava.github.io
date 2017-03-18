@@ -130,9 +130,18 @@ define(['./spreadsheetstocks',
         spreadsheetStocks.saveSpreadsheetDataToTable();
     }
 
+    function initBtnToTop() {
+        $(".btnToTop").kendoButton({
+            click: function(e) {
+                $('html, body').animate({scrollTop: 0}, "slow");
+            }
+        });
+    }
+
     function loadControls() {
         $('#chartPortfolioContent').attr("class", "");
 
+        initBtnToTop();
         initChartDividendStackedCumulativePortfolioSettingBtnGroup();
         loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
