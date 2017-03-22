@@ -76,11 +76,11 @@ span.k-loading-text
 .top10 { margin-top:10px; }
 .top15 { margin-top:15px; }
 
-.k-spreadsheet-sheets-bar span.k-link:first-child{
+.k-spreadsheet-sheets-bar span.k-link:first-child {
   padding: .65em .92em;
 }
  
-.k-spreadsheet-sheets-bar .k-spreadsheet-sheets-remove{
+.k-spreadsheet-sheets-bar .k-spreadsheet-sheets-remove {
   margin-left: -.5em;
 }
 
@@ -105,4 +105,32 @@ span.k-loading-text
 
 .grid-ok-row {
     background-color: #ced;
+}
+
+.k-scheduler-timecolumn {
+  display: none;
+}
+
+.k-scheduler {
+    font-family: "DejaVu Sans", "Arial", sans-serif;
+    font-size: .9em;
+}
+
+.k-scheduler-refresh,
+.k-i-reload {
+    display: none;
+}
+
+/* Hide toolbar, navigation and footer during export */
+.k-pdf-export .k-scheduler-toolbar,
+.k-pdf-export .k-scheduler-navigation .k-nav-today,
+.k-pdf-export .k-scheduler-navigation .k-nav-prev,
+.k-pdf-export .k-scheduler-navigation .k-nav-next,
+.k-pdf-export .k-scheduler-footer
+{
+    display: none;
+}
+
+.k-scheduler-monthview .k-scheduler-table td  {
+    height: 40px !important;
 }

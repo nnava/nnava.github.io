@@ -7,7 +7,8 @@ define(['./spreadsheetstocks',
         './dropdowndonutportfolioallocation',
         './gridportfoliodividend',
         './alasqlstockdividenddata',
-        './chartdividendstackedcumulativeportfolio'], 
+        './chartdividendstackedcumulativeportfolio',
+        './schedulerportfoliodividend'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
@@ -18,7 +19,8 @@ define(['./spreadsheetstocks',
      dropdownDonutPortfolioAllocation,
      gridPortfolioDividend,
      alasqlStockDividendData,
-     chartDividendStackedCumulativePortfolio) {
+     chartDividendStackedCumulativePortfolio,
+     schedulerPortfolioDividend) {
 
     function loadSpreadsheetWithProgress() {
         kendo.ui.progress($(document.body), true);
@@ -100,6 +102,12 @@ define(['./spreadsheetstocks',
         chartDividendStackedCumulativePortfolio.loadChart();
     }
 
+    function loadSchedulerPortfolioDividend() {
+        schedulerPortfolioDividend.setId("#schedulerPortfolioDividend");
+        schedulerPortfolioDividend.setData();
+        schedulerPortfolioDividend.load();
+    }
+
     function loadSpangridportfoliodividendinfo() {
         $("#spangridportfoliodividendinfo").kendoTooltip({
             content: "<p align=\"left\">Erhållna/förväntad utdelningar. !! Under utveckling !! </br> \
@@ -142,6 +150,7 @@ define(['./spreadsheetstocks',
         $('#chartPortfolioContent').attr("class", "");
 
         initBtnToTop();
+        loadSchedulerPortfolioDividend();
         initChartDividendStackedCumulativePortfolioSettingBtnGroup();
         loadDropdownDonutPortfolioAllocationSelectSort();
         loadChartDonutPortfolioAllocation();
