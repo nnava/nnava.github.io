@@ -97,7 +97,11 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                 field: "avabuy",
                 name: "Avanza köp-courtage",
                 color: "#009640",
-                data: avanzaBuyValues
+                data: avanzaBuyValues,            
+                tooltip: {
+                    visible: true,
+                    template: "${series.name} - #= kendo.toString(value, 'n2') # kr"
+                },
             });
         };
 0
@@ -112,7 +116,11 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                     visible: labelTotalVisibleAvanza,
                     template: "#= window.getChartCourtageLabelText(category) #",                
                     position: "outsideEnd"
-                }
+                },
+                tooltip: {
+                    visible: true,
+                    template: "${series.name} - #= kendo.toString(value, 'n2') # kr"
+                },
             });
         };
 
@@ -122,7 +130,11 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                 field: "nnbuy",
                 color: "#00A8EF",
                 name: "Nordnet köp-courtage",
-                data: nordnetBuyValues
+                data: nordnetBuyValues,
+                tooltip: {
+                    visible: true,
+                    template: "${series.name} - #= kendo.toString(value, 'n2') # kr"
+                },
             });
         };
 
@@ -137,7 +149,11 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                     visible: labelTotalVisibleNordnet,
                     template: "#= window.getChartCourtageLabelText(category) #",                
                     position: "outsideEnd"
-                }
+                },
+                tooltip: {
+                    visible: true,
+                    template: "${series.name} - #= kendo.toString(value, 'n2') # kr"
+                },
             });
         };
 
@@ -149,7 +165,7 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
             color: "#F2B661",
             tooltip: {
                 visible: true,
-                format: "{0} %"
+                format: "Courtageutveckling {0} %"
             },
             labels: {
                 rotation: 0,
@@ -209,10 +225,6 @@ define(['./bankdatacourtage', ], function(bankdatacourtage) {
                 majorGridLines: {
                     visible: true
                 }
-            },
-            tooltip: {
-                visible: true,
-                template: "${series.name} - #= kendo.toString(value, 'n2') # kr"
             },
             theme: "bootstrap",
             transitions: false
