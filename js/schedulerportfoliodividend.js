@@ -6,6 +6,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
     var months = monthstaticvalues.getMonthWithLettersValues();
     var colorsArray = colors.getColorArray();
     var currentYear = new Date().getFullYear();
+    var today = new Date().toISOString().slice(0, 10);
 
     function setId(fieldId) {
         schedulerId = fieldId;
@@ -111,23 +112,27 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
             ]
         });
 
-        /*$(".k-scheduler-toolbar").find("ul.k-scheduler-tools").append('<li style="background-color: #f5f5f5;"><a role="button" class="k-button exportics" style="margin-left: 10px;">Export to iCalendar</a></li>');
+        $(".k-scheduler-toolbar").find("ul.k-scheduler-tools").append('<li style="background-color: #f5f5f5;"><a role="button" class="k-button exportics" style="margin-left: 10px;">Export to iCalendar</a></li>');
         
         $(".exportics").on("click", function(){
             var calEntry = new icsFormatter();
 
-            var result = alasqlportfoliodividenddata.getPortfolioDividends(currentYear);
+            var result = alasql('SELECT * FROM ? WHERE [Utdelningsdag] >= "' + today + '"', [alasqlportfoliodividenddata.getPortfolioDividends(currentYear)]);
             result.forEach(function(entry) {
                 if(entry == null) return;
 
-                var title = "Utdelning: " + entry.Värdepapper + " - Antal: " + entry.Antal + " st. " + "Belopp: " + kendo.toString(entry.Belopp, 'n2') + " kr";
+                var beloppText = "Förväntat: "
+                if(entry.Utdelningmottagen)
+                    beloppText = "Erhållet: ";
+
+                var title = "Utdelning: " + entry.Värdepapper + " - Antal: " + entry.Antal + " st. " + beloppText + kendo.toString(entry.Belopp, 'n2') + " kr";
                 var start = new Date(entry.Utdelningsdag);
                 start.setHours(8, 0, 0, 0);
                 calEntry.addEvent(title, title, "", start.toUTCString(), start.toUTCString());
             });
 
-            calEntry.download("utdelningskalender");
-        });*/
+            calEntry.download();
+        });
     }
 
     return {

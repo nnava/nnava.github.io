@@ -86,8 +86,7 @@ var icsFormatter = function() {
                 'DESCRIPTION:' + description,
                 'DTSTART;VALUE=DATE:' + start,
                 'DTEND;VALUE=DATE:' + end,
-                'LOCATION:' + location,
-                'SUMMARY;LANGUAGE=ss-EN:' + subject,
+                'SUMMARY;LANGUAGE=sv:' + subject,
                 'TRANSP:TRANSPARENT',
                 'END:VEVENT'
             ].join(SEPARATOR);
@@ -109,7 +108,7 @@ var icsFormatter = function() {
             ext = (typeof ext !== 'undefined') ? ext : '.ics';
             filename = (typeof filename !== 'undefined') ? filename : 'calendar';
             var calendar = calendarStart + SEPARATOR + calendarEvents.join(SEPARATOR) + calendarEnd;
-            window.open( "data:text/calendar;charset=utf8," + escape(calendar));
+            window.open("data:text/calendar;charset='utf-8'," + escape(calendar));
         }
     };
 };
