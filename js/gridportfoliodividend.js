@@ -102,7 +102,6 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 sort: ({ field: "Utdelningsdatum", dir: "asc" }),                        
                 pageSize: gridData.length
             },
-            height: 720,
             scrollable: true,
             sortable: true,
             filterable: true,

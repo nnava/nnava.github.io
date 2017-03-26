@@ -134,3 +134,11 @@ span.k-loading-text
 .k-scheduler-monthview .k-scheduler-table td  {
     height: 40px !important;
 }
+
+#schedulerPortfolioDividend
+{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    border-width: 0;
+}

@@ -77,11 +77,10 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
         $(schedulerId).kendoScheduler({   
             toolbar: [ "pdf" ],
             pdf: {
-                fileName: "förväntade_utd_kalender_" + today + ".pdf",
+                fileName: "förväntade_utd_kalender_" + today + ".pdf"
             },  
             date: yearFirstDayDate,
             startTime: yearFirstDayDate,
-            height: 630,
             views: [
                 { type: CustomAgenda, title: "Helår" }, { type: "month", eventHeight: 50 }, { type: "day" }
             ],
