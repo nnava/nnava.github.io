@@ -32,7 +32,7 @@ define([], function() {
         insertAvanzaDataILStockInfo("Vostok New Ventures", "SE0007278965", "VNV SDB IL");
         insertAvanzaDataILStockInfo("East Capital Explorer", "SE0002158568", "ECEX IL");
         insertAvanzaDataILStockInfo("Mertiva", "SE0005191806", "MERT MTF IL");
-
+        insertAvanzaDataILStockInfo("Eolus Vind B", "SE0007075056", "EOLU IL B");
         insertAvanzaDataILStockInfo("Bure Equity", "SE0000195810", "BURE IL");
         insertAvanzaDataILStockInfo("I.A.R Systems Group", "SE0005851706", "IAR IL B");
         insertAvanzaDataILStockInfo("Atlas Copco B", "SE0006886768", "ATCO IL B");
@@ -77,6 +77,7 @@ define([], function() {
         insertNordnetDataILStockInfo("BOL", "SE0000869646", "BOL IL");
         insertNordnetDataILStockInfo("HLDX", "SE0000105199", "HLDX IL");
         insertNordnetDataILStockInfo("KAHL", "SE0001630880", "KAHL IL");
+        insertNordnetDataILStockInfo("EOLU B", "SE0007075056", "EOLU IL B");
     }
 
     function insertNordnetDataILStockInfo(symbol, isin, ILsymbol) {
