@@ -1,4 +1,4 @@
-define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
+define(['./bankdatadividend'], function(bankdatadividend) {
 
     var chartData;
     var chartId;
@@ -11,20 +11,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
-        var nordnetData = alasqlnordnet.getDividendAll(isTaxChecked);
-        var avanzaData = alasqlavanza.getDividendAll(isTaxChecked);
-
-        alasql('CREATE TABLE IF NOT EXISTS DividendAllTable \
-                (Year INT, Belopp DECIMAL);');
-
-        alasql('INSERT INTO DividendAllTable SELECT Year, Belopp \
-                FROM ?', [nordnetData]);
-
-        alasql('INSERT INTO DividendAllTable SELECT Year, Belopp \
-                FROM ?', [avanzaData]);
-
-        var result = alasql('SELECT Year, SUM(Belopp) AS Belopp FROM DividendAllTable GROUP BY Year ORDER BY Year');
-        alasql('TRUNCATE TABLE DividendAllTable');
+        var result = bankdatadividend.getDividendAll(isTaxChecked);
 
         var yearDividendDataItems = [];
         var previousBelopp = 0;

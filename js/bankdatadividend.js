@@ -123,6 +123,16 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
                               GROUP BY ISIN, [Månad], Typ', [result]);
     }
 
+    function getDividendAll(isTaxChecked, groupByType) {
+        var nordnetData = alasqlnordnet.getDividendAll(isTaxChecked);
+        var avanzaData = alasqlavanza.getDividendAll(isTaxChecked);
+
+        var result = avanzaData.concat(nordnetData);
+
+        var resultForReturn = alasql('SELECT Year, SUM(Belopp) AS Belopp FROM ? GROUP BY Year, Month ORDER BY Year', [result]);
+        return resultForReturn;
+    }
+
     function receivedDividendDataForeach(receivedDividendData) {
         var resultForReturn = [];
         
@@ -176,6 +186,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
         getVärdepapperForYear: getVärdepapperForYear,
         getVärdepapperDividendData: getVärdepapperDividendData,
         getTotalDividend: getTotalDividend,
-        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate
+        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
+        getDividendAll: getDividendAll
     };
 });
