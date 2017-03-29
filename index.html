@@ -95,6 +95,15 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <input type="file" name="files" id="dataFiles" />
+                                        <script>
+                                            $("#dataFiles").kendoUpload({
+                                                localization: {
+                                                    select: 'Välj fil(er)',
+                                                    remove: 'Ta bort',
+                                                    cancel: 'Avbryt'
+                                                }
+                                            });
+                                        </script>
                                     </div>
                                 </div>
                                 <div class="row top10">
@@ -175,6 +184,9 @@
                                         <h4>Dina utgifter per månad</h4>
                                         <input id="inputMonthParent" class="inputMonthNumberParent" type="number" min="0" value="0" step="100" />
                                         <button id="btnSetInputMonthValues" class='k-button'>Sätt utgift för alla månader</button>
+                                        <script>
+                                            $(".inputMonthNumberParent").kendoNumericTextBox({format: "#,0 kr"});
+                                        </script>
                                     </div>
                                 </div>
                             </div>

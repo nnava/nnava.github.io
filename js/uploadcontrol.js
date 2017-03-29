@@ -8,6 +8,12 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
     }
 
     function load() {
+
+        if($(controlId).data("kendoUpload")) {
+            $(controlId).data("kendoUpload").destroy();
+            $(controlId).empty();
+        }
+
         $(controlId).kendoUpload({
             async: {         
                 autoUpload: true

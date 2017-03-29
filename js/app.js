@@ -5,25 +5,13 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
     var today = new Date().toISOString().slice(0, 10);
 
     $(document).ready(function() {
+        loadInputMonthNumber();
 
         uploadControl.setControlId('#dataFiles');
         uploadControl.load();
 
-        $(".inputMonthNumber").kendoNumericTextBox({
-            format: "#,0 kr",
-            change: function() {
-                appControlHandler.loadChartDonutExpenses();
-                appControlHandler.loadChartDividendExpenses();
-                saveInputMonthNumberToCookie();
-            }
-        });
-
         setInputMonthNumberFromCookie();
         setCheckboxAutoLoadFromCookie();
-
-        $(".inputMonthNumberParent").kendoNumericTextBox({
-            format: "#,0 kr"
-        });
 
         alasql.options.cache = false;
         kendo.culture("se-SE");
@@ -54,6 +42,17 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             }
         };
     })();
+
+    function loadInputMonthNumber() {
+        $(".inputMonthNumber").kendoNumericTextBox({
+            format: "#,0 kr",
+            change: function() {
+                appControlHandler.loadChartDonutExpenses();
+                appControlHandler.loadChartDividendExpenses();
+                saveInputMonthNumberToCookie();
+            }
+        });
+    }
 
     function loadSpantaxinfo() {
         $("#spantaxinfo").kendoTooltip({
