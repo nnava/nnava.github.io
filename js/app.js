@@ -129,7 +129,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($('#chartDividendStackedCumulativePortfolio'));
     }
 
-    document.getElementById('btnLoadPortfolioCharts').addEventListener('click', function() {            
+    $('#btnLoadPortfolioCharts').click(function() {       
         kendo.ui.progress($(document.body), true);
         
         setTimeout(function(){               
@@ -143,7 +143,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         }, 1);
     });
 
-    document.getElementById('btnLoadSpreadsheetPortfolio').addEventListener('click', function() {
+    $('#btnLoadSpreadsheetPortfolio').click(function() {
         loadSpreadsheetPortfolio();
     });
 
@@ -155,8 +155,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         }, 1);
     }
 
-    document.getElementById('btnReloadPortfolio').addEventListener('click', function() {
-
+    $('#btnReloadPortfolio').click(function() {
         appControlHandler.saveSettings();
 
         kendo.ui.progress($(document.body), true);
@@ -164,11 +163,9 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         setTimeout(function(){               
             appControlHandler.loadControlsFull();
         }, 1);
-
     });
 
-    document.getElementById('btnDemo').addEventListener('click', function() {
-
+    $('#btnDemo').click(function() { 
         kendo.ui.progress($(document.body), true);
         
         setTimeout(function(){               
@@ -176,11 +173,9 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             appControlHandler.loadControlsFull();
             $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
         }, 1);
-
     });
 
-    document.getElementById('btnSetInputMonthValues').addEventListener('click', function() {
-        
+    $('#btnSetInputMonthValues').click(function() {         
         var newValue = $("#inputMonthParent").data("kendoNumericTextBox").value();
         
         $("#inputJanuari").data("kendoNumericTextBox").value(newValue);
@@ -201,7 +196,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         saveInputMonthNumberToCookie();
     });
 
-    document.getElementById('btnExportToPng').addEventListener('click', function() {
+    $('#btnExportToPng').click(function() { 
         $(".export-chartToImg").each(function(index) {
             $(this).click();
         });
@@ -211,7 +206,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         });        
     });
 
-    document.getElementById('btnExportToSvg').addEventListener('click', function() {
+    $('#btnExportToSvg').click(function() {
         $(".export-chartToSvg").each(function(index) {
             $(this).click();
         });
@@ -237,7 +232,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         });
     }
 
-    document.getElementById('btnExportToPdf').addEventListener('click', function() {
+    $('#btnExportToPdf').click(function() {
         var fileName = "nnava_" + today + ".pdf";
         DOMToPdf(".content-wrapper", fileName);
     });
