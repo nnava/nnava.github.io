@@ -216,6 +216,26 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         });
     });
 
+    $('#btnExportPortfolioToPng').click(function() { 
+        $(".exportportfolio-chartToImg").each(function(index) {
+            $(this).click();
+        });
+
+        $(".exportportfolio-DOMToImg").each(function(index) {
+            $(this).click();
+        });        
+    });
+
+    $('#btnExportPortfolioToSvg').click(function() {
+        $(".exportportfolio-chartToSvg").each(function(index) {
+            $(this).click();
+        });
+        
+        $(".exportportfolio-DOMToSvg").each(function(index) {
+            $(this).click();
+        });
+    });
+
     function DOMToPdf(id, fileName) {
         kendo.drawing.drawDOM($(id))
         .then(function(group) {
@@ -236,6 +256,11 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         var fileName = "nnava_" + today + ".pdf";
         DOMToPdf(".content-wrapper", fileName);
     });
+
+    $('#btnExportPortfolioToPdf').click(function() {
+        var fileName = "nnava_portföljöversikt_" + today + ".pdf";
+        DOMToPdf(".contentportfolio-wrapper", fileName);
+    });    
 
     $(".export-DOMToPdf").click(function() {
         var chartId = "#" + this.id.toString().replace("btn-", "").replace("ToPdf", "");
@@ -329,13 +354,13 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
                 chartFilename = "utd_utdtillväxt_år";
                 break;
             case "treeMapDividend":
-                chartFilename = "treemap_utd_år";
+                chartFilename = "utdelningar_treemap_år";
                 break;
             case "treeMapPortfolioCurrency":
                 chartFilename = "portföljöversikt_treemap_fördelning_valuta";
                 break;
             case "chartDonutDividend":
-                chartFilename = "donut_utd_år";
+                chartFilename = "utdelningar_donut_år";
                 break;
             case "chartDividendYearMonth":
                 chartFilename = "utdelningar_månad_år";

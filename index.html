@@ -109,9 +109,9 @@
                                 <div class="row top10">
                                     <div class="col-md-12">
                                         <div class="btn-group">
-                                            <button id="btnExportToPdf" class='export-button-primary k-primary k-button'>Exportera alla grafer till PDF</button>
-                                            <button id="btnExportToPng" class='export-button-primary k-primary k-button'>Exportera alla grafer till PNG</button>
-                                            <button id="btnExportToSvg" class='export-button-primary k-primary k-button'>Exportera alla grafer till SVG</button>
+                                            <button id="btnExportToPdf" class='export-button-primary k-primary k-button' title='Exportera alla grafer till PDF'>Export PDF</button>
+                                            <button id="btnExportToPng" class='export-button-primary k-primary k-button' title='Exportera alla grafer till PNG'>Export PNG</button>
+                                            <button id="btnExportToSvg" class='export-button-primary k-primary k-button' title='Exportera alla grafer till SVG'>Export SVG</button>
                                             <button id="btnDemo" class='k-primary k-button'>Demo</button>
                                         </div>
                                         <script>
@@ -579,15 +579,14 @@
                         <div class="col-md-12">
                             <button id="btnLoadSpreadsheetPortfolio" class='k-primary k-button'>Ladda portföljöversikt</button>
                             <button id="btnLoadPortfolioCharts" class='k-primary k-button'>Ladda grafer</button>
+                            <button id="btnExportPortfolioToPdf" class='exportportfolio-button-primary k-primary k-button' title='Exportera alla grafer till PDF'>Export PDF</button>
+                            <button id="btnExportPortfolioToPng" class='exportportfolio-button-primary k-primary k-button' title='Exportera alla grafer till PNG'>Export PNG</button>
+                            <button id="btnExportPortfolioToSvg" class='exportportfolio-button-primary k-primary k-button' title='Exportera alla grafer till SVG'>Export SVG</button>
                         </div>
                         <script>
-                            $("#btnLoadSpreadsheetPortfolio").kendoButton({
-                                enable: false
-                            });
-
-                            $("#btnLoadPortfolioCharts").kendoButton({
-                                enable: false
-                            });
+                            $(".exportportfolio-button-primary").kendoButton({ enable: false });
+                            $("#btnLoadSpreadsheetPortfolio").kendoButton({ enable: false });
+                            $("#btnLoadPortfolioCharts").kendoButton({ enable: false });
                         </script>
                     </div>
                     <div class="row-fluid">
@@ -596,7 +595,7 @@
                         </div>
                     </div>
 
-                    <div id="chartPortfolioContent" class="hidden">
+                    <div id="chartPortfolioContent" class="contentportfolio-wrapper hidden">
                         
                         <div class="row-fluid">
                             <div class="col-md-12 top15">
@@ -612,9 +611,9 @@
                                             </div>
                                             <div class="col-xs-5 text-right">
                                                 <div class="btn-group pull-right">
-                                                    <button id="btn-chartDonutPortfolioAllocationToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
-                                                    <button id="btn-chartDonutPortfolioAllocationToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
-                                                    <button id="btn-chartDonutPortfolioAllocationToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                                    <button id="btn-chartDonutPortfolioAllocationToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf exportportfolio-chartToPdf" title="Till PDF">Till PDF</button>
+                                                    <button id="btn-chartDonutPortfolioAllocationToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg exportportfolio-chartToSvg" title="Till SVG">Till SVG</button>
+                                                    <button id="btn-chartDonutPortfolioAllocationToImg" type="button" class="k-button btn-xs k-primary export-chartToImg exportportfolio-chartToImg" title="Till PNG">Till PNG</button>
                                                 </div>
                                             </div>			
                                         </div>
@@ -642,9 +641,9 @@
                                     <div class="panel-heading clearfix">
                                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Fördelning valuta</h4>
                                         <div class="btn-group pull-right">
-                                            <button id="btn-chartDonutPortfolioCurrencyToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
-                                            <button id="btn-chartDonutPortfolioCurrencyToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
-                                            <button id="btn-chartDonutPortfolioCurrencyToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            <button id="btn-chartDonutPortfolioCurrencyToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf exportportfolio-chartToPdf" title="Till PDF">Till PDF</button>
+                                            <button id="btn-chartDonutPortfolioCurrencyToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg exportportfolio-chartToSvg" title="Till SVG">Till SVG</button>
+                                            <button id="btn-chartDonutPortfolioCurrencyToImg" type="button" class="k-button btn-xs k-primary export-chartToImg exportportfolio-chartToImg" title="Till PNG">Till PNG</button>
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -670,9 +669,9 @@
                                     <div class="panel-heading clearfix">
                                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap fördelning valuta</h4>
                                         <div class="btn-group pull-right">
-                                            <button id="btn-treeMapPortfolioCurrencyToPdf" type="button" class="k-button btn-xs k-primary export-DOMToPdf" title="Till PDF">Till PDF</button>
-                                            <button id="btn-treeMapPortfolioCurrencyToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg" title="Till SVG">Till SVG</button>
-                                            <button id="btn-treeMapPortfolioCurrencyToImg" type="button" class="k-button btn-xs k-primary export-DOMToImg" title="Till PNG">Till PNG</button>
+                                            <button id="btn-treeMapPortfolioCurrencyToPdf" type="button" class="k-button btn-xs k-primary export-DOMToPdf exportportfolio-DOMToPdf" title="Till PDF">Till PDF</button>
+                                            <button id="btn-treeMapPortfolioCurrencyToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg exportportfolio-DOMToSvg" title="Till SVG">Till SVG</button>
+                                            <button id="btn-treeMapPortfolioCurrencyToImg" type="button" class="k-button btn-xs k-primary export-DOMToImg exportportfolio-DOMToImg" title="Till PNG">Till PNG</button>
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -698,9 +697,9 @@
                                     <div class="panel-heading clearfix">
                                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Fördelning bransch</h4>
                                         <div class="btn-group pull-right">
-                                            <button id="btn-chartFunnelPortfolioIndustryToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
-                                            <button id="btn-chartFunnelPortfolioIndustryToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
-                                            <button id="btn-chartFunnelPortfolioIndustryToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            <button id="btn-chartFunnelPortfolioIndustryToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf exportportfolio-chartToPdf" title="Till PDF">Till PDF</button>
+                                            <button id="btn-chartFunnelPortfolioIndustryToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg exportportfolio-chartToSvg" title="Till SVG">Till SVG</button>
+                                            <button id="btn-chartFunnelPortfolioIndustryToImg" type="button" class="k-button btn-xs k-primary export-chartToImg exportportfolio-chartToImg" title="Till PNG">Till PNG</button>
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -726,9 +725,9 @@
                                     <div class="panel-heading clearfix">
                                     <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Fördelning bransch</h4>
                                         <div class="btn-group pull-right">
-                                            <button id="btn-chartRadarPortfolioIndustryToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
-                                            <button id="btn-chartRadarPortfolioIndustryToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
-                                            <button id="btn-chartRadarPortfolioIndustryToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                            <button id="btn-chartRadarPortfolioIndustryToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf exportportfolio-chartToPdf" title="Till PDF">Till PDF</button>
+                                            <button id="btn-chartRadarPortfolioIndustryToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg exportportfolio-chartToSvg" title="Till SVG">Till SVG</button>
+                                            <button id="btn-chartRadarPortfolioIndustryToImg" type="button" class="k-button btn-xs k-primary export-chartToImg exportportfolio-chartToImg" title="Till PNG">Till PNG</button>
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -778,9 +777,9 @@
                                             </div>
                                             <div class="col-xs-4 text-right">
                                                 <div class="btn-group pull-right">
-                                                    <button id="btn-chartDividendStackedCumulativePortfolioToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
-                                                    <button id="btn-chartDividendStackedCumulativePortfolioToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
-                                                    <button id="btn-chartDividendStackedCumulativePortfolioToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                                    <button id="btn-chartDividendStackedCumulativePortfolioToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf exportportfolio-chartToPdf" title="Till PDF">Till PDF</button>
+                                                    <button id="btn-chartDividendStackedCumulativePortfolioToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg exportportfolio-chartToSvg" title="Till SVG">Till SVG</button>
+                                                    <button id="btn-chartDividendStackedCumulativePortfolioToImg" type="button" class="k-button btn-xs k-primary export-chartToImg exportportfolio-chartToImg" title="Till PNG">Till PNG</button>
                                                 </div>
                                             </div>			
                                         </div>
@@ -968,7 +967,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 153;
+            var versionNumber = 154;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

@@ -147,7 +147,7 @@ define(['./spreadsheetstocks',
     }
 
     function loadControls() {
-        $('#chartPortfolioContent').attr("class", "");
+        $('#chartPortfolioContent').attr("class", "contentportfolio-wrapper");
 
         initBtnToTop();
         loadSchedulerPortfolioDividend();
@@ -161,6 +161,13 @@ define(['./spreadsheetstocks',
         loadSpangridportfoliodividendinfo();
         loadGridPortfolioDividend();
         loadChartDividendStackedCumulativePortfolio();
+        enableExportButtons();
+    }
+
+    function enableExportButtons() {
+        $("#btnExportPortfolioToPdf").kendoButton().data("kendoButton").enable(true);
+        $("#btnExportPortfolioToPng").kendoButton().data("kendoButton").enable(true);
+        $("#btnExportPortfolioToSvg").kendoButton().data("kendoButton").enable(true);
     }
 
     return {
