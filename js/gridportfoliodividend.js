@@ -44,6 +44,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
         var today = new Date().toISOString();
         for (var j = 0; j < dataItems.length; j++) {
 
+            if(dataItems[j].items == null) return;
+            
             for (var i = 0; i < dataItems[j].items.length; i++) {
                 var utdelningsdatum = new Date(dataItems[j].items[i].get("Utdelningsdatum")).toISOString();
                 var row = e.sender.tbody.find("[data-uid='" + dataItems[j].items[i].uid + "']");
@@ -105,6 +107,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             scrollable: true,
             sortable: true,
             filterable: true,
+            groupable: true,
             pageable: false,
             columns: [
                 { field: "Månad", groupHeaderTemplate: "#= value.substring(2, value.length) #", hidden: true },
