@@ -225,7 +225,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                 },
                 sheets: [
                     {
-                        name: "Aktier",
+                        name: "Värdepapper",
                         mergedCells: mergedCellsArray,
                         filter: {
                             ref: filterCells,

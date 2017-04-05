@@ -186,15 +186,20 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
         if(typeof e.Name.group !== 'undefined')
             groupNameValue = e.Name.group.value;
 
+        var sum = kendo.toString(e.Utdelningtotal.sum, 'n2') + " kr"; 
         var monthName = groupNameValue.substring(3, groupNameValue.length).toLowerCase();
-        var groupMonthValue = months.indexOf(groupNameValue);  
-        var sum = kendo.toString(e.Utdelningtotal.sum, 'n2') + " kr";      
-        if(currentMonth <= groupMonthValue) {
-            return "Förväntat belopp för " + monthName + ": " + sum;
+        if(months.includes(groupNameValue)) {
+            var groupMonthValue = months.indexOf(groupNameValue);                   
+            if(currentMonth <= groupMonthValue) {
+                return "Förväntat belopp för " + monthName + ": " + sum;
+            }
+            else {
+                return "Erhållet belopp för " + monthName + ": " + sum;
+            }   
         }
         else {
-            return "Erhållet belopp för " + monthName + ": " + sum;
-        }        
+            return "Förväntat belopp för " + groupNameValue + ": " + sum;
+        }     
     }
 
     return {
