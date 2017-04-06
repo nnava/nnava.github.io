@@ -19,7 +19,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         alasql('INSERT INTO PortfolioBankData SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, Antal \
                 FROM ?', [avanzaData]);
 
-        var resultPortfolio = alasql('SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, SUM(Antal::NUMBER) AS Antal FROM PortfolioBankData GROUP BY [Värdepapper], Valuta, Bransch, YahooSymbol ORDER BY [Värdepapper]');
+        var resultPortfolio = alasql('SELECT [Värdepapper], Valuta, Bransch, YahooSymbol, SUM(Antal::NUMBER) AS Antal FROM PortfolioBankData GROUP BY [Värdepapper], Valuta, Bransch, YahooSymbol ORDER BY UPPER([Värdepapper])');
         alasql('TRUNCATE TABLE PortfolioBankData');
         return resultPortfolio;       
     }

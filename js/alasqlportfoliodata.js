@@ -20,7 +20,7 @@ define([], function() {
     }
 
     function getPortfolioAllocation(sort) {
-        var sortExpression = " ORDER BY [Värdepapper]";
+        var sortExpression = " ORDER BY UPPER([Värdepapper])";
         if(sort == "size")
             sortExpression = " ORDER BY CAST([Marknadsvärde] AS NUMBER) DESC";
 
@@ -36,7 +36,7 @@ define([], function() {
     }
 
     function getPortfolioCurrencyStocks(currency) {
-        return alasql('SELECT [Värdepapper] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData WHERE Valuta = "' + currency + '" GROUP BY [Värdepapper] ORDER BY [Värdepapper]')
+        return alasql('SELECT [Värdepapper] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData WHERE Valuta = "' + currency + '" GROUP BY [Värdepapper] ORDER BY UPPER([Värdepapper])')
     }
 
     function getPortfolioIndustry() {
