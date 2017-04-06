@@ -1,5 +1,5 @@
-define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividend', './alasqlcurrencydata', './alasqllocalization'], 
-    function(alasqlstockdividenddata, alasqlportfoliodata, bankdatadividend, alasqlcurrencydata, alasqllocalization) {
+define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata', './bankdatadividend', './alasqlcurrencydata', './alasqllocalization'], 
+    function(alasqlstockdividenddata, alasqlstockdata, alasqlportfoliodata, bankdatadividend, alasqlcurrencydata, alasqllocalization) {
 
     var currentYear = new Date().getFullYear();
     var today = new Date().toISOString().slice(0, 10);
@@ -22,6 +22,7 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
                 var valutaKurs = 1;
                 var currency = portfolioObject.Valuta;
                 var utdelningaktieMedValuta = (stockDividendDataObject.utdelningaktiedecimal + " " + currency).replace(".", ",");
+                var land = alasqlstockdata.getLandFromISIN(portfolioObject.ISIN);
 
                 if(portfolioObject.Valuta !== userCurrency) {
                     valutaKurs = alasqlcurrencydata.getCurrencyExchangeRateValue(currency);
@@ -45,7 +46,8 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
                                                           stockDividendDataObject.utd_handlasutanutdelning,
                                                           portfolioObject.Valuta,
                                                           belopp,
-                                                          isDividendReceived);
+                                                          isDividendReceived,
+                                                          land);
                 resultForReturn.push(newObject);
             });
             
@@ -67,15 +69,16 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
                                                         receivedDividendDataObject.Utdelningsdag,
                                                         receivedDividendDataObject.Valuta,
                                                         receivedDividendDataObject.Belopp,
-                                                        true);
+                                                        true,
+                                                        receivedDividendDataObject.Land);
             resultForReturn.push(newObject);
         });
         
         return alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], SUM(Antal::NUMBER) AS Antal, \
                        FIRST(ISIN) AS ISIN, FIRST(Typ) AS Typ, FIRST(Utdelningaktiedecimal) AS Utdelningaktiedecimal, \
                        FIRST(UtdelningaktieValuta) AS UtdelningaktieValuta, FIRST([Månad]) AS [Månad], \
-                       FIRST(Utdelningsdag) AS Utdelningsdag, FIRST(Valuta) AS Valuta, FIRST(Utdelningmottagen) AS Utdelningmottagen, SUM(Belopp::NUMBER) AS Belopp FROM ? \
-                       GROUP BY [Värdepapper], ISIN, Typ, Utdelningaktiedecimal, UtdelningaktieValuta, Utdelningsdag, Valuta, Utdelningmottagen', [resultForReturn]);
+                       FIRST(Utdelningsdag) AS Utdelningsdag, FIRST(Valuta) AS Valuta, FIRST(Utdelningmottagen) AS Utdelningmottagen, FIRST(Land) AS Land, SUM(Belopp::NUMBER) AS Belopp FROM ? \
+                       GROUP BY [Värdepapper], ISIN, Typ, Utdelningaktiedecimal, UtdelningaktieValuta, Utdelningsdag, Valuta, Utdelningmottagen, Land', [resultForReturn]);
     }
 
     function getPortfolioDividendsYearMonthValues(year) {                
@@ -131,7 +134,7 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
         return värdepapperDividendDataValues;
     }
 
-    function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, belopp, utdelningmottagen) {
+    function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, belopp, utdelningmottagen, land) {
         var newObject = new Object();
         newObject.Värdepapper = värdepapper;
         newObject.Antal = parseInt(antal);
@@ -144,6 +147,7 @@ define(['./alasqlstockdividenddata', './alasqlportfoliodata', './bankdatadividen
         newObject.Valuta = valuta;
         newObject.Belopp = belopp;
         newObject.Utdelningmottagen = utdelningmottagen;
+        newObject.Land = land;
         return newObject;
     }
 

@@ -13,9 +13,9 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
 
         var currentYear = new Date().getFullYear();
         var result = alasqlportfoliodividenddata.getPortfolioDividends(currentYear);
-
         var data = [];
         var id = 0;
+
         result.forEach(function(entry) {
             if(entry == null) return;
 
@@ -29,7 +29,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 Månad: månad,
                 Utdelningsdatum : entry.Utdelningsdag,
                 Utdelningsbelopp : entry.UtdelningaktieValuta,
-                Utdelningtotal: entry.Belopp
+                Utdelningtotal: entry.Belopp,
+                Land: entry.Land
             });
 
             id++;
@@ -86,7 +87,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                             Typ: { type: "string" },
                             Utdelningsdatum: { type: "date" },
                             Utdelningsbelopp: { type: "string" },
-                            Utdelningtotal: { type: "number"}
+                            Utdelningtotal: { type: "number"},
+                            Land: {type: "string" }
                         }
                     }
                 },
@@ -111,7 +113,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             pageable: false,
             columns: [
                 { field: "Månad", groupHeaderTemplate: "#= value.substring(2, value.length) #", hidden: true },
-                { field: "Name", title: "Värdepapper",  width: "170px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
+                { field: "Name", title: "Värdepapper", template: "<div class='gridportfolio-country-picture' style='background-image: url(/styles/images/#:data.Land#.png);'></div><div class='gridportfolio-country-name'>#: Name #</div>", width: "170px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
                 { field: "Utdelningsdatum", title: "Utd/Handl. utan utd", format: "{0:yyyy-MM-dd}", width: "75px" },
                 { field: "Typ", title: "Typ", width: "70px" },
                 { field: "Antal", title: "Antal", format: "{0} st", width: "50px" },
