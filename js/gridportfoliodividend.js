@@ -30,7 +30,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 Utdelningsdatum : entry.Utdelningsdag,
                 Utdelningsbelopp : entry.UtdelningaktieValuta,
                 Utdelningtotal: entry.Belopp,
-                Land: entry.Land
+                Land: entry.Land.toLowerCase()
             });
 
             id++;
