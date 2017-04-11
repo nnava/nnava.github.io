@@ -1,71 +1,43 @@
-define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstockdividenddata'], function(alasqlavanza, alasqlnordnet, alasqlstockdata, alasqlstockdividenddata) {
+define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstockdividenddata', './dateperiod'], function(alasqlavanza, alasqlnordnet, alasqlstockdata, alasqlstockdividenddata, dateperiod) {
 
 
-    function getTotalDividend(year, isTaxChecked) {
-        var resultNordnetTotal = alasqlnordnet.getTotalDividend(year, isTaxChecked);
-        var resultAvanzaTotal = alasqlavanza.getTotalDividend(year, isTaxChecked);
+    function getTotalDividend(startPeriod, endPeriod, isTaxChecked) {
+        var resultNordnetTotal = alasqlnordnet.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
+        var resultAvanzaTotal = alasqlavanza.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
         return resultNordnetTotal + resultAvanzaTotal;
     }
 
-    function getVärdepapperTotalDividend(year, sort, addTaxToSum) {
-
-        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year, addTaxToSum);
-        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(year, addTaxToSum);
-
-        alasql('CREATE TABLE IF NOT EXISTS VardepapperTotalDividend \
-                (name STRING, [value] NUMBER);');
-
-        alasql('INSERT INTO VardepapperTotalDividend SELECT name, [value] \
-                FROM ?', [resultNordnetDividend]);
-
-        alasql('INSERT INTO VardepapperTotalDividend SELECT name, [value] \
-                FROM ?', [resultAvanzaDividend]);
+    function getVärdepapperTotalDividend(startPeriod, endPeriod, sort, addTaxToSum) {
+        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(startPeriod, endPeriod, addTaxToSum);
+        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(startPeriod, endPeriod, addTaxToSum);
+        var result = resultAvanzaDividend.concat(resultNordnetDividend);
 
         var sortExpression = " ORDER BY name";
         if(sort == "size")
             sortExpression = " ORDER BY SUM([value]) DESC";
 
-        var result = alasql('SELECT FIRST(name) AS name, SUM([value]) AS [value] FROM VardepapperTotalDividend GROUP BY name' + sortExpression);
-        alasql('TRUNCATE TABLE VardepapperTotalDividend');
-
-        return result;
+        return alasql('SELECT FIRST(name) AS name, SUM([value]) AS [value] FROM ? GROUP BY name' + sortExpression, [result]);
     }
 
-    function getVärdepapperForYear(year) {
-
-        alasqlavanza.getBuyTransactionSumBelopp(year);
-        alasqlavanza.getSellTransactionSumBelopp(year);
-        
-        var avanzaData = alasqlavanza.getVärdepapperForYear(year);
-        var nordnetData = alasqlnordnet.getVärdepapperForYear(year);
-
-        alasql('CREATE TABLE IF NOT EXISTS DivStackedCumulativeVardepapper \
-                (Vardepapper NVARCHAR(100), ISIN NVARCHAR(100));');
-
-        alasql('INSERT INTO DivStackedCumulativeVardepapper SELECT Vardepapper, ISIN \
-                FROM ?', [avanzaData]);
-                
-        alasql('INSERT INTO DivStackedCumulativeVardepapper SELECT Vardepapper, ISIN \
-                FROM ?', [nordnetData]);
-
-        var resultVärdepapper = alasql('SELECT FIRST(Vardepapper) AS Vardepapper, FIRST(ISIN) AS ISIN FROM DivStackedCumulativeVardepapper GROUP BY ISIN ORDER BY Vardepapper');
-        alasql('TRUNCATE TABLE DivStackedCumulativeVardepapper');
-
-        return resultVärdepapper;
+    function getVärdepapperForPeriod(startPeriod, endPeriod) {
+        var avanzaData = alasqlavanza.getVärdepapperForPeriod(startPeriod, endPeriod);
+        var nordnetData = alasqlnordnet.getVärdepapperForPeriod(startPeriod, endPeriod);
+        var result = avanzaData.concat(nordnetData);
+        return alasql('SELECT FIRST(Vardepapper) AS Vardepapper, FIRST(ISIN) AS ISIN FROM ? GROUP BY ISIN ORDER BY Vardepapper', [result]);
     }
     
-    function getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked) {
-        
-        var monthNumber = 11;
+    function getVärdepapperDividendData(startPeriod, endPeriod, resultVärdepapper, isTaxChecked) {
+    
         alasql('CREATE TABLE IF NOT EXISTS DivStackedCumulativeVardepapperValues \
         ([Värdepapper] NVARCHAR(100), Month INT, Belopp DECIMAL);');
         alasql('TRUNCATE TABLE DivStackedCumulativeVardepapperValues');
         
-        for(var i=0; i <= monthNumber; i++) {
-            var month = i + 1;
-
+        var datesInPeriod = dateperiod.getDateRange(startPeriod, endPeriod);
+        datesInPeriod.forEach(function(dateObject) {
+            var year = dateObject.year;
+            var month = dateObject.month;
             var resultAvanza = alasqlavanza.getVärdepapperDividend(year, month, isTaxChecked);
-            var resultNordnet = alasqlnordnet.getVärdepapperDividend(year,month, isTaxChecked);
+            var resultNordnet = alasqlnordnet.getVärdepapperDividend(year, month, isTaxChecked);
 
             resultVärdepapper.forEach(function(entry) {
                 if (entry.Vardepapper == null) { return; }
@@ -84,7 +56,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
 
                 alasql('INSERT INTO DivStackedCumulativeVardepapperValues VALUES ("' + värdepapper + '", ' + month + ', ' + total + ')');
             });
-        }
+        });
 
         var värdepapperDividendDataValues = [];
         resultVärdepapper.forEach(function(entry) {
@@ -183,7 +155,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
 
     return { 
         getVärdepapperTotalDividend: getVärdepapperTotalDividend,
-        getVärdepapperForYear: getVärdepapperForYear,
+        getVärdepapperForPeriod: getVärdepapperForPeriod,
         getVärdepapperDividendData: getVärdepapperDividendData,
         getTotalDividend: getTotalDividend,
         getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,

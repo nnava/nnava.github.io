@@ -369,12 +369,12 @@
                                 </div>
                             </div>
 
-                            <div id="divDividendYear" class="row-fluid">
+                            <div id="divDividendPeriod" class="row-fluid">
                                 <div class="col-md-6">
-                                    <h4>Välj år</h4>
+                                    <h4>Välj år/period</h4>
                                     <p>
-                                        <input id="dropdownDividendYear" style="width: 90px" />
-                                        <span id="spandividendyearinfo" class="k-icon k-i-info"></span>
+                                        <input id="dropdownDividendPeriod" style="width: 90px" />
+                                        <span id="spandividendperiodinfo" class="k-icon k-i-info"></span>
                                     </p>
                                 </div>
                             </div>
@@ -386,7 +386,7 @@
                                         <div class="panel-heading clearfix">
                                             <div class="container-fluid panel-container">
 				                                <div class="col-xs-5 text-left">
-                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelning per månad/värdepapper - år</h4>
+                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelning per månad/värdepapper</h4>
 				                                </div>
                                                 <div class="col-xs-3 text-center">
                                                     <ul id="chartDividendStackedCumulativeSettingBtnGroup">
@@ -422,7 +422,7 @@
                                 <div class="col-md-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap utdelningar - år</h4>
+                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Treemap utdelningar</h4>
                                             <div class="btn-group pull-right">
                                                 <button id="btn-treeMapDividendToPdf" type="button" class="k-button btn-xs k-primary export-DOMToPdf" title="Till PDF">Till PDF</button>
                                                 <button id="btn-treeMapDividendToSvg" type="button" class="k-button btn-xs k-primary export-DOMToSvg" title="Till SVG">Till SVG</button>
@@ -442,7 +442,7 @@
                                         <div class="panel-heading clearfix">
                                             <div class="container-fluid panel-container">
 				                                <div class="col-xs-4 text-left">
-                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Donut utdelningar - år</h4>
+                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Donut utdelningar</h4>
 				                                </div>
                                                 <div class="col-xs-3 text-center">
                                                     <label for="dropdownDonutDividendSelectSort">Sortering</label>
@@ -967,7 +967,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 161;
+            var versionNumber = 162;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

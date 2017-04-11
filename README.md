@@ -12,3 +12,4 @@ Licenses:
 * Cookie Consent plugin by Silktide (http://silktide.com/cookieconsent)
 * JSZip (http://stuartk.com/jszip)
 * Underscore.js (http://underscorejs.org)
+* date-fns (https://github.com/date-fns/date-fns)

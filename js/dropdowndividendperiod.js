@@ -12,21 +12,13 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
 
-        alasql('CREATE TABLE IF NOT EXISTS DropdownDivYearTable \
-                (Year INT);');
+        var result = avanzaYearData.concat(nordnetYearData);
+        var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
 
-        alasql('INSERT INTO DropdownDivYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO DropdownDivYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM DropdownDivYearTable');
-        alasql('TRUNCATE TABLE DropdownDivYearTable');
-        
         dropdownData = [];
-        resultYear.forEach(function(entry) {
+        dropdownData.push({ text: "R12", value: "R12" });
 
+        resultYear.forEach(function(entry) {
             if (entry.Year == null) { return; }
 
             dropdownData.push({ text: entry.Year, value: entry.Year });

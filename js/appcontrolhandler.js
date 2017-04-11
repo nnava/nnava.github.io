@@ -5,7 +5,7 @@ define(['./chartdonutexpenses',
      './chartdividendyeargrowth',
      './chartyeardeposit',
      './chartdonutdividend',
-     './dropdowndividendyear',
+     './dropdowndividendperiod',
      './charttransactionbuyline',
      './charttransactionsellline',
      './chartdividendcumulative',
@@ -23,7 +23,7 @@ define(['./chartdonutexpenses',
      chartDividendYearGrowth,
      chartYearDeposit,
      chartDonutDividend,
-     dropdownDividendYear,
+     dropdownDividendPeriod,
      chartTransactionBuyLine,
      chartTransactionSellLine,
      chartDividendCumulative,
@@ -44,7 +44,7 @@ define(['./chartdonutexpenses',
 
     function loadControlsWithTimeout() {
         loadMultiselectorPortfolio();
-        loadDropdownDividendYear();
+        loadDropdownDividendPeriod();
         loadDropdownDonutDividendSort();              
         loadChartDividendStackedCumulative();
         loadChartDividendExpenses();
@@ -57,7 +57,7 @@ define(['./chartdonutexpenses',
         initChartSettingButtonGroups();
         
         setTimeout(function(){   
-            loadSpandividendyearinfo();
+            loadSpandividendPeriodInfo();
             loadChartDividendYearMonth();
             loadChartDividendCumulative();  
             loadChartDonutDividend(); 
@@ -100,8 +100,8 @@ define(['./chartdonutexpenses',
         }
     }
 
-    function loadSpandividendyearinfo() {
-        $("#spandividendyearinfo").kendoTooltip({
+    function loadSpandividendPeriodInfo() {
+        $("#spandividendperiodinfo").kendoTooltip({
             content: "<div style=\"text-align:left\">Påverkar graferna: <br/> \
                       <ul>\
                            <li>Utdelning per månad/värdepapper - år</li> \
@@ -123,12 +123,13 @@ define(['./chartdonutexpenses',
     }
 
     function loadChartDividendStackedCumulative() {
-        var year = dropdownDividendYear.getValue();
-        if(year == null || year == '')
-            year = 0;
+        var period = dropdownDividendPeriod.getValue();
+        if(period == null || period == '')
+            period = 0;
 
         chartDividendStackedCumulative.setChartId('#chartDividendStackedCumulative');
-        chartDividendStackedCumulative.setChartData(year);
+        chartDividendStackedCumulative.setCategoryAxisData(period);
+        chartDividendStackedCumulative.setChartData(period);
         chartDividendStackedCumulative.loadChart();
     }
     
@@ -168,12 +169,12 @@ define(['./chartdonutexpenses',
         chartTransactionBuyLine.loadChart();
     }
 
-    function loadDropdownDividendYear() {
-        dropdownDividendYear.setDropdownId('#dropdownDividendYear');
-        dropdownDividendYear.setDropdownData();
-        dropdownDividendYear.loadDropdown();
+    function loadDropdownDividendPeriod() {
+        dropdownDividendPeriod.setDropdownId('#dropdownDividendPeriod');
+        dropdownDividendPeriod.setDropdownData();
+        dropdownDividendPeriod.loadDropdown();
 
-        $("#dropdownDividendYear").data("kendoDropDownList").bind("change", dropDownListDividendYear_Change);
+        $("#dropdownDividendPeriod").data("kendoDropDownList").bind("change", dropDownListDividendYear_Change);
     }
 
     function dropDownListDividendYear_Change(e) {
@@ -211,7 +212,7 @@ define(['./chartdonutexpenses',
     }
 
     function loadChartDonutDividend() {
-        var year = dropdownDividendYear.getValue();
+        var year = dropdownDividendPeriod.getValue();
         if(year == null || year == '')
             year = 0;
 
@@ -225,7 +226,7 @@ define(['./chartdonutexpenses',
     }
 
     function loadChartDividendTreemap() {
-        var year = dropdownDividendYear.getValue();
+        var year = dropdownDividendPeriod.getValue();
         if(year == null || year == '')
             year = 0;
 

@@ -1,21 +1,27 @@
-define(['./colors', './bankdatadividend', './dropdowndonutdividendsort'], function(colors, bankdatadividend, dropdowndonutdividendsort) {
+define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './dateperiod'], function(colors, bankdatadividend, dropdowndonutdividendsort, dateperiod) {
 
     var chartData;
     var chartId;
     var colorArray = colors.getColorArray();
-    var selectedYear = 0;
+    var selectedPeriod = 0;
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData(year, sort) {
+    function setChartData(period, sort) {
+        selectedPeriod = period;
+        var startPeriod = dateperiod.getStartOfYear(selectedPeriod);
+        var endPeriod = dateperiod.getEndOfYear(selectedPeriod);
 
-        selectedYear = year;
+        if(selectedPeriod == "R12") {
+            var today = new Date().toISOString();
+            startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            endPeriod = dateperiod.getDateEndOfMonth(today);
+        }
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
-
-        var result = bankdatadividend.getVärdepapperTotalDividend(year, sort, isTaxChecked);
+        var result = bankdatadividend.getVärdepapperTotalDividend(startPeriod, endPeriod, sort, isTaxChecked);
 
         var donutData = [];
         result.forEach(function(entry) {
@@ -32,12 +38,14 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort'], functi
     }
 
     function loadChart() {
+        var titleText = "Värdepapper/utdelning -  " + (selectedPeriod.startsWith("R") ? "R12" : selectedPeriod);
+
         $(chartId).kendoChart({
             plotArea: {
                 background: ""
             },
             title: {
-                text: "Värdepapper/utdelning - år " + selectedYear
+                text: titleText
             },
             legend: {
                 position: "top"

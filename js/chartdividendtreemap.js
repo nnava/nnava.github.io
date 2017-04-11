@@ -1,27 +1,36 @@
-define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordnet) {
+define(['./alasqlavanza', './alasqlnordnet', './dateperiod'], function(alasqlavanza, alasqlnordnet, dateperiod) {
 
     var chartData;
     var totalBelopp;
     var chartId;
-    var selectedYear = 0;
+    var selectedPeriod = 0;
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData(year) {
+    function setChartData(period) {
 
-        selectedYear = year;
+        selectedPeriod = period;
+
+        var startPeriod = dateperiod.getStartOfYear(selectedPeriod);
+        var endPeriod = dateperiod.getEndOfYear(selectedPeriod);
+
+        if(selectedPeriod == "R12") {
+            var today = new Date().toISOString();
+            startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            endPeriod = dateperiod.getDateEndOfMonth(today);
+        }
 
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
-        var resultNordnetTotal = alasqlnordnet.getTotalDividend(year, isTaxChecked);
-        var resultAvanzaTotal = alasqlavanza.getTotalDividend(year, isTaxChecked);
+        var resultNordnetTotal = alasqlnordnet.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
+        var resultAvanzaTotal = alasqlavanza.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
 
         totalBelopp = resultNordnetTotal + resultAvanzaTotal;
 
-        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(year, isTaxChecked);
-        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(year, isTaxChecked);
+        var resultNordnetDividend = alasqlnordnet.getVardepapperTotalDividend(startPeriod, endPeriod, isTaxChecked);
+        var resultAvanzaDividend = alasqlavanza.getVardepapperTotalDividend(startPeriod, endPeriod, isTaxChecked);
 
         var avanzaDividendDataItems = [ { name: 'Avanza totalt: ' + kendo.toString(resultAvanzaTotal, "#,0 kr"), value: resultAvanzaTotal, items: resultAvanzaDividend }]
         var nordnetDividendDataItems = [ { name: 'Nordnet totalt: ' + kendo.toString(resultNordnetTotal, "#,0 kr"), value: resultNordnetTotal, items: resultNordnetDividend }]
@@ -33,7 +42,7 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
         $(chartId).kendoTreeMap({
             dataSource: {
                 data: [{
-                    name: 'Utdelningar år ' + selectedYear + ' - totalt: ' + kendo.toString(Math.round(totalBelopp), "#,0 kr"),
+                    name: 'Utdelningar - totalt: ' + kendo.toString(Math.round(totalBelopp), "#,0 kr"),
                     value: totalBelopp,
                     items: chartData
                 }]

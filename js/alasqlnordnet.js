@@ -231,7 +231,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return belopp["0"].Belopp;
     }
 
-    function getTotalDividend(year, addTaxToSum) {
+    function getTotalDividend(startPeriod, endPeriod, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
@@ -239,7 +239,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
                        JOIN NordnetPortfolio USING Konto, Konto \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");
+                       WHERE [Bokföringsdag] >= "' + startPeriod.toISOString().slice(0, 10) + '" AND [Bokföringsdag] <= "' + endPeriod.toISOString().slice(0, 10) + '" AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"'  + taxSqlWhere + ")");
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -247,7 +247,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return belopp["0"].Belopp;              
     }
 
-    function getVardepapperTotalDividend(year, addTaxToSum) {
+    function getVardepapperTotalDividend(startPeriod, endPeriod, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
             taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
@@ -255,7 +255,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT FIRST([ISIN]) AS [ISIN], FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [belopp] \
                        FROM NordnetData \
                        JOIN NordnetPortfolio USING Konto, Konto \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
+                       WHERE [Bokföringsdag] >= "' + startPeriod.toISOString().slice(0, 10) + '" AND [Bokföringsdag] <= "' + endPeriod.toISOString().slice(0, 10) + '" AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING"' + taxSqlWhere + ') \
                        GROUP BY [ISIN]');
 
         var resultForReturn = [];
@@ -310,11 +310,11 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return parseInt(count["0"].TransactionCount);
     }
 
-    function getVärdepapperForYear(year) {
+    function getVärdepapperForPeriod(startPeriod, endPeriod) {
         return alasql('SELECT DISTINCT [Värdepapper] AS Vardepapper, [ISIN] AS ISIN \
                        FROM NordnetData \
                        JOIN NordnetPortfolio USING Konto, Konto \
-                       WHERE YEAR([Bokföringsdag]) = ' + year + ' AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
+                       WHERE [Bokföringsdag] >= "' + startPeriod.toISOString().slice(0, 10) + '" AND [Bokföringsdag] <= "' + endPeriod.toISOString().slice(0, 10) + '" AND (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING")');
     }
 
     function getVärdepapperDividend(year, month, addTaxToSum) {
@@ -448,7 +448,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getSellTransactionCount: getSellTransactionCount,
         getDividendAll: getDividendAll,
         getVärdepapperDividend: getVärdepapperDividend,
-        getVärdepapperForYear: getVärdepapperForYear,
+        getVärdepapperForPeriod: getVärdepapperForPeriod,
         getCourtageSumBuy: getCourtageSumBuy,
         getCourtageSumSell: getCourtageSumSell,
         getCourtageYears: getCourtageYears,

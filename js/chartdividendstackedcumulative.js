@@ -1,25 +1,51 @@
-define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankdatadividend, colors, monthstaticvalues) {
+define(['./bankdatadividend', './colors', './monthstaticvalues', './dateperiod'], function(bankdatadividend, colors, monthstaticvalues, dateperiod) {
 
     var chartData = [];
     var chartId;
-    var selectedYear = 0;
+    var selectedPeriod = 0;
     var colorArray = colors.getColorArray();
-    var months = monthstaticvalues.getMonthValues();
+    var months = [];
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData(year) {
+    function setCategoryAxisData(period) {
+        months = [];
+        var monthValues = monthstaticvalues.getMonthValues();
 
+        if(period == "R12") {
+            var today = new Date().toISOString();
+            var startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            var endPeriod = dateperiod.getDateEndOfMonth(today);
+            var datesInPeriod = dateperiod.getDateRange(startPeriod, endPeriod);
+
+            datesInPeriod.forEach(function(dateObject) {
+                var dateMonth = (dateObject.month - 1);
+                months.push(monthValues[dateMonth]);
+            });
+        }
+        else {
+            months = monthValues;
+        }
+    }
+
+    function setChartData(period) {
         chartData = [];
+        selectedPeriod = period;
 
-        selectedYear = year;
+        var startPeriod = dateperiod.getStartOfYear(selectedPeriod);
+        var endPeriod = dateperiod.getEndOfYear(selectedPeriod);
+
+        if(selectedPeriod == "R12") {
+            var today = new Date().toISOString();
+            startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            endPeriod = dateperiod.getDateEndOfMonth(today);
+        }
+
         var isTaxChecked = $('#checkboxTax').is(":checked");
-
-        var resultVärdepapper = bankdatadividend.getVärdepapperForYear(selectedYear);
-        
-        var dividendData = bankdatadividend.getVärdepapperDividendData(year, resultVärdepapper, isTaxChecked);
+        var resultVärdepapper = bankdatadividend.getVärdepapperForPeriod(startPeriod, endPeriod);        
+        var dividendData = bankdatadividend.getVärdepapperDividendData(startPeriod, endPeriod, resultVärdepapper, isTaxChecked);
         dividendData.forEach(function(entry) {
             chartData.push({
                 name: entry.name,
@@ -27,7 +53,7 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
             });
         });
 
-        var resultTotalDividend = bankdatadividend.getTotalDividend(year, isTaxChecked);
+        var resultTotalDividend = bankdatadividend.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
         var avgDividendValue = (resultTotalDividend / 12);
 
         var avgDividendArray = [];
@@ -52,12 +78,14 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
     }
 
     function loadChart() {
+        var titleText = "Utdelning per månad/värdepapper - " + (selectedPeriod.startsWith("R") ? "R12" : selectedPeriod);
+
         $(chartId).kendoChart({
             plotArea: {
                 background: ""
             },
             title: {
-                text: "Utdelning per månad/värdepapper - år " + selectedYear
+                text: titleText
             },
             legend: {
                 position: "bottom"
@@ -124,6 +152,7 @@ define(['./bankdatadividend', './colors', './monthstaticvalues'], function(bankd
     return {
         setChartId: setChartId,
         setChartData: setChartData,
+        setCategoryAxisData: setCategoryAxisData,
         loadChart: loadChart,
         updateChartOptions: updateChartOptions
     };

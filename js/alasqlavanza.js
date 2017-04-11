@@ -187,7 +187,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        GROUP BY AvanzaData.Konto, Month, ISIN')
     }
 
-    function getTotalDividend(year, addTaxToSum) {
+    function getTotalDividend(startPeriod, endPeriod, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
             taxSqlWhere = ' OR [Värdepapperbeskrivning] = "Utländsk källskatt"';
@@ -195,7 +195,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         var result = alasql('SELECT SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE Year = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse"' + taxSqlWhere + ")");
+                       WHERE Datum >= "' + startPeriod.toISOString().slice(0, 10) + '" AND Datum <= "' + endPeriod.toISOString().slice(0, 10) + '" AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse"' + taxSqlWhere + ")");
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -203,11 +203,11 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return Math.round(belopp["0"].Belopp); 
     }
 
-    function getVärdepapperForYear(year) {
+    function getVärdepapperForPeriod(startPeriod, endPeriod) {
         return alasql('SELECT DISTINCT [Värdepapperbeskrivning] AS Vardepapper, [ISIN] AS ISIN \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE Year = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse")');
+                       WHERE Datum >= "' + startPeriod.toISOString().slice(0, 10) + '" AND Datum <= "' + endPeriod.toISOString().slice(0, 10) + '" AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse")');
     }
 
     function getVärdepapperDividend(year, month, addTaxToSum) {
@@ -248,12 +248,12 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return resultForReturn;
     }
 
-    function getVardepapperTotalDividend(year, addTaxToSum) {
+    function getVardepapperTotalDividend(startPeriod, endPeriod, addTaxToSum) {
 
         var avanzaIsinWithValueQuery = alasql.compile('SELECT FIRST(ISIN) AS [name], SUM(Belopp::NUMBER) AS [value] \
                                                   FROM AvanzaData \
                                                   JOIN AvanzaPortfolio USING Konto, Konto \
-                                                  WHERE Year = ' + year + ' AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse") \
+                                                  WHERE Datum >= "' + startPeriod.toISOString().slice(0, 10) + '" AND Datum <= "' + endPeriod.toISOString().slice(0, 10) + '" AND ([Typ av transaktion] = "Utdelning" OR [Typ av transaktion] = "Utdelning. rättelse") \
                                                   GROUP BY ISIN');
 
         var result = avanzaIsinWithValueQuery();
@@ -278,7 +278,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 var resultTaxQuery = alasql.compile('SELECT SUM(Belopp::NUMBER) AS [value] \
                                      FROM AvanzaData \
                                      JOIN AvanzaPortfolio USING Konto, Konto \
-                                     WHERE Year = ' + year + ' AND [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
+                                     WHERE Datum >= "' + startPeriod.toISOString().slice(0, 10) + '" AND Datum <= "' + endPeriod.toISOString().slice(0, 10) + '" AND [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] = "Utländsk källskatt" \
                                      GROUP BY ISIN');
 
                 var resultTax = resultTaxQuery();
@@ -485,7 +485,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getSellTransactionCount: getSellTransactionCount,
         getDividendAll: getDividendAll,
         getVärdepapperDividend: getVärdepapperDividend,
-        getVärdepapperForYear: getVärdepapperForYear,
+        getVärdepapperForPeriod: getVärdepapperForPeriod,
         getBuyTransactionSumBelopp: getBuyTransactionSumBelopp,
         getSellTransactionSumBelopp: getSellTransactionSumBelopp,
         getTransactionYears: getTransactionYears,
