@@ -20,9 +20,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             if(entry == null) return;
 
             var månad = months[entry.Månad -1];
-
-            if(entry.Land == null)
-                console.log('Error gridportfoliodividend', entry.Värdepapper);
+            var land = entry.Land == null ? "x" : entry.Land.toLowerCase();
 
             data.push({ 
                 Id: id,
@@ -33,7 +31,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 Utdelningsdatum : entry.Utdelningsdag,
                 Utdelningsbelopp : entry.UtdelningaktieValuta,
                 Utdelningtotal: entry.Belopp,
-                Land: entry.Land.toLowerCase()
+                Land: land
             });
 
             id++;
