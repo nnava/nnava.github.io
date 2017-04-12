@@ -21,6 +21,9 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
 
             var månad = months[entry.Månad -1];
 
+            if(entry.Land == null)
+                console.log('Error gridportfoliodividend', entry.Värdepapper);
+
             data.push({ 
                 Id: id,
                 Name : entry.Värdepapper,
