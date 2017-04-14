@@ -88,6 +88,11 @@ var icsFormatter = function() {
                 'DTEND;VALUE=DATE:' + end,
                 'SUMMARY;LANGUAGE=sv:' + subject,
                 'TRANSP:TRANSPARENT',
+                'BEGIN:VALARM',
+                'TRIGGER:-PT5M',
+                'ACTION:DISPLAY',
+                'DESCRIPTION:Reminder',
+                'END:VALARM',
                 'END:VEVENT'
             ].join(SEPARATOR);
 

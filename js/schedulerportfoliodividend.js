@@ -126,7 +126,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
 
                 var title = "Utdelning: " + entry.Värdepapper + " - Antal: " + entry.Antal + " st. " + beloppText + kendo.toString(entry.Belopp, 'n2') + " kr";
                 var start = new Date(entry.Utdelningsdag);
-                start.setHours(8, 0, 0, 0);
+                start.setHours(8, 5, 0, 0);
                 calEntry.addEvent(title, title, "", start.toUTCString(), start.toUTCString());
             });
 
