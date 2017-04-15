@@ -1,57 +1,79 @@
-define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlavanza, alasqlnordnet, monthstaticvalues) {
+define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperiod'], function(alasqlavanza, alasqlnordnet, monthstaticvalues, dateperiod) {
 
     var chartData;
     var chartId;
     var monthsInput = monthstaticvalues.getMonthInputs();
-    var months = monthstaticvalues.getMonthValues();
+    var months = [];
+    var monthNumber = 11;
+    var selectedPeriod;
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData() {
+    function setCategoryAxisData(period) {
+        months = [];
+        var monthValues = monthstaticvalues.getMonthValues();
 
+        if(period == "R12") {
+            var today = new Date().toISOString();
+            var startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            var endPeriod = dateperiod.getDateEndOfMonth(today);
+            var datesInPeriod = dateperiod.getDateRange(startPeriod, endPeriod);
+
+            datesInPeriod.forEach(function(dateObject) {
+                var dateMonth = (dateObject.month - 1);
+                months.push(monthValues[dateMonth]);
+            });
+        }
+        else {
+            months = monthValues;
+        }
+    }
+
+    function setChartData(period) {
+        selectedPeriod = period;
         var nordnetYearData = alasqlnordnet.getDividendMaxYear();
         var avanzaYearData = alasqlavanza.getDividendMaxYear();
 
-        alasql('CREATE TABLE IF NOT EXISTS DivExpensesYearTable \
-                (Year INT);');
+        var result = nordnetYearData.concat(avanzaYearData);
+        var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
 
-        alasql('INSERT INTO DivExpensesYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO DivExpensesYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM DivExpensesYearTable');
-        alasql('TRUNCATE TABLE DivExpensesYearTable');
-
-        var monthNumber = 11;
         var monthDividendDataValues = [];
         var monthExpensesDataValues = [];
         var yearAvgExpensesValues = [];
         var monthMarginDataValues = [];
         var totalExpenses = 0;
+        var maxYear = resultYear["0"].Year;
+        var startPeriod = dateperiod.getStartOfYear(maxYear);
+        var endPeriod = dateperiod.getEndOfYear(maxYear);
 
-        var year = resultYear["0"].Year;
-        for(var i=0; i <= monthNumber; i++) {
-            var month = i + 1;
+        if(period == "R12") {
+            var today = new Date().toISOString();
+            startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            endPeriod = dateperiod.getDateEndOfMonth(today);
+        }
 
-            var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
-            var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
+        var arrayIndex = 0;
+        var datesInPeriod = dateperiod.getDateRange(startPeriod, endPeriod);
+        datesInPeriod.forEach(function(dateObject) {
+            var year = dateObject.year;
+            var month = dateObject.monthJsValue;
+            var monthCalendarValue = month + 1;
+            var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, monthCalendarValue);
+            var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, monthCalendarValue);
 
             if ($('#checkboxTax').is(":checked")) {
-                var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, month);
-                var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, month);
+                var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, monthCalendarValue);
+                var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, monthCalendarValue);
                 resultNordnet = resultNordnet + taxNordnet;
                 resultAvanza = resultAvanza + taxAvanza;
             }
 
             var totalDividendBelopp = Math.round(resultNordnet + resultAvanza);
-            monthDividendDataValues[i] = totalDividendBelopp;
+            monthDividendDataValues[arrayIndex] = totalDividendBelopp;
 
-            var monthExpenseTextboxValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();
-
+            var monthExpenseTextboxValue = $('#' + monthsInput[month]).data("kendoNumericTextBox").value();
             totalExpenses += monthExpenseTextboxValue;
 
             var monthValue = monthExpenseTextboxValue - totalDividendBelopp;
@@ -61,13 +83,14 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
                 marginValue = totalDividendBelopp - monthExpenseTextboxValue;
             }
 
-            monthExpensesDataValues[i] = monthValue;
-            monthMarginDataValues[i] = marginValue;
-        }
+            monthExpensesDataValues[arrayIndex] = monthValue;
+            monthMarginDataValues[arrayIndex] = marginValue;
+
+            arrayIndex++;
+        });
 
         totalExpenses = (totalExpenses / 12);
-
-        for(var i=0; i <= monthNumber; i++) {
+        for (var i=0; i <= monthNumber; i++) {
             yearAvgExpensesValues.push(totalExpenses);
         }
 
@@ -107,9 +130,17 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
     }
 
     function loadChart() {
+
+        if($(chartId).data('kendoChart')) {
+            $(chartId).data('kendoChart').destroy();
+            $(chartId).empty();
+        }
+
+        var titleText = "Utdelningar/utgifter - " + (selectedPeriod.startsWith("R") ? "R12" : "nuvarande år");
+
         $(chartId).kendoChart({
             title: {
-                text: "Utdelningar/utgifter - nuvarande år"
+                text: titleText
             },
             legend: {
                 position: "bottom"
@@ -169,6 +200,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
     return {
         setChartId: setChartId,
         setChartData: setChartData,
+        setCategoryAxisData: setCategoryAxisData,
         loadChart: loadChart,
         updateChartOptions: updateChartOptions
     };

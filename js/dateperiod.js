@@ -29,7 +29,7 @@ define(['./date_fns.min'], function(date_fns) {
             for(var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j+1) {
                 var month = j+1;
                 var displayMonth = month < 10 ? '0' + month : month;
-                dates.push({ year: i, month: displayMonth});
+                dates.push({ year: i, month: displayMonth, monthJsValue: month -1});
             }
         }
         return dates;

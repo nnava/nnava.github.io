@@ -94,6 +94,10 @@ span.k-loading-text
     background-color: #428bca;
 }
 
+.k-button.k-state-active, .k-button:active {
+    background-color: #428bca;
+}
+
 .col-xs-4, .col-xs-5 {
     padding-left: 0px;
     padding-right: 0px;

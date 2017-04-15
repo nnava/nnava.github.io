@@ -253,17 +253,10 @@
                                         <div class="panel-heading clearfix">
                                             <div class="container-fluid panel-container">
 				                                <div class="col-xs-5 text-left">
-                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/utgifter - nuvarande år</h4>
+                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/utgifter</h4>
 				                                </div>
                                                 <div class="col-xs-3 text-center">
-                                                    <ul id="chartDividendExpensesMonthSettingBtnGroup">
-                                                        <li>
-                                                            <span class="k-icon k-i-columns"></span>
-                                                        </li>
-                                                        <li>
-                                                            <span class="k-icon k-i-rows"></span>
-                                                        </li>
-                                                    </ul>
+                                                    <div id="toolbarChartDividendExpensesMonth" style="width: 175px;"></div>                                                 
                                                 </div>
                                                 <div class="col-xs-4 text-right">
                                                     <span class="btn-group pull-right">
@@ -967,7 +960,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 166;
+            var versionNumber = 167;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

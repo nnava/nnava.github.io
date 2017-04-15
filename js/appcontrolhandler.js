@@ -55,6 +55,7 @@ define(['./chartdonutexpenses',
         kendo.ui.progress($(document.body), false);
 
         initChartSettingButtonGroups();
+        initChartSettingToolbar();
         
         setTimeout(function(){   
             loadSpandividendPeriodInfo();
@@ -249,14 +250,17 @@ define(['./chartdonutexpenses',
 
     function loadChartDividendExpenses() {
         chartDividendExpenses.setChartId('#chartDividendExpensesMonth');
-        chartDividendExpenses.setChartData();
+        chartDividendExpenses.setChartData("N");
         chartDividendExpenses.loadChart();
     };
 
     function initChartSettingButtonGroups() {
-        initChartDividendExpensesMonthSettingBtnGroup();
         initChartDividendYearMonthSettingBtnGroup();
         initChartDividendStackedCumulativeSettingBtnGroup();
+    }
+
+    function initChartSettingToolbar() {
+        initToolbarChartDividendExpensesMonth();
     }
 
     function initChartDividendStackedCumulativeSettingBtnGroup() {
@@ -273,17 +277,54 @@ define(['./chartdonutexpenses',
         });
     }
 
-    function initChartDividendExpensesMonthSettingBtnGroup() {
-        $("#chartDividendExpensesMonthSettingBtnGroup").kendoMobileButtonGroup({
-            select: function(e) {
-                var seriesDefaultType = "column";
-                // This is purely ugly but since only using image...
-                if(e.index === 1)
-                    seriesDefaultType = "bar";
-                    
-                chartDividendExpenses.updateChartOptions(seriesDefaultType);
-            },
-            index: 0
+    function buttonToolbarChartDividendExpensesMonthNR12(e) {
+        chartDividendExpenses.setCategoryAxisData(e.id);
+        chartDividendExpenses.setChartData(e.id);
+        chartDividendExpenses.loadChart();
+    }
+
+    function buttonToolbarChartDividendExpensesMonthLS(e) {
+        chartDividendExpenses.updateChartOptions(e.id);
+    }
+
+    function initToolbarChartDividendExpensesMonth() {
+        var toolbar = $("#toolbarChartDividendExpensesMonth").data("kendoToolBar");
+        if(toolbar) return;
+
+        $("#toolbarChartDividendExpensesMonth").kendoToolBar({
+            resizable: false,
+            items: [
+                {
+                    type: "buttonGroup",
+                    buttons: [
+                        { text: "N", id: "N", togglable: true, group: "NR12", toggle: buttonToolbarChartDividendExpensesMonthNR12, enable: true },
+                        { text: "R12", id: "R12", togglable: true, group: "NR12", toggle: buttonToolbarChartDividendExpensesMonthNR12 }
+                    ]
+                },
+                { type: "separator" },
+                {
+                    type: "buttonGroup",
+                    buttons: [
+                        { icon: "columns", id: "column", text: "", width:"50px", togglable: true, group: "LS", toggle: buttonToolbarChartDividendExpensesMonthLS, enable: true },
+                        { icon: "rows", id: "bar", text: "", togglable: true, group: "LS", toggle: buttonToolbarChartDividendExpensesMonthLS }
+                    ]
+                }
+            ],
+            theme: "bootstrap"
+        });
+
+        var toolbar = $("#toolbarChartDividendExpensesMonth").data("kendoToolBar");
+        toolbar.toggle("#column", true);
+        toolbar.toggle("#N", true);
+
+        $("#N").kendoTooltip({
+            content: "Nuvarande år",
+            position: "top"
+        });
+
+        $("#R12").kendoTooltip({
+            content: "Rullande 12 månader",
+            position: "top"
         });
     }
 
