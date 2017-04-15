@@ -249,8 +249,11 @@ define(['./chartdonutexpenses',
     };
 
     function loadChartDividendExpenses() {
+        var selectedPeriod = chartDividendExpenses.getSelectedPeriod();
+
         chartDividendExpenses.setChartId('#chartDividendExpensesMonth');
-        chartDividendExpenses.setChartData("N");
+        chartDividendExpenses.setCategoryAxisData(selectedPeriod);
+        chartDividendExpenses.setChartData(selectedPeriod);
         chartDividendExpenses.loadChart();
     };
 

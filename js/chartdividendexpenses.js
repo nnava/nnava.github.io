@@ -5,7 +5,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     var monthsInput = monthstaticvalues.getMonthInputs();
     var months = [];
     var monthNumber = 11;
-    var selectedPeriod;
+    var selectedPeriod = "N";
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -197,10 +197,15 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
         });
     }
 
+    function getSelectedPeriod() {
+        return selectedPeriod;
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
         setCategoryAxisData: setCategoryAxisData,
+        getSelectedPeriod: getSelectedPeriod,
         loadChart: loadChart,
         updateChartOptions: updateChartOptions
     };
