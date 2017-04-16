@@ -71,8 +71,6 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
             }
 
             var totalDividendBelopp = Math.round(resultNordnet + resultAvanza);
-            monthDividendDataValues[arrayIndex] = totalDividendBelopp;
-
             var monthExpenseTextboxValue = $('#' + monthsInput[month]).data("kendoNumericTextBox").value();
             totalExpenses += monthExpenseTextboxValue;
 
@@ -81,10 +79,12 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
             if(totalDividendBelopp > monthExpenseTextboxValue) {
                 monthValue = 0;
                 marginValue = totalDividendBelopp - monthExpenseTextboxValue;
+                totalDividendBelopp = totalDividendBelopp - marginValue;
             }
 
             monthExpensesDataValues[arrayIndex] = monthValue;
             monthMarginDataValues[arrayIndex] = marginValue;
+            monthDividendDataValues[arrayIndex] = totalDividendBelopp;
 
             arrayIndex++;
         });
@@ -107,7 +107,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
         });
 
         monthExpensesDividendData.push({
-            name: "Överskott",
+            name: "Överskott utdelning",
             data: monthMarginDataValues,
             color: "#5CB85C"
         });
