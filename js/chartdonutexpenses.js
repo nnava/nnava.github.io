@@ -1,45 +1,46 @@
-define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(alasqlavanza, alasqlnordnet, monthstaticvalues) {
+define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperiod'], function(alasqlavanza, alasqlnordnet, monthstaticvalues, dateperiod) {
 
     var chartData;
     var chartId;
     var monthsInput = monthstaticvalues.getMonthInputs();
+    var selectedPeriod = "N";
+    var monthNumber = 11;
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData() {
-
+    function setChartData(period) {
+        selectedPeriod = period;
         var nordnetYearData = alasqlnordnet.getDividendMaxYear();
         var avanzaYearData = alasqlavanza.getDividendMaxYear();
 
-        alasql('CREATE TABLE IF NOT EXISTS DonutExpensesYearTable \
-                (Year INT);');
+        var result = avanzaYearData.concat(nordnetYearData);
+        var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
 
-        alasql('INSERT INTO DonutExpensesYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
+        var maxYear = resultYear["0"].Year;
+        var startPeriod = dateperiod.getStartOfYear(maxYear);
+        var endPeriod = dateperiod.getEndOfYear(maxYear);
+        if(period == "R12") {
+            var today = new Date().toISOString();
+            startPeriod = dateperiod.getStartOfTrailingPeriod(today, -11);
+            endPeriod = dateperiod.getDateEndOfMonth(today);
+        }
 
-        alasql('INSERT INTO DonutExpensesYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM DonutExpensesYearTable');
-        alasql('TRUNCATE TABLE DonutExpensesYearTable');
-
-        var monthNumber = 11;
         var totalYearExpenses = 0;
         var totalYearDividends = 0;
-
-        var year = resultYear["0"].Year;
-        for(var i=0; i <= monthNumber; i++)
-        {
-            var month = i + 1;
-
-            var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
-            var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
+        var arrayIndex = 0;
+        var datesInPeriod = dateperiod.getDateRange(startPeriod, endPeriod);
+        datesInPeriod.forEach(function(dateObject) {
+            var year = dateObject.year;
+            var month = dateObject.monthJsValue;
+            var monthCalendarValue = month + 1;
+            var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, monthCalendarValue);
+            var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, monthCalendarValue);
             
             if ($('#checkboxTax').is(":checked")) {
-                var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, month);
-                var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, month);
+                var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, monthCalendarValue);
+                var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, monthCalendarValue);
                 resultNordnet = resultNordnet + taxNordnet;
                 resultAvanza = resultAvanza + taxAvanza;
             }
@@ -47,9 +48,10 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
             var totalBelopp = resultNordnet + resultAvanza;
             totalYearDividends = totalYearDividends + totalBelopp;
 
-            var monthValue = $('#' + monthsInput[i]).data("kendoNumericTextBox").value();
+            var monthValue = $('#' + monthsInput[arrayIndex]).data("kendoNumericTextBox").value();
             totalYearExpenses = totalYearExpenses + monthValue;
-        }
+            arrayIndex++;
+        });
 
         var donutData = [];
         donutData.push({
@@ -71,9 +73,16 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
     }
 
     function loadChart() {
+        if($(chartId).data('kendoChart')) {
+            $(chartId).data('kendoChart').destroy();
+            $(chartId).empty();
+        }
+
+        var titleText = "Utdelningar/utgifter - total " + (selectedPeriod.startsWith("R") ? "R12" : "nuvarande år");
+
         $(chartId).kendoChart({
             title: {
-                text: "Utdelningar/utgifter - total"
+                text: titleText
             },
             legend: {
                 position: "top"
@@ -99,9 +108,14 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
         });
     }
 
+    function getSelectedPeriod() {
+        return selectedPeriod;
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        getSelectedPeriod: getSelectedPeriod
     };
 });

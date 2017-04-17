@@ -130,7 +130,6 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     }
 
     function loadChart() {
-
         if($(chartId).data('kendoChart')) {
             $(chartId).data('kendoChart').destroy();
             $(chartId).empty();

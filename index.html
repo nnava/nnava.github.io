@@ -278,12 +278,21 @@
                                 <div class="col-md-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                        <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/utgifter - total</h4>
-                                            <div class="btn-group pull-right">
-                                                <button id="btn-chartDonutDividendTotalToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
-                                                <button id="btn-chartDonutDividendTotalToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
-                                                <button id="btn-chartDonutDividendTotalToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
-                                            </div>
+                                            <div class="container-fluid panel-container">
+				                                <div class="col-xs-5 text-left">
+                    			                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Utdelningar/utgifter - total</h4>
+				                                </div>
+                                                <div class="col-xs-3 text-center">
+                                                    <div id="toolbarChartDonutDividendTotal" style="width: 100px;"></div>                                                 
+                                                </div>
+                                                <div class="col-xs-4 text-right">
+                                                    <span class="btn-group pull-right">
+                                                        <button id="btn-chartDonutDividendTotalToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf" title="Till PDF">Till PDF</button>
+                                                        <button id="btn-chartDonutDividendTotalToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg" title="Till SVG">Till SVG</button>
+                                                        <button id="btn-chartDonutDividendTotalToImg" type="button" class="k-button btn-xs k-primary export-chartToImg" title="Till PNG">Till PNG</button>
+                                					</span>
+				                                </div>			
+			                                </div>
                                         </div>
                                         <div class="panel-body">
                                             <div id="chartDonutDividendTotal" style="height: 100%;"></div>
@@ -960,7 +969,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 169;
+            var versionNumber = 170;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
