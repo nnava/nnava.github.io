@@ -6,13 +6,13 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
     var colorArray = colors.getColorArray();
     var months = monthstaticvalues.getMonthValues();
     var currentYear = new Date().getFullYear();
+    var localStorageSeriesDefaultField = "chartdividendstackedcumulativeportfolio_seriesdefault";
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
     function setChartData() {
-
         chartData = [];
 
         var dividendData = alasqlportfoliodividenddata.getPortfolioDividendsYearMonthValues(currentYear);
@@ -60,7 +60,7 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
                 position: "bottom"
             },
             seriesDefaults: {
-                type: "column",
+                type: getSeriesDefaultType(),
                 stack: true,
                 labels: {
                     visible: false,
@@ -105,6 +105,8 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
     }
 
     function updateChartOptions(type) {
+        localStorage.setItem(localStorageSeriesDefaultField, type);
+        
         var chart = $(chartId).data("kendoChart");
         chart.setOptions({
             seriesDefaults: {
@@ -125,10 +127,19 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
             return seriesName + " - Förväntat " + value + " kr";
     }
 
+    function getSeriesDefaultType() {
+        var seriesDefaultTypeLocalStorageValue = localStorage.getItem(localStorageSeriesDefaultField);
+        if(seriesDefaultTypeLocalStorageValue == null)
+            return "column";
+        else 
+            return seriesDefaultTypeLocalStorageValue;
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
         loadChart: loadChart,
-        updateChartOptions: updateChartOptions
+        updateChartOptions: updateChartOptions,
+        getSeriesDefaultType: getSeriesDefaultType
     };
 });

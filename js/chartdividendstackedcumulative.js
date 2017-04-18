@@ -5,6 +5,7 @@ define(['./bankdatadividend', './colors', './monthstaticvalues', './dateperiod']
     var selectedPeriod = 0;
     var colorArray = colors.getColorArray();
     var months = [];
+    var localStorageSeriesDefaultField = "chartdividendstackedcumulative_seriesdefault";
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -91,7 +92,7 @@ define(['./bankdatadividend', './colors', './monthstaticvalues', './dateperiod']
                 position: "bottom"
             },
             seriesDefaults: {
-                type: "column",
+                type: getSeriesDefaultType(),
                 stack: true,
                 labels: {
                     visible: false,
@@ -136,6 +137,8 @@ define(['./bankdatadividend', './colors', './monthstaticvalues', './dateperiod']
     }
 
     function updateChartOptions(type) {
+        localStorage.setItem(localStorageSeriesDefaultField, type);
+
         var chart = $(chartId).data("kendoChart");
         chart.setOptions({
             seriesDefaults: {
@@ -149,11 +152,20 @@ define(['./bankdatadividend', './colors', './monthstaticvalues', './dateperiod']
         });
     }
 
+    function getSeriesDefaultType() {
+        var seriesDefaultTypeLocalStorageValue = localStorage.getItem(localStorageSeriesDefaultField);
+        if(seriesDefaultTypeLocalStorageValue == null)
+            return "column";
+        else 
+            return seriesDefaultTypeLocalStorageValue;
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
         setCategoryAxisData: setCategoryAxisData,
         loadChart: loadChart,
-        updateChartOptions: updateChartOptions
+        updateChartOptions: updateChartOptions,
+        getSeriesDefaultType: getSeriesDefaultType
     };
 });

@@ -4,13 +4,27 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './date
     var chartId;
     var colorArray = colors.getColorArray();
     var selectedPeriod = 0;
+    var localStorageSortField = "chartdonutdividend_sort";
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData(period, sort) {
+    function saveSortLocalStorage(sort) {
+        localStorage.setItem(localStorageSortField, sort);
+    }
+
+    function getSort() {
+        var sortLocalStorageValue = localStorage.getItem(localStorageSortField);
+        if(sortLocalStorageValue == null)
+            return "name";
+        else 
+            return sortLocalStorageValue;
+    }
+
+    function setChartData(period) {
         selectedPeriod = period;
+        var sort = getSort();
         var startPeriod = dateperiod.getStartOfYear(selectedPeriod);
         var endPeriod = dateperiod.getEndOfYear(selectedPeriod);
 
@@ -78,6 +92,8 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './date
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        saveSortLocalStorage: saveSortLocalStorage,
+        getSort: getSort
     };
 });

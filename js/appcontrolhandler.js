@@ -189,9 +189,11 @@ define(['./chartdonutexpenses',
     }
 
     function loadDropdownDonutDividendSort() {
+        var indexValue = chartDonutDividend.getSort() == "name" ? 1 : 0;
+
         dropdownDonutDividendSort.setDropdownId('#dropdownDonutDividendSelectSort');
         dropdownDonutDividendSort.setDropdownData();
-        dropdownDonutDividendSort.loadDropdown();
+        dropdownDonutDividendSort.loadDropdown(indexValue);
 
         $("#dropdownDonutDividendSelectSort").data("kendoDropDownList").bind("change", dropDownListDonutDividendSort_Change);
     }
@@ -222,7 +224,8 @@ define(['./chartdonutexpenses',
             sort = "name";
 
         chartDonutDividend.setChartId('#chartDonutDividend');
-        chartDonutDividend.setChartData(year, sort);
+        chartDonutDividend.saveSortLocalStorage(sort);
+        chartDonutDividend.setChartData(year);
         chartDonutDividend.loadChart();
     }
 
@@ -243,7 +246,7 @@ define(['./chartdonutexpenses',
     };
 
     function loadChartDonutExpenses() {
-        var selectedPeriod = chartDividendExpenses.getSelectedPeriod();
+        var selectedPeriod = chartDonutExpenses.getSelectedPeriod();
 
         chartDonutExpenses.setChartId('#chartDonutDividendTotal');
         chartDonutExpenses.setChartData(selectedPeriod);
@@ -270,6 +273,8 @@ define(['./chartdonutexpenses',
     }
 
     function initChartDividendStackedCumulativeSettingBtnGroup() {
+        var indexValue = chartDividendStackedCumulative.getSeriesDefaultType() == "column" ? 0 : 1;
+
         $("#chartDividendStackedCumulativeSettingBtnGroup").kendoMobileButtonGroup({
             select: function(e) {
                 var seriesDefaultType = "column";
@@ -279,7 +284,7 @@ define(['./chartdonutexpenses',
                     
                 chartDividendStackedCumulative.updateChartOptions(seriesDefaultType);
             },
-            index: 0
+            index: indexValue
         });
     }
 
@@ -319,7 +324,8 @@ define(['./chartdonutexpenses',
             theme: "bootstrap"
         }).data("kendoToolBar");
 
-        toolbar.toggle("#ChartDonutDividendTotal-N", true);
+        var selectedPeriod = chartDonutExpenses.getSelectedPeriod();
+        toolbar.toggle("#ChartDonutDividendTotal-" + selectedPeriod, true);
 
         $("#ChartDonutDividendTotal-N").kendoTooltip({
             content: "Nuvarande år",
@@ -359,8 +365,11 @@ define(['./chartdonutexpenses',
             theme: "bootstrap"
         }).data("kendoToolBar");
 
-        toolbar.toggle("#ChartDividendExpensesMonth-column", true);
-        toolbar.toggle("#ChartDividendExpensesMonth-N", true);
+        var seriesDefaultType = chartDividendExpenses.getSeriesDefaultType();
+        toolbar.toggle("#ChartDividendExpensesMonth-" + seriesDefaultType, true);
+
+        var selectedPeriod = chartDividendExpenses.getSelectedPeriod();
+        toolbar.toggle("#ChartDividendExpensesMonth-" + selectedPeriod, true);
 
         $("#ChartDividendExpensesMonth-N").kendoTooltip({
             content: "Nuvarande år",
@@ -374,6 +383,8 @@ define(['./chartdonutexpenses',
     }
 
     function initChartDividendYearMonthSettingBtnGroup() {
+        var indexValue = chartDividendYearMonth.getSeriesDefaultType() == "column" ? 0 : 1;
+
         $("#chartDividendYearMonthSettingBtnGroup").kendoMobileButtonGroup({
             select: function(e) {
                 var seriesDefaultType = "column";
@@ -383,7 +394,7 @@ define(['./chartdonutexpenses',
                     
                 chartDividendYearMonth.updateChartOptions(seriesDefaultType);
             },
-            index: 0
+            index: indexValue
         });
     }
 

@@ -4,27 +4,18 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
     var chartId;
     var months = monthstaticvalues.getMonthValues();
     var colorArray = colors.getColorArray();
+    var localStorageSeriesDefaultField = "chartdividendyearmonth_seriesdefault";
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
     function setChartData() {
-
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
         
-        alasql('CREATE TABLE IF NOT EXISTS DivYearMonthYearTable \
-                (Year INT);');
-
-        alasql('INSERT INTO DivYearMonthYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO DivYearMonthYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM DivYearMonthYearTable');
-        alasql('TRUNCATE TABLE DivYearMonthYearTable');
+        var result = avanzaYearData.concat(nordnetYearData);
+        var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
 
         var datasetValue = [];
         var addedYear = [];        
@@ -87,7 +78,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
             },
             seriesColors: colorArray,
             seriesDefaults: {
-                type: "column",
+                type: getSeriesDefaultType(),
                 labels: {
                     visible: function(e) {
                         if(e.value < 1) {
@@ -138,6 +129,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
     }
 
     function updateChartOptions(type) {
+        localStorage.setItem(localStorageSeriesDefaultField, type);
+
         var rotation = 0;
         if(chartData.length > 4 && type === "column") rotation = 270;
 
@@ -162,10 +155,19 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
         });
     }
 
+    function getSeriesDefaultType() {
+        var seriesDefaultTypeLocalStorageValue = localStorage.getItem(localStorageSeriesDefaultField);
+        if(seriesDefaultTypeLocalStorageValue == null)
+            return "column";
+        else 
+            return seriesDefaultTypeLocalStorageValue;
+    }
+
     return {
         setChartId: setChartId,
         setChartData: setChartData,
         loadChart: loadChart,
-        updateChartOptions: updateChartOptions
+        updateChartOptions: updateChartOptions,
+        getSeriesDefaultType: getSeriesDefaultType
     };
 });

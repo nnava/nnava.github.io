@@ -39,9 +39,11 @@ define(['./spreadsheetstocks',
     }
 
     function loadDropdownDonutPortfolioAllocationSelectSort() {
+        var indexValue = chartDonutPortfolioAllocation.getSort() == "name" ? 1 : 0;
+
         dropdownDonutPortfolioAllocation.setDropdownId('#dropdownDonutPortfolioAllocationSelectSort');
         dropdownDonutPortfolioAllocation.setDropdownData();
-        dropdownDonutPortfolioAllocation.loadDropdown();
+        dropdownDonutPortfolioAllocation.loadDropdown(indexValue);
 
         $("#dropdownDonutPortfolioAllocationSelectSort").data("kendoDropDownList").bind("change", dropDownListDonutPortfolioAllocation_Change);
     }
@@ -74,6 +76,7 @@ define(['./spreadsheetstocks',
             sort = "name";
 
         chartDonutPortfolioAllocation.setChartId('#chartDonutPortfolioAllocation');
+        chartDonutPortfolioAllocation.saveSortLocalStorage(sort);
         chartDonutPortfolioAllocation.setChartData(sort);
         chartDonutPortfolioAllocation.loadChart();
     }
@@ -121,6 +124,8 @@ define(['./spreadsheetstocks',
     }
 
     function initChartDividendStackedCumulativePortfolioSettingBtnGroup() {
+        var indexValue = chartDividendStackedCumulativePortfolio.getSeriesDefaultType() == "column" ? 0 : 1;
+
         $("#chartDividendStackedCumulativePortfolioSettingBtnGroup").kendoMobileButtonGroup({
             select: function(e) {
                 var seriesDefaultType = "column";
@@ -130,7 +135,7 @@ define(['./spreadsheetstocks',
                     
                 chartDividendStackedCumulativePortfolio.updateChartOptions(seriesDefaultType);
             },
-            index: 0
+            index: indexValue
         });
     }
 

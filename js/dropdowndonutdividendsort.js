@@ -14,15 +14,13 @@ define([], function() {
         dropdownData.push({ text: "Namn", value: "name" });
     }
 
-    function loadDropdown() {
-        var lastIndex = dropdownData.length - 1;
-
+    function loadDropdown(indexValue) {
         $(dropdownId).kendoDropDownList({
             autoWidth: true,
             dataTextField: "text",
             dataValueField: "value",
             dataSource: dropdownData,
-            index: lastIndex,
+            index: indexValue,
             theme: "bootstrap"
         });
     }

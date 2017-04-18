@@ -5,12 +5,27 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
     var colorArray = colors.getColorArray();
     var maxCountIndustryVisualChange = 8;
     var maxCountAllocationVisualChange = 45;
+    var localStorageSortField = "chartdonutportfolioallocation_sort";
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData(sort) {
+    function saveSortLocalStorage(sort) {
+        localStorage.setItem(localStorageSortField, sort);
+    }
+
+    function getSort() {
+        var sortLocalStorageValue = localStorage.getItem(localStorageSortField);
+        if(sortLocalStorageValue == null)
+            return "name";
+        else 
+            return sortLocalStorageValue;
+    }
+
+    function setChartData() {
+        var sort = getSort();
+
         var resultAllocation = alasqlportfoliodata.getPortfolioAllocation(sort);
         var resultIndustry = alasqlportfoliodata.getPortfolioIndustrySort(sort);
 
@@ -131,6 +146,8 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
     return {
         setChartId: setChartId,
         setChartData: setChartData,
-        loadChart: loadChart
+        loadChart: loadChart,
+        saveSortLocalStorage: saveSortLocalStorage,
+        getSort: getSort
     };
 });

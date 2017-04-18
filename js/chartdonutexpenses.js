@@ -4,6 +4,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     var chartId;
     var monthsInput = monthstaticvalues.getMonthInputs();
     var selectedPeriod = "N";
+    var localStorageSelectedPeriodField = "chartdonutexpenses_selectedperiod";
     var monthNumber = 11;
 
     function setChartId(fieldId) {
@@ -12,6 +13,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
 
     function setChartData(period) {
         selectedPeriod = period;
+        localStorage.setItem(localStorageSelectedPeriodField, selectedPeriod);
+
         var nordnetYearData = alasqlnordnet.getDividendMaxYear();
         var avanzaYearData = alasqlavanza.getDividendMaxYear();
 
@@ -109,7 +112,11 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     }
 
     function getSelectedPeriod() {
-        return selectedPeriod;
+        var selectedPeriodLocalStorageValue = localStorage.getItem(localStorageSelectedPeriodField);
+        if(selectedPeriodLocalStorageValue == null)
+            return selectedPeriod;
+        else 
+            return selectedPeriodLocalStorageValue;
     }
 
     return {

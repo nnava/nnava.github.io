@@ -5,6 +5,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     var monthsInput = monthstaticvalues.getMonthInputs();
     var months = [];
     var monthNumber = 11;
+    var localStorageSelectedPeriodField = "chartdividendexpenses_selectedperiod";
+    var localStorageSeriesDefaultField = "chartdividendexpenses_seriesdefault";
     var selectedPeriod = "N";
 
     function setChartId(fieldId) {
@@ -33,6 +35,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
 
     function setChartData(period) {
         selectedPeriod = period;
+        localStorage.setItem(localStorageSelectedPeriodField, selectedPeriod);
+
         var nordnetYearData = alasqlnordnet.getDividendMaxYear();
         var avanzaYearData = alasqlavanza.getDividendMaxYear();
 
@@ -145,7 +149,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
                 position: "bottom"
             },
             seriesDefaults: {
-                type: "column",
+                type: getSeriesDefaultType(),
                 stack: true,
                 labels: {
                     visible: true,
@@ -182,6 +186,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     }
 
     function updateChartOptions(type) {
+        localStorage.setItem(localStorageSeriesDefaultField, type);
+
         var chart = $(chartId).data("kendoChart");
         chart.setOptions({
             seriesDefaults: {
@@ -197,7 +203,19 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
     }
 
     function getSelectedPeriod() {
-        return selectedPeriod;
+        var selectedPeriodLocalStorageValue = localStorage.getItem(localStorageSelectedPeriodField);
+        if(selectedPeriodLocalStorageValue == null)
+            return selectedPeriod;
+        else 
+            return selectedPeriodLocalStorageValue;
+    }
+
+    function getSeriesDefaultType() {
+        var seriesDefaultTypeLocalStorageValue = localStorage.getItem(localStorageSeriesDefaultField);
+        if(seriesDefaultTypeLocalStorageValue == null)
+            return "column";
+        else 
+            return seriesDefaultTypeLocalStorageValue;
     }
 
     return {
@@ -205,6 +223,7 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
         setChartData: setChartData,
         setCategoryAxisData: setCategoryAxisData,
         getSelectedPeriod: getSelectedPeriod,
+        getSeriesDefaultType: getSeriesDefaultType,
         loadChart: loadChart,
         updateChartOptions: updateChartOptions
     };
