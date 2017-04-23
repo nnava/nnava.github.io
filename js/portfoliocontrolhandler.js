@@ -8,7 +8,9 @@ define(['./spreadsheetstocks',
         './gridportfoliodividend',
         './alasqlstockdividenddata',
         './chartdividendstackedcumulativeportfolio',
-        './schedulerportfoliodividend'], 
+        './schedulerportfoliodividend',
+        './gridportfoliodistribution',
+        './alasqlstockmarketlinkdata'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
@@ -20,13 +22,18 @@ define(['./spreadsheetstocks',
      gridPortfolioDividend,
      alasqlStockDividendData,
      chartDividendStackedCumulativePortfolio,
-     schedulerPortfolioDividend) {
+     schedulerPortfolioDividend,
+     gridPortfolioDistribution,
+     alasqlstockmarketlinkdata) {
 
     function loadSpreadsheetWithProgress() {
         kendo.ui.progress($(document.body), true);
 
         alasqlStockDividendData.createStockDividendDataTable();
         alasqlStockDividendData.loadDataFromFileToTable();
+
+        alasqlstockmarketlinkdata.createStockMarketLinkDataTable();
+        alasqlstockmarketlinkdata.loadDataFromFileToTable();
         
         setTimeout(function(){   
             loadSpreadsheetStocks();
@@ -36,6 +43,16 @@ define(['./spreadsheetstocks',
         setTimeout(function(){ 
             $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(true);
         }, 1500);
+
+        $(document).keypress(function(e) {
+            var keyCode = e.keyCode;
+
+            if(keyCode == 87 || keyCode == 119) {
+                $('#gridPortfolioDistributionContent').attr("class", "row-fluid");
+                
+                loadGridPortfolioDistribution();
+            }
+        });
     }
 
     function loadDropdownDonutPortfolioAllocationSelectSort() {
@@ -97,6 +114,12 @@ define(['./spreadsheetstocks',
         gridPortfolioDividend.setId("#gridPortfolioDividend");
         gridPortfolioDividend.setData();
         gridPortfolioDividend.load();
+    }
+
+    function loadGridPortfolioDistribution() {
+        gridPortfolioDistribution.setId("#gridPortfolioDistribution");
+        gridPortfolioDistribution.setData();
+        gridPortfolioDistribution.load();
     }
 
     function loadChartDividendStackedCumulativePortfolio() {       

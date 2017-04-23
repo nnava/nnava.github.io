@@ -598,6 +598,21 @@
                     </div>
 
                     <div id="chartPortfolioContent" class="contentportfolio-wrapper hidden">
+
+                        <div class="row-fluid hidden" id="gridPortfolioDistributionContent">
+                            <div class="col-md-12 top15">
+                                <div class="panel-body">
+                                    <script type="text/x-kendo-template" id="gridportfoliodistribution_toolbar_template">
+                                        <div class="toolbar">
+                                            <a role="button" class="k-button k-button-icontext k-grid-excel" href="\#"><span class="k-icon k-i-file-excel"></span>Export to Excel</a>
+                                            <a role="button" class="k-button k-button-icontext k-grid-pdf" href="\#"><span class="k-icon k-i-file-pdf"></span>Export to PDF</a>
+                                            <button id="btnSetEqualWeight" class='k-button k-primary' onClick="portfolioDistributionEqualize()">Likavikta portfölj</button>
+                                        </div>
+                                    </script>
+                                    <div id="gridPortfolioDistribution"></div>
+                                </div>
+                            </div>                                            
+                        </div>
                         
                         <div class="row-fluid">
                             <div class="col-md-12 top15">
@@ -823,7 +838,7 @@
                             </div>
                             <div class="col-md-4"></div>
                         </div>
-                        
+
                         <div class="row-fluid">
                             <div class="col-md-12 top15">
                                 <div class="panel-body">
@@ -969,7 +984,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 171;
+            var versionNumber = 172;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

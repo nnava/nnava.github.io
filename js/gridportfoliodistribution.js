@@ -1,0 +1,167 @@
+define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasqlportfoliodata, alasqlstockmarketlinkdata) {
+
+    var gridData;
+    var gridId;
+    var portfolioData;
+
+    function setId(fieldId) {
+        gridId = fieldId;
+    }
+
+    function getCreatedDataSource(portfolioData) {
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: function(options) {
+                    options.success(portfolioData);
+                },
+                update: function (options) {
+                    console.log(options.data);
+                    options.success();
+                }                
+            },
+            schema: {
+                model: {
+                    id: "ID",
+                    fields: {
+                        ID: { type: "number", editable: false },
+                        ISIN: { type: "string", editable: false },
+                        Värdepapper: { type: "string", editable: false },
+                        Marknadsvärde: { type: "number", editable: false },
+                        Antal: { type: "number", editable: false },
+                        SenastePris: { type: "number", editable: false },
+                        AktuellFördelning: { type: "number", editable: false },
+                        NyFördelning: { type: "number", validation: { required: true, min: 0 } },
+                        NyMarknadsvärde: { type: "number", editable: false },
+                        DiffAntal: { type: "number", editable: false }      
+                    }
+                }
+            },
+            aggregate: [ { field: "NyFördelning", aggregate: "sum" },
+                         { field: "Marknadsvärde", aggregate: "sum" },
+                         { field: "NyMarknadsvärde", aggregate: "sum" }
+            ],
+            pageSize: portfolioData.length
+        });
+
+        return dataSource;
+    }
+
+    function setData() {
+        alasqlportfoliodata.saveDistributionDataToTable();
+        portfolioData = alasqlportfoliodata.getPortfolioDistributionData();
+        gridData = getCreatedDataSource(portfolioData);
+    }
+
+    function load() {
+        if($(gridId).data('kendoGrid')) {
+            $(gridId).data('kendoGrid').destroy();
+            $(gridId).empty();
+        }
+
+        var grid = $(gridId).kendoGrid({
+            toolbar: kendo.template($("#gridportfoliodistribution_toolbar_template").html()),
+            excel: {
+                fileName: "fördelning.xlsx",
+                filterable: true
+            },
+            pdf: {
+                fileName: "fördelning.pdf",
+                allPages: true,
+                avoidLinks: true,
+                paperSize: "A4",
+                margin: { top: "2cm", left: "1cm", right: "1cm", bottom: "1cm" },
+                landscape: true,
+                repeatHeaders: true,
+                scale: 0.8
+            },
+            dataSource: gridData,
+            scrollable: true,
+            sortable: true,
+            pageable: false,
+            height: 630,
+            columns: [
+                { field: "ID", hidden: true },
+                { field: "ISIN", hidden: true },
+                { field: "Värdepapper", title: "Värdepapper", width: "65px" },
+                { field: "Antal", title: "Nuv. antal", format: "{0:n0} st", width: "15px" },
+                { field: "SenastePris", title: "Senaste", format: "{0:n2} kr", width: "15px" },
+                { field: "Marknadsvärde", title: "Markn.värde", format: "{0:n2} kr", width: "25px", aggregates: ["sum"], footerTemplate: "Totalt: #= kendo.toString(sum, 'n2') # kr" },
+                { field: "AktuellFördelning", title: "Aktuell fördelning", format: "{0}%", width: "17px" },
+                { field: "NyFördelning", title: "Ny fördelning", format: "{0}%", width: "17px", aggregates: ["sum"], footerTemplate: "#= kendo.toString(sum, 'n2') #%" },
+                { field: "NyMarknadsvärde", title: "Nytt markn.värde", format: "{0:n2} kr", width: "25px", aggregates: ["sum"], footerTemplate: "Totalt: #= kendo.toString(sum, 'n2') # kr" },
+                { field: "DiffAntal", title: "Diff antal", format: "{0:n0} st", width: "15px" },
+                { title: "Köp/sälj", template: '<a class="k-button k-grid-CustomCommand" href="\\#">#= bankBuyOrSellText(data) #</a>', width: "13px" }
+            ],
+            editable: true,
+            save: function (e) {
+                var ID = e.model.ID;
+                var newWeightPercentage = e.values["NyFördelning"];
+                alasqlportfoliodata.updatePortfolioDistributionRow(ID, newWeightPercentage);
+                portfolioData = alasqlportfoliodata.getPortfolioDistributionDataNewWeight();
+
+                var dataSource = getCreatedDataSource(portfolioData);
+                var grid = $(gridId).data("kendoGrid");
+                dataSource.read();
+                grid.setDataSource(dataSource);
+
+                e.sender.saveChanges();
+            },
+            theme: "bootstrap",
+        }).data("kendoGrid");
+
+        grid.tbody.on("click", ".k-grid-CustomCommand", function(e) {
+            var dataItem = grid.dataItem($(e.currentTarget).closest("tr"));            
+            var ISIN = dataItem.ISIN;
+            copyToClipboard(Math.abs(dataItem.DiffAntal));
+            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, "AZA");
+            window.open(url, '_blank');
+
+            e.preventDefault();
+        });
+
+        grid.thead.kendoTooltip({
+            filter: "th",
+            content: function (e) {
+                var target = e.target; 
+                return $(target).text();
+            }
+        });
+    }
+
+    function copyToClipboard(text) {
+        if (window.clipboardData && window.clipboardData.setData) {
+            // IE specific code path to prevent textarea being shown while dialog is visible.
+            return clipboardData.setData("Text", text); 
+
+        } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+            var textarea = document.createElement("textarea");
+            textarea.textContent = text;
+            textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+            } catch (ex) {
+                console.warn("Copy to clipboard failed.", ex);
+                return false;
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+    }
+
+    window.bankBuyOrSellText = function bankBuyOrSellText(data) {
+        return data.DiffAntal > 0 ? "Köp" : "Sälj";
+    }
+
+    window.portfolioDistributionEqualize = function portfolioDistributionEqualize() {
+        setData();
+        load();
+    }
+
+    return {
+        setId: setId,
+        setData: setData,
+        load: load
+    };
+});
