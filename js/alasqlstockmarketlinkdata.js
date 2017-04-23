@@ -1,6 +1,7 @@
 define([], function() {
 
     var avanzaBaseUrl = 'https://www.avanza.se';
+    var bankTypeAvanza = "AZA";
 
     function createStockMarketLinkDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS StockMarketLinkData (  \
@@ -21,10 +22,14 @@ define([], function() {
         }
     };
 
-    function getBankUrlFromIsin(isin, banktype) {
+    function getBankUrlFromIsin(isin, banktype, isClickSell) {
         var link = alasql('SELECT VALUE Link FROM StockMarketLinkData WHERE ISIN = "' + isin + '" AND BankTyp = "' + banktype + '"');
-        if(banktype == "AZA")
+        if(banktype == bankTypeAvanza) {
+            if(isClickSell)
+                link = link.replace("/kop/", "/salj/");
             return avanzaBaseUrl + link;
+        }
+            
     }
 
     return { 

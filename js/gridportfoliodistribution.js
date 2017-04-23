@@ -112,8 +112,9 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
         grid.tbody.on("click", ".k-grid-CustomCommand", function(e) {
             var dataItem = grid.dataItem($(e.currentTarget).closest("tr"));            
             var ISIN = dataItem.ISIN;
+            var isClickSell = dataItem.DiffAntal < 0;
             copyToClipboard(Math.abs(dataItem.DiffAntal));
-            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, "AZA");
+            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, "AZA", isClickSell);
             window.open(url, '_blank');
 
             e.preventDefault();
