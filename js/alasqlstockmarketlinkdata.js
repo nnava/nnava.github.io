@@ -1,6 +1,7 @@
 define([], function() {
 
     var avanzaBaseUrl = 'https://www.avanza.se';
+    var nordnetBaseUrl = 'https://www.nordnet.se/mux/web/handla';
     var bankTypeAvanza = "AZA";
 
     function createStockMarketLinkDataTable() {
@@ -24,12 +25,14 @@ define([], function() {
 
     function getBankUrlFromIsin(isin, banktype, isClickSell) {
         var link = alasql('SELECT VALUE Link FROM StockMarketLinkData WHERE ISIN = "' + isin + '" AND BankTyp = "' + banktype + '"');
-        if(banktype == bankTypeAvanza) {
-            if(isClickSell)
+        var baseUrl = banktype === bankTypeAvanza ? avanzaBaseUrl : nordnetBaseUrl;
+        if(isClickSell) {
+            if(banktype === bankTypeAvanza)
                 link = link.replace("/kop/", "/salj/");
-            return avanzaBaseUrl + link;
+            else
+                link = link.replace("/kopAktier", "/saljAktier");
         }
-            
+        return baseUrl + link; 
     }
 
     return { 

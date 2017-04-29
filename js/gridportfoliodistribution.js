@@ -78,7 +78,7 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
             scrollable: true,
             sortable: true,
             pageable: false,
-            height: 630,
+            height: 650,
             columns: [
                 { field: "ID", hidden: true },
                 { field: "ISIN", hidden: true },
@@ -114,7 +114,7 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
             var ISIN = dataItem.ISIN;
             var isClickSell = dataItem.DiffAntal < 0;
             copyToClipboard(Math.abs(dataItem.DiffAntal));
-            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, "AZA", isClickSell);
+            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, "NN", isClickSell);
             window.open(url, '_blank');
 
             e.preventDefault();
