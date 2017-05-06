@@ -24,6 +24,10 @@ define([], function() {
         });
     };
 
+    function getVärdepapperNamnFromYahooSymbol(yahoosymbol) {
+        return alasql('SELECT VALUE namn FROM StockData WHERE yahoosymbol ="' + yahoosymbol + '"');
+    }
+
     function getAzaLinkFromYahooSymbol(yahoosymbol) {
         return alasql('SELECT VALUE azalink FROM StockData WHERE yahoosymbol ="' + yahoosymbol + '"');
     }
@@ -52,6 +56,7 @@ define([], function() {
         createStockDataTable: createStockDataTable,
         loadDataFromFileToTable: loadDataFromFileToTable,
         getVärdepapperNamn: getVärdepapperNamn,
+        getVärdepapperNamnFromYahooSymbol: getVärdepapperNamnFromYahooSymbol,
         getVärdepapperHandlas: getVärdepapperHandlas,
         getYahooSymbol: getYahooSymbol,
         getISINFromNamn: getISINFromNamn,

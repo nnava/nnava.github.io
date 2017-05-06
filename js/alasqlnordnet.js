@@ -415,6 +415,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 newObject.YahooSymbol = object.YahooSymbol;
                 newObject.Bransch = object.Bransch;
                 newObject.Valuta = object.Handlas;
+                newObject.ISIN = object.ISIN;
 
                 resultForReturn.push(newObject);
             });
@@ -422,6 +423,11 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         });
 
         return resultForReturn;
+    }
+
+    function hasDataTableRows() {
+        var resultCount = alasql('SELECT VALUE COUNT(*) FROM NordnetData');
+        return resultCount == 0 ? false : true;
     }
 
     return {
@@ -455,6 +461,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getBuyTransactionSumBelopp: getBuyTransactionSumBelopp,
         getSellTransactionSumBelopp: getSellTransactionSumBelopp,
         getTransactionYears: getTransactionYears,
-        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate
+        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
+        hasDataTableRows: hasDataTableRows
     };
 });

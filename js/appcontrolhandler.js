@@ -15,7 +15,9 @@ define(['./chartdonutexpenses',
      './charttransactionnetyeargrowth',
      './multiselectorportfolio',
      './alasqlcurrencydata',
-     './currencydataservice'], 
+     './currencydataservice',
+     './bankdataportfolio',
+     './portfoliodistributioncontrolhandler'], 
      function(chartDonutExpenses, 
      chartDividendExpenses, 
      chartDividendYearMonth, 
@@ -33,7 +35,9 @@ define(['./chartdonutexpenses',
      chartTransactionNetYearGrowth,
      multiselectorPortfolio,
      alasqlcurrencydata,
-     currencydataservice) {
+     currencydataservice,
+     bankdataportfolio,
+     portfoliodistributioncontrolhandler) {
 
     function enableExportReloadButtons() {
         $("#btnExportToPdf").kendoButton().data("kendoButton").enable(true);
@@ -43,6 +47,7 @@ define(['./chartdonutexpenses',
     }
 
     function loadControlsWithTimeout() {
+        loadCurrencyData();
         loadMultiselectorPortfolio();
         loadDropdownDividendPeriod();
         loadDropdownDonutDividendSort();              
@@ -50,34 +55,31 @@ define(['./chartdonutexpenses',
         loadChartDividendExpenses();
         loadChartDividendYearGrowth(); 
         loadChartDonutExpenses();
-        loadCurrencyData();
-       
+        loadChartDividendYearMonth();
+
         kendo.ui.progress($(document.body), false);
 
         initChartSettingButtonGroups();
         initChartSettingToolbar();
         
         setTimeout(function(){   
-            loadSpandividendPeriodInfo();
-            loadChartDividendYearMonth();
+            loadSpandividendPeriodInfo();            
             loadChartDividendCumulative();  
             loadChartDonutDividend(); 
         }, 100);
 
         setTimeout(function(){ 
+            bankdataportfolio.setPortfolioLastPriceData();
             loadChartDividendTreemap();
-            loadChartTransactionBuyLine();
+            loadChartTransactionBuyLine();            
         }, 1500);
 
         setTimeout(function(){    
             loadChartTransactionNetYearGrowth();           
             loadChartTransactionSellLine();            
-        }, 2200);
-
-        setTimeout(function(){                           
             loadChartCourtageYear();            
             loadChartYearDeposit();
-        }, 3200);
+        }, 2000);
     }
 
     function loadControlsFull() {
@@ -98,7 +100,9 @@ define(['./chartdonutexpenses',
             loadMultiselectorPortfolio();
             $("#btnReloadPortfolio").kendoButton().data("kendoButton").enable(true);
             kendo.ui.progress($(document.body), false);
-        }
+        }        
+
+        portfoliodistributioncontrolhandler.initPortfolioDistributionBankBtnGroup();
     }
 
     function loadSpandividendPeriodInfo() {

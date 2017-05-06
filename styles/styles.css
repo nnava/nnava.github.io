@@ -166,3 +166,7 @@ span.k-loading-text
     line-height: 32px;
     padding-left: 6px;
 }
+
+div.red {
+    color: red;
+}

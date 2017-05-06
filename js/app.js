@@ -1,8 +1,9 @@
-define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata', './portfoliocontrolhandler'], 
-     function(uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata, portfolioControlHandler) {
+define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata', './portfoliocontrolhandler', './alasqlcustomfunctions', './portfoliodistributioncontrolhandler'], 
+     function(windowportfoliodistributionterms, alasqlstockmarketlinkdata, uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata, portfolioControlHandler, alasqlcustomfunctions, portfoliodistributioncontrolhandler) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
     var today = new Date().toISOString().slice(0, 10);
+    var localStoragePortfolioDistributionTermsField = "portfoliodistribution_terms";
 
     $(document).ready(function() {
         loadInputMonthNumber();
@@ -24,12 +25,39 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if(e.delegateTarget.hash === "#portfolio" && uploadControl.getFilesCount() !== 0)
                 runLoadSpreadhsheetStocksOnce();
+            else if (e.delegateTarget.hash === "#portfoliodistribution") {
+                var portfolioDistributionTerms = localStorage.getItem(localStoragePortfolioDistributionTermsField);
+                if(portfolioDistributionTerms == null || portfolioDistributionTerms == false) {
+                    loadWindowDistributionTerms();
+                    showWindowDistributionTerms();
+                }
+            }
 
             resizeObjects();
         });
 
         alasqlstockdata.createStockDataTable();
         alasqlstockdata.loadDataFromFileToTable();
+        alasqlstockmarketlinkdata.createStockMarketLinkDataTable();
+        alasqlstockmarketlinkdata.loadDataFromFileToTable();
+        alasqlcustomfunctions.loadFunctions();
+        
+    });
+
+    $(document).keypress(function(e) {
+        var keyCode = e.keyCode;
+
+        if(keyCode == 87 || keyCode == 119) {
+            $('#portfoliodistributiontab').attr("class", "");
+        }
+    });
+
+    $(document).ajaxStart(function() {
+        setEnableStateForControls(false);
+    });
+
+    $(document).ajaxStop(function() {
+        setEnableStateForControls(true);
     });
 
     var runLoadSpreadhsheetStocksOnce = (function() {
@@ -42,6 +70,20 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             }
         };
     })();
+
+    function loadWindowDistributionTerms() {
+        windowportfoliodistributionterms.setId("#windowPortfolioDistributionTerms");
+        windowportfoliodistributionterms.load();
+    }
+
+    function showWindowDistributionTerms() {
+        windowportfoliodistributionterms.open();
+    }
+
+    function setEnableStateForControls(enable) {
+        $("#btnLoadPortfolioDistribution").kendoButton().data("kendoButton").enable(enable);
+        $("#btnLoadPortfolioCharts").kendoButton().data("kendoButton").enable(enable);
+    }
 
     function loadInputMonthNumber() {
         $(".inputMonthNumber").kendoNumericTextBox({
@@ -129,6 +171,10 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
         kendo.resize($('#chartDividendStackedCumulativePortfolio'));
     }
 
+    $('#btnLoadPortfolioDistribution').click(function() {                   
+        portfoliodistributioncontrolhandler.loadControls();
+    });
+
     $('#btnLoadPortfolioCharts').click(function() {       
         kendo.ui.progress($(document.body), true);
         
@@ -172,6 +218,7 @@ define(['./uploadcontrol', './appcontrolhandler', './appcookies', './monthstatic
             demodata.createDemoData();
             appControlHandler.loadControlsFull();
             $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
+            $("#btnLoadPortfolioDistribution").kendoButton().data("kendoButton").enable(true);
         }, 1);
     });
 

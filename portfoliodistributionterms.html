@@ -1,0 +1,36 @@
+<div>
+    <section class="entry-content"> 
+        <div class="well well-large"><h2>Portföljfördelning villkor</h2>
+            <p>Dessa villkor gäller mellan nnava (nnava) och användarna av nnavas webbtjänst (”nnava.github.io”)(”webbplatsen”) med tillhörande tjänster (”Tjänsterna”).
+               Genom att godkänna accepterar du dessa villkor.</p>
+            <h2>1. Ansvarsbegränsningar</h2>
+            <p>1.1 nnava levererar enbart finansiell information och tekniska lösningar via webbplatsen till besökare. nnava tillhandahåller varken rådgivning eller köp- och sälj rekommendation för enskilda aktier, börsen allmänt eller andra finansiella instrument. Tjänsten är baserad på objektiv fakta och innehåller inga antaganden eller prognoser. Varje enskild besökare gör sina egna antaganden och värderingar och därför kan vi inte i nnava ansvara för de investeringsbeslut och dess konsekvens som den finansiella informationen som webbplatsen kan ge upphov till.</p>
+            <p>1.2 Historiska och senaste information och nyckeltal på webbplatsen kan variera kraftigt beroende på vilken datum beräkningarna valda för aktiekursen, valutakurser som förändras dagligen. Denna förändring måste besökare ta hänsyn till för de informationer och nyckeltal påverkas.</p>
+            <p>1.3 Finansiella värden och nyckeltal kan beräknas på flera sätt. Detta problem måste besökare ta hänsyn till och är inget som nnava ansvarar för.</p>
+            <p>1.4 nnava arbetar ständigt för att webbplatsen ska vara korrekt, komplett och uppdaterad. Kursinformation hämtas från Yahoo Finance/Avanzas hemsida och har alltid en fördröjning dvs är ej i realtid.</p>
+            <p>1.5 nnava kan inte ansvara för tekniska fel som orsakas av tredje part. </p>
+        </div>
+    </section>
+    <button id="btnOKTerms" class='k-primary k-button'>Godkänn villkoren</button>
+    <button id="btnCancelTerms" class='k-button'>Avböj</button>
+    <script>
+        $("#btnOKTerms").kendoButton({ click: onOKTermsClick });
+        $("#btnCancelTerms").kendoButton({ click: onCancelTermsClick });
+
+        var localStoragePortfolioDistributionTermsField = "portfoliodistribution_terms";
+        function onOKTermsClick(e) {
+            localStorage.setItem(localStoragePortfolioDistributionTermsField, true);
+            closeWindow();
+        }
+
+        function onCancelTermsClick(e) {
+            localStorage.setItem(localStoragePortfolioDistributionTermsField, false);
+            closeWindow();
+            $('.nav-tabs a[href="#home"]').tab('show');
+        }
+
+        function closeWindow() {
+            window.parent.$("#windowPortfolioDistributionTerms").data("kendoWindow").close();
+        }
+    </script>
+</div>

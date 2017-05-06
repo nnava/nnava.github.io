@@ -1,4 +1,4 @@
-define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasqlportfoliodata, alasqlstockmarketlinkdata) {
+define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportfolio'], function(alasqlportfoliodata, alasqlstockmarketlinkdata, bankdataportfolio) {
 
     var gridData;
     var gridId;
@@ -15,7 +15,6 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
                     options.success(portfolioData);
                 },
                 update: function (options) {
-                    console.log(options.data);
                     options.success();
                 }                
             },
@@ -25,10 +24,11 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
                     fields: {
                         ID: { type: "number", editable: false },
                         ISIN: { type: "string", editable: false },
+                        Symbol: { type: "string", editable: false },
                         Värdepapper: { type: "string", editable: false },
                         Marknadsvärde: { type: "number", editable: false },
                         Antal: { type: "number", editable: false },
-                        SenastePris: { type: "number", editable: false },
+                        SenastePris: { type: "number", editable: true },
                         AktuellFördelning: { type: "number", editable: false },
                         NyFördelning: { type: "number", validation: { required: true, min: 0 } },
                         NyMarknadsvärde: { type: "number", editable: false },
@@ -46,9 +46,8 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
         return dataSource;
     }
 
-    function setData() {
-        alasqlportfoliodata.saveDistributionDataToTable();
-        portfolioData = alasqlportfoliodata.getPortfolioDistributionData();
+    function setData() {        
+        portfolioData = bankdataportfolio.getPortfolioDistributionData();
         gridData = getCreatedDataSource(portfolioData);
     }
 
@@ -82,13 +81,14 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
             columns: [
                 { field: "ID", hidden: true },
                 { field: "ISIN", hidden: true },
-                { field: "Värdepapper", title: "Värdepapper", width: "65px" },
+                { field: "Symbol", hidden: true },
+                { field: "Värdepapper", title: "Värdepapper", width: "50px" },
                 { field: "Antal", title: "Nuv. antal", format: "{0:n0} st", width: "15px" },
                 { field: "SenastePris", title: "Senaste", format: "{0:n2} kr", width: "15px" },
-                { field: "Marknadsvärde", title: "Markn.värde", format: "{0:n2} kr", width: "25px", aggregates: ["sum"], footerTemplate: "Totalt: #= kendo.toString(sum, 'n2') # kr" },
-                { field: "AktuellFördelning", title: "Aktuell fördelning", format: "{0}%", width: "17px" },
-                { field: "NyFördelning", title: "Ny fördelning", format: "{0}%", width: "17px", aggregates: ["sum"], footerTemplate: "#= kendo.toString(sum, 'n2') #%" },
-                { field: "NyMarknadsvärde", title: "Nytt markn.värde", format: "{0:n2} kr", width: "25px", aggregates: ["sum"], footerTemplate: "Totalt: #= kendo.toString(sum, 'n2') # kr" },
+                { field: "Marknadsvärde", title: "Markn.värde", format: "{0:n2} kr", width: "20px", aggregates: ["sum"], footerTemplate: "Summa: #= kendo.toString(sum, 'n2') # kr" },
+                { field: "AktuellFördelning", title: "Aktuell fördelning", format: "{0}%", width: "25px", footerTemplate: gridPercentageToDistributeGroupFooterTemplate },
+                { field: "NyFördelning", title: "Ny fördelning", format: "{0}%", width: "25px", aggregates: ["sum"], footerTemplate: gridPercentageNewDistributeGroupFooterTemplate },
+                { field: "NyMarknadsvärde", title: "Nytt markn.värde", format: "{0:n2} kr", width: "20px", aggregates: ["sum"], footerTemplate: "Summa: #= kendo.toString(sum, 'n2') # kr" },
                 { field: "DiffAntal", title: "Diff antal", format: "{0:n0} st", width: "15px" },
                 { title: "Köp/sälj", template: '<a class="k-button k-grid-CustomCommand" href="\\#">#= bankBuyOrSellText(data) #</a>', width: "13px" }
             ],
@@ -96,7 +96,15 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
             save: function (e) {
                 var ID = e.model.ID;
                 var newWeightPercentage = e.values["NyFördelning"];
-                alasqlportfoliodata.updatePortfolioDistributionRow(ID, newWeightPercentage);
+                var newLatestPrice = e.values["SenastePris"];
+                if(newLatestPrice == null)
+                    alasqlportfoliodata.updatePortfolioDistributionNewWeightPercentageRow(ID, newWeightPercentage);
+                else {
+                    alasqlportfoliodata.updatePortfolioDistributionNewLatestPriceRow(ID, newLatestPrice);
+                    alasqlportfoliodata.updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow(ID, newLatestPrice);
+                    alasqlportfoliodata.updatePortfolioLastPriceRow(newLatestPrice, e.model.Symbol);
+                }
+
                 portfolioData = alasqlportfoliodata.getPortfolioDistributionDataNewWeight();
 
                 var dataSource = getCreatedDataSource(portfolioData);
@@ -114,7 +122,7 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
             var ISIN = dataItem.ISIN;
             var isClickSell = dataItem.DiffAntal < 0;
             copyToClipboard(Math.abs(dataItem.DiffAntal));
-            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, "NN", isClickSell);
+            var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, getSelectedBank(), isClickSell);
             window.open(url, '_blank');
 
             e.preventDefault();
@@ -127,6 +135,28 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata'], function(alasql
                 return $(target).text();
             }
         });
+    }
+
+    function getSelectedBank() {
+        var portfolioDistributionBankBtnGroup = $("#portfolioDistributionBankBtnGroup").data("kendoMobileButtonGroup");
+        return portfolioDistributionBankBtnGroup.current().index() == 0 ? "AZA" : "NN";
+    }
+
+    function gridPercentageNewDistributeGroupFooterTemplate(e) {
+        var percentageCurrentDistribution = e.NyFördelning.sum;
+        var returnText = "Summa: " + kendo.toString(percentageCurrentDistribution, 'n2') + "%";
+        if(percentageCurrentDistribution > 100.1)
+            returnText = "<div class='red'>" + returnText + "</div>";
+        return returnText;
+    }
+
+    function gridPercentageToDistributeGroupFooterTemplate(e) {
+        var currentDistribution = e.NyFördelning.sum;
+        var percentageToDistribute = (100 - currentDistribution);
+        if(percentageToDistribute < 0)
+            percentageToDistribute = 0;
+
+        return "Kvar att fördela: " + kendo.toString(percentageToDistribute, 'n2') + "%";
     }
 
     function copyToClipboard(text) {

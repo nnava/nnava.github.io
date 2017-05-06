@@ -434,7 +434,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     }
 
     function getStocksInPortfolio() {
-        var result = alasql('SELECT FIRST([Värdepapperbeskrivning]) AS [Värdepapper], FIRST(handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
+        var result = alasql('SELECT FIRST([Värdepapperbeskrivning]) AS [Värdepapper], FIRST(AvanzaData.ISIN) AS ISIN, FIRST(handlas) AS Handlas, FIRST(StockData.bransch) AS Bransch, FIRST(StockData.yahoosymbol) AS YahooSymbol, SUM(Antal::NUMBER) AS Antal \
                             FROM AvanzaData \
                             INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                             INNER JOIN StockData ON StockData.isin = AvanzaData.ISIN \
@@ -455,11 +455,17 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
             newObject.YahooSymbol = object.YahooSymbol;
             newObject.Bransch = object.Bransch;
             newObject.Valuta = object.Handlas;
+            newObject.ISIN = object.ISIN;
 
             resultForReturn.push(newObject);
         });
         
         return resultForReturn;
+    }
+
+    function hasDataTableRows() {
+        var resultCount = alasql('SELECT VALUE COUNT(*) FROM AvanzaData');
+        return resultCount == 0 ? false : true;
     }
 
     return {
@@ -493,6 +499,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getCourtageSumBuy: getCourtageSumBuy,
         getCourtageSumSell: getCourtageSumSell,
         getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp,
-        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate
+        getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
+        hasDataTableRows: hasDataTableRows
     };
 });

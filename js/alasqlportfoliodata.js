@@ -18,6 +18,7 @@ define([], function() {
             [ID] INT AUTO_INCREMENT, \
             [Värdepapper] STRING, \
             ISIN NVARCHAR(100), \
+            Symbol NVARCHAR(100), \
             Bransch STRING, \
             Antal INT, \
             SenastePris DECIMAL, \
@@ -27,44 +28,35 @@ define([], function() {
             [NyFördelning] DECIMAL, \
             [NyMarknadsvärde] DECIMAL, \
             [DiffAntal] NUMBER); \
-            CREATE INDEX isinIndex ON PortfolioData(ISIN); \
+            CREATE INDEX isinIndex ON PortfolioDistributionData(ISIN); \
         ');
+    }
+
+    function createPortfolioLastPriceDataTable() {
+        alasql('CREATE TABLE IF NOT EXISTS PortfolioLastPriceData ( \
+            Symbol STRING, \
+            SenastePris NUMBER);');
     }
 
     function truncatePortfolioDistributionDataTable() {
         alasql('TRUNCATE TABLE PortfolioDistributionData');
     }
 
-    function setAlasqlCustomFunctions() {
-        alasql.fn.portfolioNewTradeCount = function(price, count, desiredWeight, totalPortfolioValue) { 
-            var currentMarketValue = price * count;
-            var currentValueInPercentage = (currentMarketValue/totalPortfolioValue)*100;
-            var desiredValue = (totalPortfolioValue * (desiredWeight/100));
-            var priceDesiredValueCount = (desiredValue/price);
-            return Math.round(priceDesiredValueCount - count);
-        }
-
-        alasql.fn.portfolioMarketValue = function(price, count, currentMarketValue) { 
-            return (parseFloat(currentMarketValue) + parseFloat(price) * parseInt(count));
-        }
-
-        alasql.fn.portfolioWeightPercentage = function(price, count, diffCount, totalPortfolioValue) { 
-            count = count + diffCount;
-            var marketValue = price * count;
-            return ((marketValue/totalPortfolioValue)*100).toFixed(2);
-        }
+    function truncatePortfolioLastPriceDataTable() {
+        alasql('TRUNCATE TABLE PortfolioLastPriceData');
     }
 
-    function saveDistributionDataToTable() {
-        setAlasqlCustomFunctions();
+    function insertPortfolioLastPriceRow(symbol, senastepris) {
+        alasql('INSERT INTO PortfolioLastPriceData VALUES ("' + symbol + '", ' + senastepris + ');');
+    }
+
+    function saveDistributionDataToTable(portfolioData, portfolioSumValue) {
         createPortfolioDistributionDataTable();
         truncatePortfolioDistributionDataTable();
 
-        var portfolioData = getPortfolioData();
-        var portfolioSumValue = getPortfolioDistributionSumMarknadsvärde();
         var standardWeight = (100/portfolioData.length);
 
-        alasql('INSERT INTO PortfolioDistributionData SELECT [Värdepapper], ISIN, Bransch, Antal, SenastePris, Valuta, [Marknadsvärde], \
+        alasql('INSERT INTO PortfolioDistributionData SELECT [Värdepapper], ISIN, Symbol, Bransch, Antal, SenastePris, Valuta, [Marknadsvärde], \
                 portfolioWeightPercentage(SenastePris, Antal, 0, ' + portfolioSumValue + ') AS [AktuellFördelning], \
                 portfolioWeightPercentage(SenastePris, Antal, portfolioNewTradeCount(SenastePris, Antal, ' + standardWeight + ',' + portfolioSumValue + '), ' + portfolioSumValue + ') AS [NyFördelning], \
                 portfolioMarketValue(SenastePris, portfolioNewTradeCount(SenastePris, Antal, ' + standardWeight + ',' + portfolioSumValue + '), [Marknadsvärde]) AS [NyMarknadsvärde], \
@@ -77,25 +69,48 @@ define([], function() {
         alasql('INSERT INTO PortfolioData SELECT [Värdepapper], ISIN, Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM ?', [data]);
     }
 
-    function updatePortfolioDistributionRow(ID, newWeightPercentage) {
+    function updatePortfolioDistributionNewWeightPercentageRow(ID, newWeightPercentage) {
         alasql('UPDATE PortfolioDistributionData SET [NyFördelning] = ? WHERE ID = ?', [newWeightPercentage, ID]);
+    }
+    
+    function updatePortfolioDistributionNewLatestPriceRow(ID, latestPrice) {
+        alasql('UPDATE PortfolioDistributionData SET SenastePris = ? WHERE ID = ?', [latestPrice, ID]);
+    }
+
+    function updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow(ID, latestPrice) {
+        var portfolioSumValue = getPortfolioDistributionSumMarknadsvärde();
+        var count = alasql('SELECT VALUE Antal FROM PortfolioDistributionData WHERE ID = ?', [ID])
+        var newMarketValue = (latestPrice * count);
+        alasql('UPDATE PortfolioDistributionData SET [Marknadsvärde] = ? WHERE ID = ?', [newMarketValue, ID]);
+    }
+
+    function updatePortfolioLastPriceRow(latestPrice, symbol) {
+        alasql('UPDATE PortfolioLastPriceData SET SenastePris = ? WHERE Symbol = ?', [latestPrice, symbol]);
+    }
+
+    function getPortfolioLastPriceDataMissingPrice() {
+        return alasql('SELECT Symbol FROM PortfolioLastPriceData WHERE SenastePris == 0');
+    }
+
+    function getPortfolioLastPriceValueBySymbol(symbol) {
+        return alasql('SELECT VALUE SenastePris FROM PortfolioLastPriceData WHERE Symbol = ?', symbol);
     }
 
     function getPortfolioDistributionData() {
-        return alasql('SELECT [ID], [Värdepapper], ISIN, Antal, SenastePris, [Marknadsvärde], [AktuellFördelning], \
+        return alasql('SELECT [ID], [Värdepapper], ISIN, Symbol, Antal, SenastePris, [Marknadsvärde], [AktuellFördelning], \
                        [NyFördelning], [NyMarknadsvärde], DiffAntal FROM PortfolioDistributionData');
     }
 
     function getPortfolioDistributionDataNewWeight() {
         var portfolioSumValue = getPortfolioDistributionSumMarknadsvärde();
 
-        return alasql('SELECT [ID], [Värdepapper], ISIN, Antal, SenastePris, [Marknadsvärde], [AktuellFördelning], \
+        return alasql('SELECT [ID], [Värdepapper], ISIN, Symbol, Antal, SenastePris, [Marknadsvärde], portfolioWeightPercentage(SenastePris, Antal, 0, ' + portfolioSumValue + ') AS [AktuellFördelning], \
                       [NyFördelning], portfolioMarketValue(SenastePris, portfolioNewTradeCount(SenastePris, Antal, [NyFördelning],' + portfolioSumValue + '), [Marknadsvärde]) AS [NyMarknadsvärde], \
                       portfolioNewTradeCount(SenastePris, Antal, [NyFördelning],' + portfolioSumValue + ') AS DiffAntal FROM PortfolioDistributionData');
     }
 
     function getPortfolioDistributionSumMarknadsvärde() {
-        return alasql('SELECT VALUE SUM([Marknadsvärde]::NUMBER) FROM PortfolioData');
+        return alasql('SELECT VALUE SUM([Marknadsvärde]::NUMBER) FROM PortfolioDistributionData');
     }
 
     function getPortfolioAllocation(sort) {
@@ -132,6 +147,9 @@ define([], function() {
 
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
+        createPortfolioLastPriceDataTable: createPortfolioLastPriceDataTable,
+        insertPortfolioLastPriceRow: insertPortfolioLastPriceRow,
+        truncatePortfolioLastPriceDataTable: truncatePortfolioLastPriceDataTable,
         saveDataToTable: saveDataToTable,
         getPortfolioData: getPortfolioData,
         getPortfolioAllocation: getPortfolioAllocation,
@@ -139,10 +157,14 @@ define([], function() {
         getPortfolioIndustry: getPortfolioIndustry,
         getPortfolioIndustrySort: getPortfolioIndustrySort,
         getPortfolioCurrencyStocks: getPortfolioCurrencyStocks,
+        getPortfolioLastPriceDataMissingPrice: getPortfolioLastPriceDataMissingPrice,
         saveDistributionDataToTable: saveDistributionDataToTable,
         getPortfolioDistributionData: getPortfolioDistributionData,
-        getPortfolioDistributionSumMarknadsvärde: getPortfolioDistributionSumMarknadsvärde,
-        updatePortfolioDistributionRow: updatePortfolioDistributionRow,
+        getPortfolioLastPriceValueBySymbol: getPortfolioLastPriceValueBySymbol,
+        updatePortfolioDistributionNewWeightPercentageRow: updatePortfolioDistributionNewWeightPercentageRow,
+        updatePortfolioDistributionNewLatestPriceRow: updatePortfolioDistributionNewLatestPriceRow,
+        updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow: updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow,
+        updatePortfolioLastPriceRow: updatePortfolioLastPriceRow,
         getPortfolioDistributionDataNewWeight: getPortfolioDistributionDataNewWeight
     };
 });
