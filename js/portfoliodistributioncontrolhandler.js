@@ -17,9 +17,6 @@ define(['./gridportfoliodistribution', './alasqlavanza', './alasqlnordnet', './a
     function loadPortfolioDistributionDanger() {
         var stocksMissingPrice = alasqlportfoliodata.getPortfolioLastPriceDataMissingPrice();
         if(stocksMissingPrice.length === 0) return;
-
-        stocksMissingPrice.push({Symbol: "JNJ"});
-
         var stocksText = "";
         for(var i=0; i < stocksMissingPrice.length; i++) {
             var symbol = stocksMissingPrice[i].Symbol;
