@@ -27,7 +27,7 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
                 runLoadSpreadhsheetStocksOnce();
             else if (e.delegateTarget.hash === "#portfoliodistribution") {
                 var portfolioDistributionTerms = localStorage.getItem(localStoragePortfolioDistributionTermsField);
-                if(portfolioDistributionTerms == null || portfolioDistributionTerms == false) {
+                if(portfolioDistributionTerms == null || portfolioDistributionTerms === 'false') {
                     loadWindowDistributionTerms();
                     showWindowDistributionTerms();
                 }
