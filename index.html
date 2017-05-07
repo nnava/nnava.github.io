@@ -891,7 +891,11 @@
                                         <button id="btnSetEqualWeight" class='k-button k-primary' onClick="portfolioDistributionEqualize()">Likavikta portfölj</button>
                                     </div>
                                 </script>
-                                <div id="gridPortfolioDistribution" style="width: 100%;"></div>
+                                    <div id="splitterGridPortfolioDistribution">
+                                        <div id="right-pane">
+                                            <div id="gridPortfolioDistribution" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
                             </div>
                         </div>                                            
                     </div>
@@ -1031,7 +1035,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 180;
+            var versionNumber = 181;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

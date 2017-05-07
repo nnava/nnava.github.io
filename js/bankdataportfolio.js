@@ -88,7 +88,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                     async: true,
                     data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'}
                 }).done(function(output) {
-                    if(output == null) { callback(0); return; };
+                    if(output == null) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
                     var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
                     if(yqlAvanzaResponse.query.count === 0) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
                     var resultValue = parseFloat(yqlAvanzaResponse.query.results.replace(",", ".")).toFixed(2);

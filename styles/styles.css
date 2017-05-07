@@ -170,3 +170,12 @@ span.k-loading-text
 div.red {
     color: red;
 }
+
+#splitterGridPortfolioDistribution,
+#gridPortfolioDistribution
+{
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    height: 100%; /* DO NOT USE !important for setting the Grid height! */
+}

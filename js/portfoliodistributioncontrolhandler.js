@@ -10,8 +10,17 @@ define(['./gridportfoliodistribution', './alasqlavanza', './alasqlnordnet', './a
     }
 
     function loadControls() {
+        loadSplitterGridPortfolioDistribution();
         loadGridPortfolioDistribution();
         loadPortfolioDistributionDanger();
+    }
+
+    function loadSplitterGridPortfolioDistribution() {
+        $("#splitterGridPortfolioDistribution").kendoSplitter({
+            panes: [
+                { size: 100 }
+            ]
+        });
     }
 
     function loadPortfolioDistributionDanger() {

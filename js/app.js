@@ -169,6 +169,11 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
         kendo.resize($('#chartFunnelPortfolioIndustry'));
         kendo.resize($('#chartRadarPortfolioIndustry'));
         kendo.resize($('#chartDividendStackedCumulativePortfolio'));
+
+        var gridPortfolioDistribution = $("#gridPortfolioDistribution").data('kendoGrid');
+        if(gridPortfolioDistribution) {
+            gridPortfolioDistribution.resize();
+        }
     }
 
     $('#btnLoadPortfolioDistribution').click(function() {                   

@@ -77,7 +77,6 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
             scrollable: true,
             sortable: true,
             pageable: false,
-            height: 650,
             columns: [
                 { field: "ID", hidden: true },
                 { field: "ISIN", hidden: true },
