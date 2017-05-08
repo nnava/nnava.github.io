@@ -857,7 +857,7 @@
                         <div id="portfolioDistributionSettings" class="col-md-6">
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-2">
                                         <h3>Inställningar</h3>
                                         <ul id="portfolioDistributionBankBtnGroup">
                                             <li>
@@ -872,6 +872,7 @@
                                         $("#portfolioDistributionBankBtnGroup").kendoMobileButtonGroup();
                                     </script>
                                 </div>
+                                <div class="col-md-10"></div>
                             </div>
                         </div>
                     </div>
@@ -893,11 +894,11 @@
                                         <button id="btnSetEqualWeight" class='k-button k-primary' onClick="portfolioDistributionEqualize()">Likavikta portfölj</button>
                                     </div>
                                 </script>
-                                    <div id="splitterGridPortfolioDistribution">
-                                        <div id="middle-pane" style="height: 100%;">
-                                            <div id="gridPortfolioDistribution" style="width: 100%;"></div>
-                                        </div>
+                                <div id="splitterGridPortfolioDistribution">
+                                    <div id="middle-pane">
+                                        <div id="gridPortfolioDistribution" style="width: 100%;"></div>
                                     </div>
+                                </div>
                             </div>
                         </div>                                            
                     </div>
@@ -1037,7 +1038,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 182;
+            var versionNumber = 183;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
