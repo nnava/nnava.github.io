@@ -1,4 +1,4 @@
-define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportfolio'], function(alasqlportfoliodata, alasqlstockmarketlinkdata, bankdataportfolio) {
+define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportfolio', './clipboard'], function(alasqlportfoliodata, alasqlstockmarketlinkdata, bankdataportfolio, clipboard) {
 
     var gridData;
     var gridId;
@@ -120,7 +120,7 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
             var dataItem = grid.dataItem($(e.currentTarget).closest("tr"));            
             var ISIN = dataItem.ISIN;
             var isClickSell = dataItem.DiffAntal < 0;
-            copyToClipboard(Math.abs(dataItem.DiffAntal));
+            clipboard.copy(Math.abs(dataItem.DiffAntal));
             var url = alasqlstockmarketlinkdata.getBankUrlFromIsin(ISIN, getSelectedBank(), isClickSell);
             window.open(url, '_blank');
 
@@ -156,28 +156,6 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
             percentageToDistribute = 0;
 
         return "Kvar att fördela: " + kendo.toString(percentageToDistribute, 'n2') + "%";
-    }
-
-    function copyToClipboard(text) {
-        if (window.clipboardData && window.clipboardData.setData) {
-            // IE specific code path to prevent textarea being shown while dialog is visible.
-            return clipboardData.setData("Text", text); 
-
-        } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-            var textarea = document.createElement("textarea");
-            textarea.textContent = text;
-            textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                return document.execCommand("copy");  // Security exception may be thrown by some browsers.
-            } catch (ex) {
-                console.warn("Copy to clipboard failed.", ex);
-                return false;
-            } finally {
-                document.body.removeChild(textarea);
-            }
-        }
     }
 
     window.bankBuyOrSellText = function bankBuyOrSellText(data) {
