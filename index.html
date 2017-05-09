@@ -10,12 +10,11 @@
 
         <title>Nordnet/Avanza-sammanställning</title>
         <link rel="stylesheet" href="styles/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" /> 
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.bootstrap.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.bootstrap.mobile.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.common-bootstrap.min.css" /> 
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.504/styles/kendo.mobile.all.min.css" /> 
-           
         <link rel="stylesheet" href="styles/styles.css" />
         
         <script src="https://kendo.cdn.telerik.com/2017.2.504/js/jquery.min.js"></script>
@@ -33,10 +32,12 @@
         <script>
             if (typeof kendo == "undefined") {
                 // fallback to local Kendo UI stylesheets
+                document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.mobile.all.min.css" %3C/%3E'));
                 document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.common.min.css" %3C/%3E'));
                 document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.bootstrap.min.css" %3C/%3E'));
                 document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.bootstrap.mobile.min.css" %3C/%3E'));
                 document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/kendo.common-bootstrap.min.css" %3C/%3E'));
+                document.write(decodeURIComponent('%3Clink rel="stylesheet" href="/styles/styles.css" %3C/%3E'));
 
                 // fallback to local Kendo UI scripts
                 document.write(decodeURIComponent('%3Cscript src="/js/kendo.all.min.js" %3E%3C/script%3E'));
@@ -847,6 +848,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <button id="btnLoadPortfolioDistribution" class='k-primary k-button'><span class="k-icon k-i-refresh"></span> Ladda portföljfördelning</button>
+                                    <span id="spanPortfolioDistributionMainInfo" class="k-icon k-i-info"></span>
                                 </div>
                                 <script>
                                     $("#btnLoadPortfolioDistribution").kendoButton({ enable: false });
@@ -858,16 +860,14 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h3>Inställningar</h3>
-                                    <div class="pull-left">
-                                        <ul id="portfolioDistributionBankBtnGroup">
-                                            <li>
-                                                <span>Avanza</span>
-                                            </li>
-                                            <li>
-                                                <span>Nordnet</span>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <ul id="portfolioDistributionBankBtnGroup">
+                                        <li>
+                                            <span>Avanza</span>
+                                        </li>
+                                        <li>
+                                            <span>Nordnet</span>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <script>
                                     $("#portfolioDistributionBankBtnGroup").kendoMobileButtonGroup();
@@ -879,7 +879,7 @@
                         <div class="col-md-12">
                             <div class="panel-body">
                                 <div class="alert alert-info">
-                                    <strong>Information!</strong> Under utveckling, gör inga köp/sälj utan egna beräkningar av din önskade portföljfördelning. Återkoppla gärna till lill4ekonomen(-@-)gmail.com eller via Twitter (@nnava_se) vid ev idéer/fel.
+                                    <strong>Information!</strong> Under utveckling - läs inforuta ovan, gör inga köp/sälj utan egna beräkningar av din önskade portföljfördelning. Återkoppla gärna till lill4ekonomen(-@-)gmail.com eller via Twitter (@nnava_se) vid ev idéer/fel.
                                 </div>
                                 <div id="divPortfolioDistributionDanger" class="alert alert-danger alert-dismissable hidden">
                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -1037,7 +1037,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 185;
+            var versionNumber = 186;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

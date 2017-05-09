@@ -179,3 +179,10 @@ div.red {
     border-width: 0;
     height: 100%; /* DO NOT USE !important for setting the Grid height! */
 }
+
+.km-buttongroup {
+    padding: .4rem .7rem;
+    -webkit-margin-collapse: separate;
+    margin-collapse: separate;
+    /* margin: .5em auto */
+}

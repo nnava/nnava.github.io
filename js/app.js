@@ -19,6 +19,7 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
 
         loadSpantaxinfo();
         loadSpanAutoloadInfo();
+        loadSpanPortfolioDistributionMainInfo();
 
         window.onresize = resizeObjects;
 
@@ -116,6 +117,18 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
             position: "bottom",
             width: 300
         });
+    }
+
+    function loadSpanPortfolioDistributionMainInfo() {
+       $("#spanPortfolioDistributionMainInfo").kendoTooltip({
+            content: "<div style=\"text-align:left\">Portföljfördelning ger stöd för att omfördela/likavikta din portfölj. <br/> \
+            Köp/sälj-knappar för värdepapper navigerar till vald banks köp eller säljsida. Antal läggs i urklipp och kan med fördel klistras in (CTRL-V) i antalrutan. \
+            Notera att det är ca 15 min eftersläpning av senaste pris och efter första inladdning som sker vid inläsning av fil så uppdateras inte senaste pris. \
+            Möjlighet till uppdatering är under utveckling. <br/> \
+            Bank sätts automatiskt utifrån fil, har du lagt till fil från både Nordnet och Avanza så kan val göras, detta val sparas också till nästa gång du besöker sidan.</div>",
+            position: "bottom",
+            width: 400
+        }); 
     }
 
     function setCheckboxAutoLoadFromCookie() {
