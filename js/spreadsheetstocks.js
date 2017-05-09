@@ -10,6 +10,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
     var filterCells;
     var stockLastTradePriceArray = [];
     var skipRunningFunctions = false;
+    var columnBransch = 2;
+    var localStorageStocksBranschField = "spreadsheetstocksarray_bransch_ver1";
 
     kendo.spreadsheet.defineFunction("YFCURRENCYTOUSERCURRENCY", function(callback, currency){
         fetchCurrencyToUserCurrency(currency, function(value){
@@ -145,10 +147,15 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         
         var rowCount = 2;
         var indexCount = 1;
+        var storedStocksBranschArray = getStoredBranschArray();
         portfolioData.forEach(function(object) {
 
             var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOUSERCURRENCY(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "D#rowCount#*E#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
+            var bransch = object.Bransch;
+            var savedBransch = alasql('SELECT VALUE Bransch FROM ? WHERE ISIN = ?', [storedStocksBranschArray, object.ISIN]);
+            if(savedBransch != null)
+                bransch = savedBransch;
 
             spreadSheetData.push({
                 index: indexCount,
@@ -160,7 +167,14 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                         value: object.ISIN, textAlign: "left"
                     },
                     {
-                        value: object.Bransch, textAlign: "left"
+                        value: bransch, textAlign: "left", 
+                        validation: {
+                             dataType: "list",
+                             showButton: true,
+                             comparerType: "list",
+                             from: '{ "Dagligvaror", "Finans & Fastighet", "Hälsovård",  "Investmentbolag", "Industrivaror & tjänster", "Informationsteknik", "Kraftförsörjning", "Sällanköpsvaror- och tjänster" }',
+                             allowNulls: true
+                         }
                     },
                     {
                         value: object.Antal, format: "#,0"
@@ -214,6 +228,12 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         filterCells = "A1:G#ROW#".replace("#ROW#", indexCount);
     }
 
+    function getStoredBranschArray() {
+        var data = JSON.parse(localStorage.getItem(localStorageStocksBranschField));
+        if(data == null) return [];
+        return data;
+    }
+
     function loadSpreadSheet() {
 
         if($(spreadSheetId).data('kendoSpreadsheet')) {
@@ -224,11 +244,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         setTimeout(function(){  
             $(spreadSheetId).kendoSpreadsheet({
                 theme: "bootstrap",
+                change: onChange,
                 toolbar: {
-                    home: ["open",
-                    "exportAs",
-                    ["cut", "copy", "paste"]
-                    ], 
+                    home: [ ["cut", "copy", "paste"] ], 
                     insert: [[ "addRowBelow", "addRowAbove" ]], 
                     data: false 
                 },
@@ -278,6 +296,26 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         }, 100);
     }
 
+    function onChange(arg) {        
+        if(arg.range._ref.bottomRight.col === columnBransch) {
+            var spreadsheet = $(spreadSheetId).data("kendoSpreadsheet");
+            var spreadsheetDataJson = spreadsheet.toJSON();
+            var result = spreadsheetDataJson.sheets["0"].rows;
+            var data = [];
+
+            for(var i = 1; i < result.length; i++)
+            {
+                // Skip last as it is summary
+                if(i == (result.length -1)) break;
+                var isin = result[i].cells["1"].value
+                var bransch = result[i].cells["2"].value;
+
+                data.push({ ISIN: isin, Bransch: bransch });                
+            }
+            localStorage.setItem(localStorageStocksBranschField, JSON.stringify(data));
+        }
+    }
+
     function saveSpreadsheetDataToTable() {
         skipRunningFunctions = true;
 
@@ -305,7 +343,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                 Marknadsvärde: result[i].cells["6"].value.toFixed(2)
             });
         }
-        
+
         alasqlportfoliodata.saveDataToTable(data);
         skipRunningFunctions = false;
     }
