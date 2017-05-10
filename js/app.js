@@ -41,16 +41,7 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
         alasqlstockdata.loadDataFromFileToTable();
         alasqlstockmarketlinkdata.createStockMarketLinkDataTable();
         alasqlstockmarketlinkdata.loadDataFromFileToTable();
-        alasqlcustomfunctions.loadFunctions();
-        
-    });
-
-    $(document).keypress(function(e) {
-        var keyCode = e.keyCode;
-
-        if(keyCode == 87 || keyCode == 119) {
-            $('#portfoliodistributiontab').attr("class", "");
-        }
+        alasqlcustomfunctions.loadFunctions();        
     });
 
     $(document).ajaxStart(function() {
