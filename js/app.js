@@ -52,6 +52,13 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
         setEnableStateForControls(true);
     });
 
+    $(document).keypress(function(e) {
+        var keyCode = e.keyCode;
+        if(keyCode == 65 || keyCode == 97) {
+            setEnableStateForControls(true);
+        }
+    });
+
     var runLoadSpreadhsheetStocksOnce = (function() {
         var executed = false;
         return function () {

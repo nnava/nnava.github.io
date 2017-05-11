@@ -62,7 +62,8 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
 
         $.ajax({
             url: yqlUrl,
-            data: {q: queryTemplate({symbol:symbol}), format: 'json'}
+            data: {q: queryTemplate({symbol:symbol}), format: 'json'},
+            timeout: 10000
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
             var results = response.query.results;
@@ -86,7 +87,8 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                 $.ajax({
                     url: yqlUrl,
                     async: true,
-                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'}
+                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'},
+                    timeout: 10000
                 }).done(function(output) {
                     if(output == null) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
                     var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
@@ -109,6 +111,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
 
         }).fail(function(err) {
             console.log(err.responseText);
+            alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
         }); 
     }
 

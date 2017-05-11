@@ -49,7 +49,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
 
         $.ajax({
             url: yqlUrl,
-            data: {q: queryTemplate({symbol:symbol}), format: 'json'}
+            data: {q: queryTemplate({symbol:symbol}), format: 'json'},
+            timeout: 10000
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
             var results = response.query.results;
@@ -74,7 +75,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                 $.ajax({
                     url: yqlUrl,
                     async: true,
-                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'}
+                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'},
+                    timeout: 10000
                 }).done(function(output) {
                     if(output == null) { callback(0); return; };
                     var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
@@ -99,6 +101,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
 
         }).fail(function(err) {
             console.log(err.responseText);
+            callback(0);
         }); 
     }
 
