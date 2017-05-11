@@ -175,7 +175,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                              dataType: "list",
                              showButton: true,
                              comparerType: "list",
-                             from: '{ "Dagligvaror", "Finans & Fastighet", "Hälsovård",  "Övrigt", "ETF", "Investmentbolag", "Industrivaror & tjänster", "Informationsteknik", "Kraftförsörjning", "Sällanköpsvaror- och tjänster" }',
+                             from: '{ "Dagligvaror", "Finans & Fastighet", "Hälsovård",  "Övrigt", "ETF", "Investmentbolag", "Industrivaror & tjänster", "Informationsteknik", "Energi", "Kraftförsörjning", "Sällanköpsvaror- och tjänster" }',
                              allowNulls: true
                          }
                     },

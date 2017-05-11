@@ -6,7 +6,6 @@ define(['./alasqllocalization'], function(alasqllocalization) {
 
     function fillCurrencyDataFromYahooFinance() {
         var userCurrency = alasqllocalization.getUserCurrency();
-
         currencyArray.forEach(function(currency) {
             if(userCurrency == currency) return;
             
@@ -18,8 +17,7 @@ define(['./alasqllocalization'], function(alasqllocalization) {
                 data: {q: queryTemplate, format: 'json'}
             }).done(function(output) {
                 var response = _.isString(output) ? JSON.parse(output) : output;
-                var currencyValue = response.query.results.row.col1;
-                currencyArray[currency] = currencyValue;
+                var currencyValue = response.query.results.row.col1;                
                 alasql('INSERT INTO CurrencyData VALUES ("' + currency + '", ' + currencyValue + ');');
             }).fail(function(err) {
                 console.log(err.responseText);

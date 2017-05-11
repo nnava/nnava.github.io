@@ -56,30 +56,21 @@ define(['./chartdonutexpenses',
         loadChartDividendYearGrowth(); 
         loadChartDonutExpenses();
         loadChartDividendYearMonth();
-
-        kendo.ui.progress($(document.body), false);
-
         initChartSettingButtonGroups();
-        initChartSettingToolbar();
-        
-        setTimeout(function(){   
-            loadSpandividendPeriodInfo();            
-            loadChartDividendCumulative();  
-            loadChartDonutDividend(); 
-        }, 100);
-
-        setTimeout(function(){ 
+        initChartSettingToolbar();  
+        loadSpandividendPeriodInfo();            
+        loadChartDividendCumulative();  
+        loadChartDonutDividend();
+        loadChartDividendTreemap();
+        kendo.ui.progress($(document.body), false);
+        loadChartTransactionBuyLine();            
+        loadChartTransactionNetYearGrowth();        
+        setTimeout(function(){           
             bankdataportfolio.setPortfolioLastPriceData();
-            loadChartDividendTreemap();
-            loadChartTransactionBuyLine();            
-        }, 1500);
-
-        setTimeout(function(){    
-            loadChartTransactionNetYearGrowth();           
             loadChartTransactionSellLine();            
             loadChartCourtageYear();            
-            loadChartYearDeposit();
-        }, 2000);
+            loadChartYearDeposit();  
+        }, 3000);
     }
 
     function loadControlsFull() {
