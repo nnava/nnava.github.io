@@ -53,7 +53,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                 currencyValue = alasqlcurrencydata.getCurrencyExchangeRateValue(item.Valuta);
             };
 
-            saveLastTradePriceOnly(item.YahooSymbol, currencyValue, 4);
+            saveLastTradePriceOnly(item.YahooSymbol, currencyValue, 1);
         }
     }
 
@@ -63,13 +63,12 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
         $.ajax({
             url: yqlUrl,
             data: {q: queryTemplate({symbol:symbol}), format: 'json'},
-            timeout: 15000
+            timeout: 10000
         }).done(function(output) {
             var response = _.isString(output) ? JSON.parse(output) : output;
             var results = response.query.results;
             if(results == null) {
-
-                if(retryNumber < 4){
+                if(retryNumber < 4) {
                     retryNumber++;
                     setTimeout(function(){ saveLastTradePriceOnly(symbol, currencyValue, retryNumber); }, 50);
                     return;
@@ -88,7 +87,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                     url: yqlUrl,
                     async: true,
                     data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'},
-                    timeout: 15000
+                    timeout: 10000
                 }).done(function(output) {
                     if(output == null) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
                     var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
