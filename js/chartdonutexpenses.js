@@ -20,8 +20,12 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
 
         var result = avanzaYearData.concat(nordnetYearData);
         var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
-
         var maxYear = resultYear["0"].Year;
+        if(maxYear == null) {
+            chartData = [];
+            return;
+        }
+
         var startPeriod = dateperiod.getStartOfYear(maxYear);
         var endPeriod = dateperiod.getEndOfYear(maxYear);
         if(period == "R12") {
