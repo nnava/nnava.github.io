@@ -19,18 +19,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues'], function(al
 
         var nordnetYearData = alasqlnordnet.getDepositYears();
         var avanzaYearData = alasqlavanza.getDepositYears();
-
-        alasql('CREATE TABLE IF NOT EXISTS DepositYearTable \
-                (Year INT);');
-
-        alasql('INSERT INTO DepositYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO DepositYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM DepositYearTable');
-        alasql('TRUNCATE TABLE DepositYearTable');
+        var result = avanzaYearData.concat(nordnetYearData);
+        var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
 
         var yearDepositData = [];
         var addedYear = [];

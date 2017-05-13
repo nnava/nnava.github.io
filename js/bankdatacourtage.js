@@ -17,22 +17,11 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function getCourtageYears() {
-
         var nordnetYearData = alasqlnordnet.getCourtageYears();
         var avanzaYearData = alasqlavanza.getCourtageYears();
+        var result = avanzaYearData.concat(nordnetYearData);
 
-        alasql('CREATE TABLE IF NOT EXISTS CourtageYearTable \
-               (Year INT);');
-
-        alasql('INSERT INTO CourtageYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO CourtageYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM CourtageYearTable');
-        alasql('TRUNCATE TABLE CourtageYearTable');
-        return resultYear;        
+        return alasql('SELECT DISTINCT Year FROM ?', [result]);   
     }
 
     return { 

@@ -25,22 +25,11 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
     }
 
     function getTransactionYears() {
-
         var avanzaYearData = alasqlavanza.getTransactionYears();
         var nordnetYearData = alasqlnordnet.getTransactionYears();
+        var result = avanzaYearData.concat(nordnetYearData);
 
-        alasql('CREATE TABLE IF NOT EXISTS TransactionYearTable \
-               (Year INT);');
-
-         alasql('INSERT INTO TransactionYearTable SELECT Year \
-                 FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO TransactionYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM TransactionYearTable');
-        alasql('TRUNCATE TABLE TransactionYearTable');
-        return resultYear;        
+        return alasql('SELECT DISTINCT Year FROM ?', [result]);       
     }
 
     return { 

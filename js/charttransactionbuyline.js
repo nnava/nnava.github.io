@@ -15,18 +15,8 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './colors'],
         var nordnetYearData = alasqlnordnet.getBuyTransactionYears();
         var avanzaYearData = alasqlavanza.getBuyTransactionYears();
 
-        alasql('CREATE TABLE IF NOT EXISTS TransactionCountYearTable \
-                (Year INT);');
-
-        alasql('INSERT INTO TransactionCountYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO TransactionCountYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM TransactionCountYearTable');
-        alasql('TRUNCATE TABLE TransactionCountYearTable');
-
+        var result = avanzaYearData.concat(nordnetYearData);
+        var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
         var datasetValue = [];
         var addedYear = [];        
         var yearWithMonthValues = [];

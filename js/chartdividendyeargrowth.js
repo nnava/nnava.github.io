@@ -29,19 +29,9 @@ define(['./alasqlavanza', './alasqlnordnet'], function(alasqlavanza, alasqlnordn
 
         var nordnetYearData = alasqlnordnet.getDividendYears();
         var avanzaYearData = alasqlavanza.getDividendYears();
+        var result = avanzaYearData.concat(nordnetYearData);
 
-        alasql('CREATE TABLE IF NOT EXISTS DivYearGrowthYearTable \
-                (Year INT);');
-
-        alasql('INSERT INTO DivYearGrowthYearTable SELECT Year \
-                FROM ?', [nordnetYearData]);
-
-        alasql('INSERT INTO DivYearGrowthYearTable SELECT Year \
-                FROM ?', [avanzaYearData]);
-
-        var resultYear = alasql('SELECT DISTINCT Year FROM DivYearGrowthYearTable ORDER BY Year');
-        alasql('TRUNCATE TABLE DivYearGrowthYearTable');
-
+        var resultYear = alasql('SELECT DISTINCT Year FROM ? ORDER BY Year', [result]);
         var resultYearArray = yearToArray(resultYear);
 
         var futureTaxReturnYears = [];
