@@ -100,7 +100,6 @@ define(['./colors', './alasqlportfoliodata'], function(colors, alasqlportfolioda
         var seriesDefaultsPadding = 45;
         if(chartData[1].data.length > maxCountAllocationVisualChange) {
             legendVisible = false;
-            seriesDefaultsPadding = 30;
         }
             
         $(chartId).kendoChart({

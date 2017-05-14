@@ -5,6 +5,7 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './date
     var colorArray = colors.getColorArray();
     var selectedPeriod = 0;
     var localStorageSortField = "chartdonutdividend_sort";
+    var maxCountAllocationVisualChange = 45;
 
     function setChartId(fieldId) {
         chartId = fieldId;
@@ -54,6 +55,13 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './date
     function loadChart() {
         var titleText = "Värdepapper/utdelning -  " + (selectedPeriod.startsWith("R") ? "R12" : selectedPeriod);
 
+        var legendVisible = true;
+        var labelDistance = 35;
+        if(chartData.length > maxCountAllocationVisualChange) {
+            legendVisible = false;
+            labelDistance = 45;
+        }
+
         $(chartId).kendoChart({
             plotArea: {
                 background: ""
@@ -62,7 +70,13 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './date
                 text: titleText
             },
             legend: {
-                position: "top"
+                visible: legendVisible,
+                position: "top",
+                margin: 4,
+                padding: 2,
+                labels: {
+                    font: "10px Verdana"
+                }
             },
             chartArea: {
                 background: ""
@@ -76,6 +90,7 @@ define(['./colors', './bankdatadividend', './dropdowndonutdividendsort', './date
                 labels: {
                     visible: true,
                     background: "transparent",
+                    distance: labelDistance,
                     position: "outsideEnd",
                     template: "#= category # - #= kendo.format('{0:P}', percentage) #"
                 }
