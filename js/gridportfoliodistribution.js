@@ -40,6 +40,7 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
                          { field: "Marknadsvärde", aggregate: "sum" },
                          { field: "NyMarknadsvärde", aggregate: "sum" }
             ],
+            sort: ({ field: "Värdepapper", dir: "asc" }),
             pageSize: portfolioData.length
         });
 
@@ -52,6 +53,8 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
     }
 
     function load() {
+        var today = new Date().toISOString().slice(0, 10);
+
         if($(gridId).data('kendoGrid')) {
             $(gridId).data('kendoGrid').destroy();
             $(gridId).empty();
@@ -60,11 +63,11 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
         var grid = $(gridId).kendoGrid({
             toolbar: kendo.template($("#gridportfoliodistribution_toolbar_template").html()),
             excel: {
-                fileName: "fördelning.xlsx",
+                fileName: "portföljfördelning" + "_" + today + ".xlsx",
                 filterable: true
             },
             pdf: {
-                fileName: "fördelning.pdf",
+                fileName: "portföljfördelning.pdf" + "_" + today + ".pdf",
                 allPages: true,
                 avoidLinks: true,
                 paperSize: "A4",
@@ -108,6 +111,12 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
                 updatePortfolioDistributionDataSource(portfolioData);
                 e.sender.saveChanges();
             },
+            excelExport: function(e) {
+                var sheet = e.workbook.sheets[0];
+                for (var i = 0; i < sheet.columns.length; i++) {
+                    sheet.columns[i].width = getExcelColumnWidth(i);
+                }
+            },
             theme: "bootstrap",
         }).data("kendoGrid");
 
@@ -129,6 +138,39 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
                 return $(target).text();
             }
         });
+    }
+
+    function getExcelColumnWidth(index) {
+        var columnWidth = 150;
+        switch(index) {
+            case 0: // Värdepapper
+                columnWidth = 230;
+                break;
+            case 1: // Antal
+                columnWidth = 80;
+                break;   
+            case 2: // SenastePris
+                columnWidth = 80;
+                break;     
+            case 3: // Marknadsvärde
+                columnWidth = 140;
+                break;     
+            case 4: // Aktuellfördelning
+                columnWidth = 140;
+                break;  
+            case 5: // Nyfördelning
+                columnWidth = 130;
+                break;  
+            case 6: // Nymarknadsvärde
+                columnWidth = 140;
+                break; 
+            case 7: // DiffAntal
+                columnWidth = 80;
+                break;                              
+            default:
+                columnWidth = 150;
+        }
+        return columnWidth;
     }
 
     function updatePortfolioDistributionDataSource(portfolioData) {
