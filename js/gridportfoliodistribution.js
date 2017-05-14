@@ -105,12 +105,7 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
                 }
 
                 portfolioData = alasqlportfoliodata.getPortfolioDistributionDataNewWeight();
-
-                var dataSource = getCreatedDataSource(portfolioData);
-                var grid = $(gridId).data("kendoGrid");
-                dataSource.read();
-                grid.setDataSource(dataSource);
-
+                updatePortfolioDistributionDataSource(portfolioData);
                 e.sender.saveChanges();
             },
             theme: "bootstrap",
@@ -134,6 +129,13 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
                 return $(target).text();
             }
         });
+    }
+
+    function updatePortfolioDistributionDataSource(portfolioData) {
+        var dataSource = getCreatedDataSource(portfolioData);
+        var grid = $(gridId).data("kendoGrid");
+        dataSource.read();
+        grid.setDataSource(dataSource);
     }
 
     function getSelectedBank() {
@@ -165,6 +167,39 @@ define(['./alasqlportfoliodata', './alasqlstockmarketlinkdata', './bankdataportf
     window.portfolioDistributionEqualize = function portfolioDistributionEqualize() {
         setData();
         load();
+    }
+
+    window.portfolioDistributionUpdateLastTradePrice = function portfolioDistributionUpdateLastTradePrice() {
+        bankdataportfolio.setPortfolioLastPriceData();
+        var timeoutValue = getUpdateGridLastTradePriceTimeoutValue();
+        kendo.ui.progress($(document.body), true);
+        setTimeout(function(){               
+            gridData._data.forEach(function(object) {
+                var ID = object.ID;
+                var newLatestPrice = alasqlportfoliodata.getPortfolioLastPriceValueBySymbol(object.Symbol);
+                if(newLatestPrice == null) return;
+                if(newLatestPrice > 0) {
+                    alasqlportfoliodata.updatePortfolioDistributionNewLatestPriceRow(ID, newLatestPrice);
+                    alasqlportfoliodata.updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow(ID, newLatestPrice);
+                    alasqlportfoliodata.updatePortfolioLastPriceRow(newLatestPrice, object.Symbol);
+                }
+            });
+
+            portfolioData = alasqlportfoliodata.getPortfolioDistributionDataNewWeight();
+            updatePortfolioDistributionDataSource(portfolioData);
+
+            kendo.ui.progress($(document.body), false);
+        }, timeoutValue);
+    }
+
+    function getUpdateGridLastTradePriceTimeoutValue() {
+        var timeoutValue = 2000;
+        if(gridData._data.length > 50)
+            timeoutValue = 3000;
+        else if(gridData._data.length > 80)
+            timeoutValue = 4000;
+
+        return timeoutValue;
     }
 
     return {

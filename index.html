@@ -891,6 +891,7 @@
                                         <a role="button" class="k-button k-button-icontext k-grid-excel" href="\#"><span class="k-icon k-i-file-excel"></span>Export to Excel</a>
                                         <a role="button" class="k-button k-button-icontext k-grid-pdf" href="\#"><span class="k-icon k-i-file-pdf"></span>Export to PDF</a>
                                         <button id="btnSetEqualWeight" class='k-button k-primary' onClick="portfolioDistributionEqualize()">Likavikta portfölj</button>
+                                        <button id="btnUpdateLastTradePrice" class='k-button k-primary' onClick="portfolioDistributionUpdateLastTradePrice()">Uppdatera senaste pris</button>
                                     </div>
                                 </script>
                                 <div id="splitterGridPortfolioDistribution">
@@ -1037,7 +1038,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 197;
+            var versionNumber = 198;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
