@@ -16,7 +16,12 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
         chartData = [];
 
         var dividendData = alasqlportfoliodividenddata.getPortfolioDividendsYearMonthValues(currentYear);
+        var totalYearDividend = 0;
         dividendData.forEach(function(entry) {
+            entry.data.forEach(function(dataObject) {
+                totalYearDividend += dataObject.value;
+            });
+
             chartData.push({
                 name: entry.name,
                 data: entry.data,
@@ -46,6 +51,27 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
                 }       
             });
         });    
+
+        var avgDividendValue = (totalYearDividend / 12);
+
+        var avgDividendArray = [];
+        for(var i=0; i <= 11; i++) {
+            avgDividendArray.push(avgDividendValue);
+        }
+
+        chartData.push({
+            type: "line",
+            data: avgDividendArray,
+            name: "Utdelningar medelvärde",
+            color: "#f2b661",
+            tooltip: {
+                visible: true
+            },
+            labels: {
+                rotation: 0,
+                visible: false
+            }
+        });
     }
 
     function loadChart() {
