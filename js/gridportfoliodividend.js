@@ -91,7 +91,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                             Utdelningsbelopp: { type: "string" },
                             Utdelningtotal: { type: "number"},
                             Land: {type: "string" },
-                            ValutaKurs: { type: "number"},
+                            ValutaKurs: { type: "string"},
                             Valuta: {type: "string" }
                         }
                     }
@@ -157,7 +157,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 var dataItem = grid.dataItem(e.target.closest("tr"));
                 if(dataItem == null || dataItem.ValutaKurs <= 1) return "";
 
-                var content = "Förväntat belopp beräknat med " + dataItem.Valuta + " växelkurs: " + dataItem.ValutaKurs + "kr";
+                var content = "Förväntat belopp beräknat med " + dataItem.Valuta + " växelkurs: " + (dataItem.ValutaKurs).replace(".", ",") + "kr";
                 return content
             }
         }).data("kendoTooltip");
