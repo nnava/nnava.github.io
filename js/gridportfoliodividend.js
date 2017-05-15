@@ -21,7 +21,6 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
 
             var månad = months[entry.Månad -1];
             var land = entry.Land == null ? "x" : entry.Land.toLowerCase();
-
             data.push({ 
                 Id: id,
                 Name : entry.Värdepapper,
@@ -31,6 +30,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 Utdelningsdatum : entry.Utdelningsdag,
                 Utdelningsbelopp : entry.UtdelningaktieValuta,
                 Utdelningtotal: entry.Belopp,
+                Valuta: entry.Valuta,
+                ValutaKurs: entry.ValutaKurs,
                 Land: land
             });
 
@@ -89,7 +90,9 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                             Utdelningsdatum: { type: "date" },
                             Utdelningsbelopp: { type: "string" },
                             Utdelningtotal: { type: "number"},
-                            Land: {type: "string" }
+                            Land: {type: "string" },
+                            ValutaKurs: { type: "number"},
+                            Valuta: {type: "string" }
                         }
                     }
                 },
@@ -119,7 +122,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 { field: "Typ", title: "Typ", width: "70px" },
                 { field: "Antal", title: "Antal", format: "{0} st", width: "50px" },
                 { field: "Utdelningsbelopp", title: "Utdelning/aktie", width: "60px" }, 
-                { field: "Utdelningtotal", title: "Belopp", width: "100px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: "Totalt förväntat belopp: #= kendo.toString(sum, 'n2') # kr", groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
+                { field: "Utdelningtotal", title: "Belopp", width: "85px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: "Totalt förväntat belopp: #= kendo.toString(sum, 'n2') # kr", groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
+                { title: "", template: '<span class="k-icon k-i-info" style="#= gridPortfolioDividendInfoVisibility(data) #"></span>', width: "15px" }
             ],
             excelExport: function(e) {
                 var sheet = e.workbook.sheets[0];
@@ -136,6 +140,31 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
                 return $(target).text();
             }
         });
+
+        $(gridId).kendoTooltip({
+            show: function(e){
+                if(this.content.text().length > 1){
+                    this.content.parent().css("visibility", "visible");
+                }
+            },
+            hide:function(e){
+                this.content.parent().css("visibility", "hidden");
+            },
+            filter: "td:nth-child(9)", 
+            position: "left",
+            width: 200,
+            content: function(e) {
+                var dataItem = grid.dataItem(e.target.closest("tr"));
+                if(dataItem == null || dataItem.ValutaKurs <= 1) return "";
+
+                var content = "Förväntat belopp beräknat med " + dataItem.Valuta + " växelkurs: " + dataItem.ValutaKurs + "kr";
+                return content
+            }
+        }).data("kendoTooltip");
+    }
+
+    window.gridPortfolioDividendInfoVisibility = function gridPortfolioDividendInfoVisibility(data) {
+        return data.ValutaKurs > 1 ? "" : "display: none;";
     }
 
     function getExcelColumnWidth(index) {
