@@ -155,7 +155,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             width: 200,
             content: function(e) {
                 var dataItem = grid.dataItem(e.target.closest("tr"));
-                if(dataItem == null || dataItem.ValutaKurs <= 1) return "";
+                if(dataItem == null || dataItem.ValutaKurs <= 1 || e.target[0].parentElement.className == "k-group-footer") return "";
 
                 var content = "Förväntat belopp beräknat med " + dataItem.Valuta + " växelkurs: " + (dataItem.ValutaKurs).replace(".", ",") + "kr";
                 return content
