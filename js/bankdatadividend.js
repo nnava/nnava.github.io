@@ -153,12 +153,27 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
         return newObject;
     }
 
+    function getDividendMonthSumBelopp(year, month, isTaxChecked) {
+        var resultNordnet = alasqlnordnet.getDividendMonthSumBelopp(year, month);
+        var resultAvanza = alasqlavanza.getDividendMonthSumBelopp(year, month);
+
+        if (isTaxChecked) {
+            var taxNordnet = alasqlnordnet.getTaxMonthSumBelopp(year, month);
+            var taxAvanza = alasqlavanza.getTaxMonthSumBelopp(year, month);
+            resultNordnet = resultNordnet + taxNordnet;
+            resultAvanza = resultAvanza + taxAvanza;
+        }
+
+        return Math.round(resultNordnet + resultAvanza);
+    }
+
     return { 
         getVärdepapperTotalDividend: getVärdepapperTotalDividend,
         getVärdepapperForPeriod: getVärdepapperForPeriod,
         getVärdepapperDividendData: getVärdepapperDividendData,
         getTotalDividend: getTotalDividend,
         getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
-        getDividendAll: getDividendAll
+        getDividendAll: getDividendAll,
+        getDividendMonthSumBelopp: getDividendMonthSumBelopp
     };
 });

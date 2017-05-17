@@ -1,17 +1,16 @@
-define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasqlportfoliodividenddata, monthstaticvalues) {
+define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadividend', './dateperiod'], function(alasqlportfoliodividenddata, monthstaticvalues, bankdatadividend, dateperiod) {
 
     var gridData = [];
     var gridId;
     var months = monthstaticvalues.getMonthWithLettersValues();
     var currentMonth = new Date().getMonth();
+    var currentYear = new Date().getFullYear();
 
     function setId(fieldId) {
         gridId = fieldId;
     }
 
     function setData() {
-
-        var currentYear = new Date().getFullYear();
         var result = alasqlportfoliodividenddata.getPortfolioDividends(currentYear);
         var data = [];
         var id = 0;
@@ -117,12 +116,12 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
             pageable: false,
             columns: [
                 { field: "Månad", groupHeaderTemplate: "#= value.substring(2, value.length) #", hidden: true },
-                { field: "Name", title: "Värdepapper", template: "<div class='gridportfolio-country-picture' style='background-image: url(/styles/images/#:data.Land#.png);'></div><div class='gridportfolio-country-name'>#: Name #</div>", width: "170px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
+                { field: "Name", title: "Värdepapper", template: "<div class='gridportfolio-country-picture' style='background-image: url(/styles/images/#:data.Land#.png);'></div><div class='gridportfolio-country-name'>#: Name #</div>", width: "150px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
                 { field: "Utdelningsdatum", title: "Utd/Handl. utan utd", format: "{0:yyyy-MM-dd}", width: "75px" },
                 { field: "Typ", title: "Typ", width: "70px" },
-                { field: "Antal", title: "Antal", format: "{0} st", width: "50px" },
+                { field: "Antal", title: "Antal", format: "{0} st", width: "45px" },
                 { field: "Utdelningsbelopp", title: "Utdelning/aktie", width: "60px" }, 
-                { field: "Utdelningtotal", title: "Belopp", width: "85px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: "Totalt förväntat belopp: #= kendo.toString(sum, 'n2') # kr", groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
+                { field: "Utdelningtotal", title: "Belopp", width: "110px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: gridUtdelningtotalFooterTemplate, groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
                 { title: "", template: '<span class="k-icon k-i-info" style="#= gridPortfolioDividendInfoVisibility(data) #"></span>', width: "15px" }
             ],
             excelExport: function(e) {
@@ -213,25 +212,61 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues'], function(alasql
         }
     }
 
+    function gridUtdelningtotalFooterTemplate(e) {
+        var startPeriod = dateperiod.getStartOfYear((currentYear -1));
+        var endPeriod = dateperiod.getEndOfYear((currentYear -1));
+        var isTaxChecked = $('#checkboxTax').is(":checked");
+
+        var currentYearTotalNumeric = e.Utdelningtotal.sum;
+        var currentYearTotal = kendo.toString(currentYearTotalNumeric, 'n2') + " kr";
+        var lastYearTotalNumeric = bankdatadividend.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
+        var lastYearTotal = kendo.toString(lastYearTotalNumeric, 'n2') + " kr";
+        var growthValueNumeric = calculateGrowthChange(currentYearTotalNumeric, lastYearTotalNumeric);
+        var growthValue = kendo.toString(growthValueNumeric, 'n2').replace(".", ",") + "%";
+        var spanChange = buildSpanChangeArrow(currentYearTotalNumeric, lastYearTotalNumeric);
+
+        return "Totalt förväntat belopp: " + currentYearTotal + " " + spanChange + growthValue + " (" + lastYearTotal + ")";     
+    }
+
     function gridUtdelningtotalGroupFooterTemplate(e) {
         var groupNameValue = e.Månad.sum;
         if(typeof e.Name.group !== 'undefined')
             groupNameValue = e.Name.group.value;
 
-        var sum = kendo.toString(e.Utdelningtotal.sum, 'n2') + " kr"; 
+        var groupMonthValue = months.indexOf(groupNameValue);
+        var isTaxChecked = $('#checkboxTax').is(":checked");
+        var lastYearValueNumeric = bankdatadividend.getDividendMonthSumBelopp((currentYear -1), (groupMonthValue +1), isTaxChecked);
+        var currentYearValueNumeric = e.Utdelningtotal.sum; 
+        var lastYearValue = kendo.toString(lastYearValueNumeric, 'n2') + " kr";
+        var currentYearValue = kendo.toString(currentYearValueNumeric, 'n2') + " kr";
         var monthName = groupNameValue.substring(3, groupNameValue.length).toLowerCase();
+        var spanChange = buildSpanChangeArrow(currentYearValueNumeric, lastYearValueNumeric);
+        var growthValueNumeric = calculateGrowthChange(currentYearValueNumeric, lastYearValueNumeric);
+        var growthValue = kendo.toString(growthValueNumeric, 'n2').replace(".", ",") + "%";
+
         if(months.includes(groupNameValue)) {
-            var groupMonthValue = months.indexOf(groupNameValue);                   
             if(currentMonth <= groupMonthValue) {
-                return "Förväntat belopp för " + monthName + ": " + sum;
+                return "Förväntat belopp " + monthName + ": " + currentYearValue + " " + spanChange + growthValue + " (" + lastYearValue + ")";
             }
             else {
-                return "Erhållet belopp för " + monthName + ": " + sum;
+                return "Erhållet belopp " + monthName + ": " + currentYearValue + " " + spanChange + growthValue +  " (" + lastYearValue + ")";
             }   
         }
         else {
-            return "Förväntat belopp för " + groupNameValue + ": " + sum;
+            return "Förväntat belopp " + groupNameValue + ": " +  currentYearValue + " " + spanChange + growthValue +  " (" + lastYearValue + ")";
         }     
+    }
+
+    function buildSpanChangeArrow(current, last) {
+        var spanArrowClass = current > last ? "k-i-arrow-up" : "k-i-arrow-down";
+        var titleText = current > last ? "To the moon" : "Back to earth";
+        return "<span class='k-icon " + spanArrowClass + "' title='" + titleText + "'></span>";
+    }
+
+    function calculateGrowthChange(current, last) {
+        if(last == 0) return 0;
+        var changeValue = current - last;
+        return ((changeValue / last) * 100).toFixed(2);
     }
 
     return {
