@@ -82,8 +82,8 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
         var avanzaReceivedDividendData = alasqlavanza.getReceivedDividendCurrentYearToDate(currentYear, today);
         var nordnetReceivedDividendData = alasqlnordnet.getReceivedDividendCurrentYearToDate(currentYear, today);
 
-        var avanzaResult = receivedDividendDataForeach(avanzaReceivedDividendData);
-        var nordnetResult = receivedDividendDataForeach(nordnetReceivedDividendData);
+        var avanzaResult = receivedDividendDataForeach(avanzaReceivedDividendData, "AZA");
+        var nordnetResult = receivedDividendDataForeach(nordnetReceivedDividendData, "NN");
         
         var result = avanzaResult.concat(nordnetResult);
         return alasql('SELECT FIRST(ISIN) AS ISIN, FIRST([Månad]) AS [Månad], \
@@ -103,7 +103,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
         return resultForReturn;
     }
 
-    function receivedDividendDataForeach(receivedDividendData) {
+    function receivedDividendDataForeach(receivedDividendData, banktype) {
         var resultForReturn = [];
         
         receivedDividendData.forEach(function(receivedDividendDataObject) {
@@ -118,6 +118,8 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
 
             var valuta = alasqlstockdata.getVärdepapperHandlas(isin);
             var land = alasqlstockdata.getLandFromISIN(isin);
+            if(banktype == "AZA")
+                valuta = "SEK";
 
             var typ = alasqlstockdividenddata.getDividendTyp(receivedDividendDataObject.Datum, isin);
             if(typ == null) typ = "Utdelning";

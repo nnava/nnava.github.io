@@ -31,10 +31,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
                 stockDividendDataObject.utdelningaktiedecimal = (stockDividendDataObject.utdelningaktiedecimal * valutaKurs).toFixed(4);
 
                 var belopp = (portfolioObject.Antal * stockDividendDataObject.utdelningaktiedecimal);
-
-                var isDividendReceived = false;
-                if(stockDividendDataObject.utd_handlasutanutdelning == today)
-                    isDividendReceived = true;
+                var isDividendReceived = stockDividendDataObject.utd_handlasutanutdelning == today;
                 
                 var newObject = createStockDividendObject(portfolioObject.Värdepapper, 
                                                           portfolioObject.Antal, 
