@@ -42,6 +42,8 @@ define([], function() {
         insertAvanzaDataILStockInfo("Boliden", "SE0000869646", "BOL IL");
         insertAvanzaDataILStockInfo("Haldex", "SE0000105199", "HLDX IL");
         insertAvanzaDataILStockInfo("KappAhl", "SE0001630880", "KAHL IL");
+        insertAvanzaDataILStockInfo("Sandvik", "SE0000667891", "SAND SR1");
+        insertAvanzaDataILStockInfo("Sandvik", "SE0000667891", "SAND IL");
     }
 
     function insertAvanzaDataILStockInfo(companyName, isin, ILsymbol) {
@@ -78,6 +80,8 @@ define([], function() {
         insertNordnetDataILStockInfo("HLDX", "SE0000105199", "HLDX IL");
         insertNordnetDataILStockInfo("KAHL", "SE0001630880", "KAHL IL");
         insertNordnetDataILStockInfo("EOLU B", "SE0007075056", "EOLU IL B");
+        insertNordnetDataILStockInfo("SAND", "SE0000667891", "SAND SR1");
+        insertNordnetDataILStockInfo("SAND", "SE0000667891", "SAND IL");
     }
 
     function insertNordnetDataILStockInfo(symbol, isin, ILsymbol) {

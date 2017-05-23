@@ -42,13 +42,18 @@ define(['./alasqlavanza', './alasqlnordnet', './monthstaticvalues', './dateperio
 
         var result = nordnetYearData.concat(avanzaYearData);
         var resultYear = alasql('SELECT DISTINCT Year FROM ?', [result]);
+        var maxYear = resultYear["0"].Year;
+        if(maxYear == null) {
+            chartData = [];
+            return;
+        }
 
         var monthDividendDataValues = [];
         var monthExpensesDataValues = [];
         var yearAvgExpensesValues = [];
         var monthMarginDataValues = [];
         var totalExpenses = 0;
-        var maxYear = resultYear["0"].Year;
+        
         var startPeriod = dateperiod.getStartOfYear(maxYear);
         var endPeriod = dateperiod.getEndOfYear(maxYear);
 
