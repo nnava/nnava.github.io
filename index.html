@@ -916,7 +916,7 @@
                                 </h4>
                             </div>
                             <div id="question0" class="panel-collapse collapse" style="height: 0px;">
-                                <div class="panel-body">
+                                <div class="panel-body-clean">
                                     <h5><span class="label label-primary">Svar</span></h5>
 
                                     <p>Den här sidan presenterar portföljinformation, främst gällande utdelningar, med hjälp av transaktionsdata från Nordnet och Avanza.
@@ -932,7 +932,7 @@
                                 </h4>
                             </div>
                             <div id="question1" class="panel-collapse collapse" style="height: 0px;">
-                                <div class="panel-body">
+                                <div class="panel-body-clean">
                                     <h5><span class="label label-primary">Svar</span></h5>
 
                                     <p>För att kunna generera information så krävs transaktionsdata från Avanza eller Nordnet som läggs till via knappen <strong>Välj fil</strong>. Du kan lägga till fil från både Avanza och Nordnet. <br/>
@@ -969,7 +969,7 @@
                                 </h4>
                             </div>
                             <div id="question2" class="panel-collapse collapse" style="height: 0px;">
-                                <div class="panel-body">
+                                <div class="panel-body-clean">
                                     <h5><span class="label label-primary">Svar</span></h5>
 
                                     <p>Inläsning av filen som läggs till på sidan sker i webbläsaren på användarens dator, INGA FILER SPARAS PÅ NÅGON SERVER(!). Följande kodsnutt används för att läsa filen och sker efter att fil har lagts till.
@@ -1028,6 +1028,62 @@ $.each(e.files, function (index, value) {
                             </div>
                         </div>     
 
+                        <div class="panel panel-default">
+                            <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question3">
+                                <h4 class="panel-title">
+                                    <a href="#" class="ing">F: Inget händer när jag lagt till filen, varför?</a>
+                                </h4>
+                            </div>
+                            <div id="question3" class="panel-collapse collapse" style="height: 0px;">
+                                <div class="panel-body-clean">
+                                    <h5><span class="label label-primary">Svar</span></h5>
+
+                                    <p>Problem vid inläsning av filen kan bero på att:
+                                        <br/>
+                                        <ol>
+                                            <li>filen har sparats om i Excel och då tappat formatet CSV (istället sparats om som XLSX). Använd endast "rena" filer där du inte redigerat i Excel.</li>
+                                            <li>Skript är deaktiverat i din webbläsare. Se över dina inställningar eller testa med annan webbläsare t.ex. Chrome, Firefox eller IE Edge</li>
+                                            <li>Någonting annat är fel. Öppna upp utvecklarkonsol (F12), lägg till fil och se om något felmeddelande presenteras, skicka felet till lillaekonomen.</li>
+                                        </ol>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question4">
+                                <h4 class="panel-title">
+                                    <a href="#" class="ing">F: Ska jag lägga till fil för fil eller alla direkt?</a>
+                                </h4>
+                            </div>
+                            <div id="question4" class="panel-collapse collapse" style="height: 0px;">
+                                <div class="panel-body-clean">
+                                    <h5><span class="label label-primary">Svar</span></h5>
+
+                                    <p>Det ska fungera att lägga till fil för fil, men har noterat att det för vissa användare/webbläsare ändå kan uppstå problem. Rekommenderar att alltid att lägga till alla filer (Avanza, Nordnet) direkt.
+                                        <br/>
+                                        För att kunna lägga till alla filer direkt så är det bara att markera samtliga i dialogen som visas när du klickat på "Välj fil(er)".
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question5">
+                                <h4 class="panel-title">
+                                    <a href="#" class="ing">F: Vad gör demo-knappen?</a>
+                                </h4>
+                            </div>
+                            <div id="question5" class="panel-collapse collapse" style="height: 0px;">
+                                <div class="panel-body-clean">
+                                    <h5><span class="label label-primary">Svar</span></h5>
+
+                                    <p>Demo-knappen skapar fiktivt data som används för att presentera och demonstrera vad nnava har för funktionalitet och visuell presentation av din finansiella data.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>    
             </div>
@@ -1038,7 +1094,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 211;
+            var versionNumber = 212;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

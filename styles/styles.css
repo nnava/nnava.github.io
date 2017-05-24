@@ -60,6 +60,10 @@ footer {
     }
 }
 
+.panel-body-clean {
+    padding: 15px
+}
+
 div.k-loading-mask
 {
     z-index: 3; /* must be larger than the z-index:2 of ... */
