@@ -376,8 +376,6 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 var courtage = Math.abs(object.Belopp) - transactionWithoutCourtage;
 
                 var courtageDecimalValue = (courtage % 1).toFixed(2);
-                if(courtageDecimalValue <= 0) return;
-
                 if(courtageDecimalValue <= 0.50)
                     totalCourtage += (Math.floor(courtage));
                 else
