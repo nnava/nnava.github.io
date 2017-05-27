@@ -357,7 +357,6 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 
         var totalCourtage = 0;
         result.forEach(function(object) {
-
             if(object == null) return;
             if(object.ISIN == null) return;
 
@@ -371,7 +370,9 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE [Typ av transaktion] = "Köp" AND Year = ' + year + ' AND [ISIN] = "' + isin + '"');
 
             resultTransactions.forEach(function(object) {
+                if(Number.isInteger(object.Antal) == false) return;                
                 if(object.Belopp === "-") return;
+
                 var transactionWithoutCourtage = (object.Antal * object.Kurs);
                 var courtage = Math.abs(object.Belopp) - transactionWithoutCourtage;
 
@@ -397,7 +398,6 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 
         var totalCourtage = 0;
         result.forEach(function(object) {
-
             if(object == null) return;
             if(object.ISIN == null) return;
 
@@ -411,6 +411,9 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE [Typ av transaktion] = "Sälj" AND Year = ' + year + ' AND [ISIN] = "' + isin + '"');
 
             resultTransactions.forEach(function(object) {
+                if(Number.isInteger(object.Antal) == false) return;
+                if(object.Belopp === "-") return;
+
                 var transactionWithoutCourtage = (Math.abs(object.Antal) * object.Kurs);
                 var courtage = transactionWithoutCourtage - object.Belopp;
 
