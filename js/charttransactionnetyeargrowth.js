@@ -1,6 +1,4 @@
 define(['./bankdatatransaction', './colors'], function(bankdatatransaction, colors) {
-
-    var chartDataGrowth = [];
     var chartDataSumSell = [];
     var chartDataSumBuy = [];
     var chartDataNetto = [];
@@ -9,7 +7,6 @@ define(['./bankdatatransaction', './colors'], function(bankdatatransaction, colo
     var chartId;
 
     function resetArrayValues() {
-        chartDataGrowth = [];
         chartDataSumSell = [];
         chartDataSumBuy = [];
         chartDataNetto = [];
@@ -42,32 +39,6 @@ define(['./bankdatatransaction', './colors'], function(bankdatatransaction, colo
 
             chartDataSumBuy.push(buySumBelopp);            
             chartDataNetto.push(totalNettoBelopp);
-
-            var yearBefore = year-1;
-            var foundLastYear = false;
-            resultYear.forEach(function(entryLast) {
-                if(entryLast.Year == yearBefore) {
-                    var lastYear = entryLast.Year;
-
-                    var buySumBeloppLastYear = - bankdatatransaction.getBuyTransactionSumBelopp(lastYear);
-                    var sellSumBeloppLastYear = bankdatatransaction.getSellTransactionSumBelopp(lastYear);
-
-                    var totalNettoBeloppLastYear = buySumBeloppLastYear - sellSumBeloppLastYear;
-
-                    var changeValue = totalNettoBelopp - totalNettoBeloppLastYear;
-                    var growthValue = ((changeValue / totalNettoBeloppLastYear) * 100).toFixed(2);
-
-                    chartDataGrowth.push(growthValue);
-
-                    foundLastYear = true;
-                }
-                
-            });
-
-            if(foundLastYear == false) {
-                chartDataGrowth.push(0);
-            }
-
         });
     }
    
@@ -113,22 +84,6 @@ define(['./bankdatatransaction', './colors'], function(bankdatatransaction, colo
                     visible: true,
                     format: "#,0 kr"
                 }
-            }
-            ,{
-                type: "line",
-                data: chartDataGrowth,
-                name: "Nettoutveckling",
-                axis: "nettoutveckling",
-                color: "#f2b661",
-                tooltip: {
-                    visible: true,
-                    format: "{0} %"
-                },
-                labels: {
-                    rotation: 0,
-                    visible: true,
-                    format: "{0} %"
-                }
             }],
             seriesColors: colorArray,
             valueAxes: [{
@@ -136,12 +91,6 @@ define(['./bankdatatransaction', './colors'], function(bankdatatransaction, colo
                 labels: {
                     format: "#,0 kr"
                 }
-            }, {
-                labels: {
-                    format: "{0} %"
-                },
-                name: "nettoutveckling",
-                title: { text: "Nettoutveckling" }
             }],
             categoryAxis: {
                 categories: chartDataYears,
