@@ -72,7 +72,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlportfolio'], function(alas
             if(dataItems == null) return;
             var i = 0;
             dataItems.forEach(function(entry) {
-                if(entry.value.endsWith("csv")) {
+                if(String(entry.value).endsWith("csv")) {
                     alasqlnordnet.insertPortfolioData(i, entry.value);
                     i++;
                 } else {
