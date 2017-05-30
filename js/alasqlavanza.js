@@ -1,4 +1,4 @@
-define(['./alasqlstockdata'], function(alasqlstockdata) {
+define(['./alasqlstockdata', './avanzacourtagecalculator'], function(alasqlstockdata, avanzacourtagecalculator) {
     
     function createDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS AvanzaData (  \
@@ -373,14 +373,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 if(Number.isInteger(object.Antal) == false) return;                
                 if(object.Belopp === "-") return;
 
-                var transactionWithoutCourtage = (object.Antal * object.Kurs);
-                var courtage = Math.abs(object.Belopp) - transactionWithoutCourtage;
-
-                var courtageDecimalValue = (courtage % 1).toFixed(2);
-                if(courtageDecimalValue <= 0.50)
-                    totalCourtage += (Math.floor(courtage));
-                else
-                    totalCourtage += (Math.round(courtage));
+                totalCourtage += avanzacourtagecalculator.calculateBuy(object.Antal, object.Kurs, object.Belopp);
             });
             
         });
@@ -414,14 +407,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                 if(Number.isInteger(object.Antal) == false) return;
                 if(object.Belopp === "-") return;
 
-                var transactionWithoutCourtage = (Math.abs(object.Antal) * object.Kurs);
-                var courtage = transactionWithoutCourtage - object.Belopp;
-
-                var courtageDecimalValue = (courtage % 1).toFixed(2);
-                if(courtageDecimalValue <= 0.50)
-                    totalCourtage += (Math.floor(courtage));
-                else
-                    totalCourtage += (Math.round(courtage));
+                totalCourtage += avanzacourtagecalculator.calculateSell(object.Antal, object.Kurs, object.Belopp);
             });
             
         });
@@ -466,6 +452,42 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return resultForReturn;
     }
 
+    function getPurchaseBeloppValue(isin) {
+        var symbol = alasqlstockdata.getSymbol(isin);
+
+        var symbolPurschaseValue = alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE ISIN = "' + isin + '" \
+                       AND ([Typ av transaktion] = "Köp" OR [Typ av transaktion] = "Köp. rättelse")');
+
+        var symbolExceptionsPurchaseValue = alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE [Värdepapperbeskrivning] = "' + symbol + ' BTA" \
+                       AND Antal > 0 AND Belopp != "-"');
+
+        return Math.abs(symbolPurschaseValue + symbolExceptionsPurchaseValue);
+    }
+
+    function getPurchaseAntalValue(isin) {
+        var symbol = alasqlstockdata.getSymbol(isin);
+
+        var symbolPurschaseAntalValue = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE ISIN = "' + isin + '" \
+                       AND ([Typ av transaktion] = "Köp" OR [Typ av transaktion] = "Köp. rättelse")');
+
+        var symbolExceptionsPurchaseAntalValue = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE [Värdepapperbeskrivning] = "' + symbol + ' BTA" \
+                       AND Antal > 0 AND Belopp != "-"');
+
+        return Math.abs(symbolPurschaseAntalValue + symbolExceptionsPurchaseAntalValue);
+    }
+
     function hasDataTableRows() {
         var resultCount = alasql('SELECT VALUE COUNT(*) FROM AvanzaData');
         return resultCount == 0 ? false : true;
@@ -503,6 +525,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getCourtageSumSell: getCourtageSumSell,
         getReturnedTaxYearSumBelopp: getReturnedTaxYearSumBelopp,
         getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
+        getPurchaseBeloppValue: getPurchaseBeloppValue,
+        getPurchaseAntalValue: getPurchaseAntalValue,
         hasDataTableRows: hasDataTableRows
     };
 });
