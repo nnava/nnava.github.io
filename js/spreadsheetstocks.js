@@ -3,15 +3,27 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
 
     var spreadSheetData = [];
     var spreadSheetId;
-    var yqlUrl = 'https://query.yahooapis.com/v1/public/yql';
-    var historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
     var currencyArray = [];
     var mergedCellsArray = [];
     var filterCells;
     var stockLastTradePriceArray = [];
     var skipRunningFunctions = false;
-    var columnBransch = 2;
-    var localStorageStocksBranschField = "spreadsheetstocksarray_bransch_ver1";
+    const yqlUrl = 'https://query.yahooapis.com/v1/public/yql';
+    const historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
+    const columnBransch = 2;
+    const localStorageStocksBranschField = "spreadsheetstocksarray_bransch_ver1";
+
+    kendo.spreadsheet.defineFunction("PURCHASEVALUE", function(callback, isin){
+        getPurchaseValue(isin, function(value){
+            callback(value);
+        });
+    }).argsAsync([
+        [ "isin", "string" ]
+    ]);
+
+    function getPurchaseValue(isin, callback) {
+        callback(bankdataportfolio.getPurchaseValue(isin));
+    }
 
     kendo.spreadsheet.defineFunction("YFCURRENCYTOUSERCURRENCY", function(callback, currency){
         fetchCurrencyToUserCurrency(currency, function(value){
@@ -33,7 +45,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         callback(currencyValue);
     }
 
-    kendo.spreadsheet.defineFunction("yflastprice", function(callback, symbol){
+    kendo.spreadsheet.defineFunction("YFLASTPRICE", function(callback, symbol){
         fetchLastTradePriceOnly(symbol, 0, function(value){
             callback(value);
         });
@@ -143,6 +155,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                     value: "Valuta", textAlign: "center", bold: "true"
                 },
                 {
+                    value: "Inköpsvärde", textAlign: "center", bold: "true"
+                },
+                {
                     value: "Marknadsvärde", textAlign: "center", bold: "true"
                 }
             ]
@@ -155,6 +170,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
 
             var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOUSERCURRENCY(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "D#rowCount#*E#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
+            var purchaseValueFormula = "=PURCHASEVALUE(B#rowCount#)".replace("#rowCount#", rowCount);
+            
             var bransch = object.Bransch;
             var savedBransch = alasql('SELECT VALUE Bransch FROM ? WHERE ISIN = ?', [storedStocksBranschArray, object.ISIN]);
             if(savedBransch != null)
@@ -189,6 +206,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                         value: object.Valuta, textAlign: "right"
                     },
                     {
+                        formula: purchaseValueFormula, textAlign: "right", format: "#,0.00 kr"
+                    },
+                    {
                         formula: marketValueFormula, format: "#,0.00 kr"
                     }
                 ]
@@ -198,7 +218,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             indexCount++;
         });
 
-        var totalSumMarketValueFormula = "SUM(G2:G#LASTROW#)".replace("#LASTROW#", indexCount);
+        var totalSumMarketValueFormula = "SUM(H2:H#LASTROW#)".replace("#LASTROW#", indexCount);
         spreadSheetData.push({
             index: indexCount,
             cells: [
@@ -215,10 +235,13 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                     index: 3
                 },
                 {
-                    index: 4, value: "Totalt:", textAlign: "right", bold: "true"
+                    index: 4
                 },
                 {
-                    index: 5
+                    index: 5, value: "Totalt:", textAlign: "right", bold: "true"
+                },
+                {
+                    index: 6
                 },
                 {
                     formula: totalSumMarketValueFormula, format: "#,0.00 kr"
@@ -227,8 +250,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         });
 
         // Merge cells, to show totaltext
-        mergedCellsArray.push(("E#ROW#:F#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
-        filterCells = "A1:G#ROW#".replace("#ROW#", indexCount);
+        mergedCellsArray.push(("F#ROW#:G#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
+        filterCells = "A1:H#ROW#".replace("#ROW#", indexCount);
     }
 
     function getStoredBranschArray() {
@@ -280,6 +303,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                             },
                             {
                                 width: 60
+                            },
+                            {
+                                width: 100
                             },
                             {
                                 width: 110
@@ -343,7 +369,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                 Antal: result[i].cells["3"].value,
                 SenastePris: result[i].cells["4"].value.toFixed(2),
                 Valuta: result[i].cells["5"].value,
-                Marknadsvärde: result[i].cells["6"].value.toFixed(2)
+                Marknadsvärde: result[i].cells["7"].value.toFixed(2)
             });
         }
 

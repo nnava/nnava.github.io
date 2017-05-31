@@ -52,6 +52,10 @@ define([], function() {
         return alasql('SELECT VALUE DISTINCT yahoosymbol FROM StockData WHERE isin ="' + isin + '"');
     }
 
+    function getSymbol(isin) {
+        return alasql('SELECT VALUE DISTINCT kortnamn FROM StockData WHERE isin ="' + isin + '"');
+    }
+
     return { 
         createStockDataTable: createStockDataTable,
         loadDataFromFileToTable: loadDataFromFileToTable,
@@ -61,6 +65,7 @@ define([], function() {
         getYahooSymbol: getYahooSymbol,
         getISINFromNamn: getISINFromNamn,
         getLandFromISIN: getLandFromISIN,
-        getAzaLinkFromYahooSymbol: getAzaLinkFromYahooSymbol
+        getAzaLinkFromYahooSymbol: getAzaLinkFromYahooSymbol,
+        getSymbol: getSymbol
     };
 });

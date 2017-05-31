@@ -425,6 +425,33 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         return resultForReturn;
     }
 
+    function getPurchaseBeloppValue(isin) {
+        var belopp = Math.abs(alasql('SELECT VALUE SUM(REPLACE(Belopp, " ", "")::NUMBER) \
+                             FROM NordnetData \
+                             JOIN NordnetPortfolio USING Konto, Konto \
+                             WHERE ISIN = "' + isin + '" \
+                             AND [Värdepapper] NOT LIKE "%TILLDELNING" \
+                             AND ([Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP")'));
+        if(isNaN(belopp))
+            return 0;
+
+        return belopp;
+    }
+    
+    function getPurchaseAntalValue(isin) {
+        var antal = alasql('SELECT VALUE SUM(REPLACE(Antal, " ", "")::NUMBER) \
+                             FROM NordnetData \
+                             JOIN NordnetPortfolio USING Konto, Konto \
+                             WHERE ISIN = "' + isin + '" \
+                             AND [Värdepapper] NOT LIKE "%TILLDELNING" \
+                             AND ([Transaktionstyp] = "KÖPT" OR [Transaktionstyp] = "OMVANDLING INLÄGG VP" OR [Transaktionstyp] = "BYTE INLÄGG VP")');
+
+        if(isNaN(antal))
+            return 0;
+
+        return antal;
+    }
+
     function hasDataTableRows() {
         var resultCount = alasql('SELECT VALUE COUNT(*) FROM NordnetData');
         return resultCount == 0 ? false : true;
@@ -462,6 +489,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
         getSellTransactionSumBelopp: getSellTransactionSumBelopp,
         getTransactionYears: getTransactionYears,
         getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
+        getPurchaseBeloppValue: getPurchaseBeloppValue,
+        getPurchaseAntalValue: getPurchaseAntalValue,
         hasDataTableRows: hasDataTableRows
     };
 });

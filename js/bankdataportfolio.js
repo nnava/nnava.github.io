@@ -114,9 +114,16 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
         }); 
     }
 
+    function getPurchaseValue(isin) {
+        var belopp = (alasqlavanza.getPurchaseBeloppValue(isin) + alasqlnordnet.getPurchaseBeloppValue(isin));
+        var antal = (alasqlavanza.getPurchaseAntalValue(isin) + alasqlnordnet.getPurchaseAntalValue(isin));
+        return (belopp/antal);
+    }
+
     return {
         getStocksInPortfolio: getStocksInPortfolio,
         getPortfolioDistributionData: getPortfolioDistributionData,
-        setPortfolioLastPriceData: setPortfolioLastPriceData
+        setPortfolioLastPriceData: setPortfolioLastPriceData,
+        getPurchaseValue: getPurchaseValue
     };
 });
