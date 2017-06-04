@@ -452,40 +452,83 @@ define(['./alasqlstockdata', './avanzacourtagecalculator'], function(alasqlstock
         return resultForReturn;
     }
 
-    function getPurchaseBeloppValue(isin) {
-        var symbol = alasqlstockdata.getSymbol(isin);
+    function getSymbolWithBta(symbol) {
+        if(symbol.endsWith(" A") || symbol.endsWith(" B") || symbol.endsWith(" C")) {
+            return symbol.substr(0,symbol.indexOf(' ')) + " BTA " + symbol.substr(symbol.length - 1);
+        }
 
-        var symbolPurschaseValue = alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
+        return symbol + " BTA";
+    }
+
+    function getPurchaseBeloppValue(isin) {
+        var symbolPurschaseValue = alasql('SELECT VALUE SUM(Belopp::NUMBER) \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                        WHERE ISIN = "' + isin + '" \
-                       AND ([Typ av transaktion] = "Köp" OR [Typ av transaktion] = "Köp. rättelse")');
+                       AND Kurs != "-" AND Belopp != "-" AND ISIN != "-" AND [Typ av transaktion] != "Sälj. rättelse" AND [Typ av transaktion] != "Sälj" \
+                       AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" \
+                       AND [Typ av transaktion] != "Utdelning. rättelse" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
+
+        // Beräkna för special där belopp -
+        var symbolPurschaseSplittSpecialResult = alasql('SELECT Antal, Kurs \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE ISIN = "' + isin + '" \
+                       AND Belopp = "-" AND ISIN != "-" AND [Typ av transaktion] != "Sälj. rättelse" AND [Typ av transaktion] != "Sälj" \
+                       AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" \
+                       AND [Typ av transaktion] != "Utdelning. rättelse" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
+
+        var symbolPurschaseSplittSpecialValue = 0;
+        symbolPurschaseSplittSpecialResult.forEach(function(object) {
+            if(object.Kurs == "-") return;
+
+            symbolPurschaseSplittSpecialValue += object.Antal * object.Kurs;
+        });
+
+        var symbol = alasqlstockdata.getSymbol(isin);
+        var symbolWithBta = getSymbolWithBta(symbol);
 
         var symbolExceptionsPurchaseValue = alasql('SELECT VALUE SUM(Belopp::NUMBER) AS Belopp \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE [Värdepapperbeskrivning] = "' + symbol + ' BTA" \
+                       WHERE [Värdepapperbeskrivning] = "' + symbolWithBta + '" \
                        AND Antal > 0 AND Belopp != "-"');
 
-        return Math.abs(symbolPurschaseValue + symbolExceptionsPurchaseValue);
+        return (Math.abs(symbolPurschaseValue) + Math.abs(symbolExceptionsPurchaseValue) + Math.abs(symbolPurschaseSplittSpecialValue));
     }
 
     function getPurchaseAntalValue(isin) {
         var symbol = alasqlstockdata.getSymbol(isin);
+        var symbolWithBta = getSymbolWithBta(symbol);
 
-        var symbolPurschaseAntalValue = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
+        var symbolPurschaseAntalValue = alasql('SELECT VALUE SUM(Antal::NUMBER) \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
                        WHERE ISIN = "' + isin + '" \
-                       AND ([Typ av transaktion] = "Köp" OR [Typ av transaktion] = "Köp. rättelse")');
+                       AND Kurs != "-" AND Belopp != "-" AND ISIN != "-" AND [Typ av transaktion] != "Sälj. rättelse" AND [Typ av transaktion] != "Sälj" AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" AND [Typ av transaktion] != "Utdelning. rättelse" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
+
+        var symbolPurschaseSplittSpecialResult = alasql('SELECT Antal \
+                       FROM AvanzaData \
+                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
+                       WHERE ISIN = "' + isin + '" \
+                       AND Belopp = "-" AND ISIN != "-" AND [Typ av transaktion] != "Sälj. rättelse" AND [Typ av transaktion] != "Sälj" \
+                       AND [Typ av transaktion] != "Prelskatt utdelningar" AND [Typ av transaktion] != "Utdelning" \
+                       AND [Typ av transaktion] != "Utdelning. rättelse" AND [Värdepapperbeskrivning] != "Utländsk källskatt"');
+
+        var symbolPurschaseSplittSpecialValue = 0;
+        symbolPurschaseSplittSpecialResult.forEach(function(object) {
+            if(object.Antal == "-") return;
+
+            symbolPurschaseSplittSpecialValue += object.Antal;
+        });
 
         var symbolExceptionsPurchaseAntalValue = alasql('SELECT VALUE SUM(Antal::NUMBER) AS Antal \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE [Värdepapperbeskrivning] = "' + symbol + ' BTA" \
+                       WHERE [Värdepapperbeskrivning] = "' + symbolWithBta + '" \
                        AND Antal > 0 AND Belopp != "-"');
 
-        return Math.abs(symbolPurschaseAntalValue + symbolExceptionsPurchaseAntalValue);
+        return (Math.abs(symbolPurschaseAntalValue) + Math.abs(symbolExceptionsPurchaseAntalValue) + Math.abs(symbolPurschaseSplittSpecialValue));
     }
 
     function hasDataTableRows() {
