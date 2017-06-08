@@ -31,7 +31,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
                 Utdelningtotal: entry.Belopp,
                 Valuta: entry.Valuta,
                 ValutaKurs: entry.ValutaKurs,
-                Land: land
+                Land: land,
+                UtdelningDeklarerad: entry.UtdelningDeklarerad
             });
 
             id++;
@@ -50,9 +51,13 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
             
             for (var i = 0; i < dataItems[j].items.length; i++) {
                 var utdelningsdatum = new Date(dataItems[j].items[i].get("Utdelningsdatum")).toISOString();
+                var utdelningdeklarerad = dataItems[j].items[i].get("UtdelningDeklarerad");
                 var row = e.sender.tbody.find("[data-uid='" + dataItems[j].items[i].uid + "']");
                 if(utdelningsdatum <= today)
                     row.addClass("grid-ok-row");
+
+                if(utdelningdeklarerad == "N")
+                    row.addClass("grid-yellow-row");
             }
         }                
     }
@@ -116,6 +121,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
             pageable: false,
             columns: [
                 { field: "Månad", groupHeaderTemplate: "#= value.substring(2, value.length) #", hidden: true },
+                { field: "UtdelningDeklarerad", hidden: true },
                 { field: "Name", title: "Värdepapper", template: "<div class='gridportfolio-country-picture' style='background-image: url(/styles/images/#:data.Land#.png);'></div><div class='gridportfolio-country-name'>#: Name #</div>", width: "150px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
                 { field: "Utdelningsdatum", title: "Utd/Handl. utan utd", format: "{0:yyyy-MM-dd}", width: "75px" },
                 { field: "Typ", title: "Typ", width: "70px" },

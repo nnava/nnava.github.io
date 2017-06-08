@@ -115,6 +115,10 @@ span.k-loading-text
     background-color: #ced;
 }
 
+.grid-yellow-row {
+    background-color: #FFFFE0;
+}
+
 .k-scheduler-timecolumn {
   display: none;
 }

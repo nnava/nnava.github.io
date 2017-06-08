@@ -45,7 +45,8 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
                                                           valutaKurs,
                                                           belopp,
                                                           isDividendReceived,
-                                                          land);
+                                                          land,
+                                                          stockDividendDataObject.utd_deklarerad);
                 resultForReturn.push(newObject);
             });
             
@@ -69,14 +70,17 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
                                                         0,
                                                         receivedDividendDataObject.Belopp,
                                                         true,
-                                                        receivedDividendDataObject.Land);
+                                                        receivedDividendDataObject.Land,
+                                                        "J");
             resultForReturn.push(newObject);
         });
         
         return alasql('SELECT FIRST([Värdepapper]) AS [Värdepapper], SUM(Antal::NUMBER) AS Antal, \
                        FIRST(ISIN) AS ISIN, FIRST(Typ) AS Typ, FIRST(Utdelningaktiedecimal) AS Utdelningaktiedecimal, \
                        FIRST(UtdelningaktieValuta) AS UtdelningaktieValuta, FIRST([Månad]) AS [Månad], \
-                       FIRST(Utdelningsdag) AS Utdelningsdag, FIRST(Valuta) AS Valuta, FIRST(ValutaKurs) AS ValutaKurs, FIRST(Utdelningmottagen) AS Utdelningmottagen, FIRST(Land) AS Land, SUM(Belopp::NUMBER) AS Belopp FROM ? \
+                       FIRST(Utdelningsdag) AS Utdelningsdag, FIRST(Valuta) AS Valuta, FIRST(ValutaKurs) AS ValutaKurs, FIRST(Utdelningmottagen) AS Utdelningmottagen, \
+                       FIRST(Land) AS Land, SUM(Belopp::NUMBER) AS Belopp, FIRST(UtdelningDeklarerad) AS UtdelningDeklarerad \
+                       FROM ? \
                        GROUP BY [Värdepapper], ISIN, Typ, Utdelningaktiedecimal, UtdelningaktieValuta, Utdelningsdag, Valuta, ValutaKurs, Utdelningmottagen, Land', [resultForReturn]);
     }
 
@@ -133,7 +137,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
         return värdepapperDividendDataValues;
     }
 
-    function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, valutakurs, belopp, utdelningmottagen, land) {
+    function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, valutakurs, belopp, utdelningmottagen, land, utd_deklarerad) {
         var newObject = new Object();
         newObject.Värdepapper = värdepapper;
         newObject.Antal = parseInt(antal);
@@ -148,6 +152,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
         newObject.Belopp = belopp;
         newObject.Utdelningmottagen = utdelningmottagen;
         newObject.Land = land;
+        newObject.UtdelningDeklarerad = utd_deklarerad;
         return newObject;
     }
 
