@@ -155,9 +155,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                     value: "Valuta", textAlign: "center", bold: "true"
                 },
                 {
-                    value: "Inköpsvärde", textAlign: "center", bold: "true"
-                },
-                {
                     value: "Marknadsvärde", textAlign: "center", bold: "true"
                 }
             ]
@@ -206,9 +203,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                         value: object.Valuta, textAlign: "right"
                     },
                     {
-                        formula: purchaseValueFormula, textAlign: "right", format: "#,0.00 kr"
-                    },
-                    {
                         formula: marketValueFormula, format: "#,0.00 kr"
                     }
                 ]
@@ -218,7 +212,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             indexCount++;
         });
 
-        var totalSumMarketValueFormula = "SUM(H2:H#LASTROW#)".replace("#LASTROW#", indexCount);
+        var totalSumMarketValueFormula = "SUM(G2:H#LASTROW#)".replace("#LASTROW#", indexCount);
         spreadSheetData.push({
             index: indexCount,
             cells: [
@@ -235,13 +229,10 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                     index: 3
                 },
                 {
-                    index: 4
+                    index: 4, value: "Totalt:", textAlign: "right", bold: "true"
                 },
                 {
-                    index: 5, value: "Totalt:", textAlign: "right", bold: "true"
-                },
-                {
-                    index: 6
+                    index: 5
                 },
                 {
                     formula: totalSumMarketValueFormula, format: "#,0.00 kr"
@@ -250,8 +241,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         });
 
         // Merge cells, to show totaltext
-        mergedCellsArray.push(("F#ROW#:G#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
-        filterCells = "A1:H#ROW#".replace("#ROW#", indexCount);
+        mergedCellsArray.push(("E#ROW#:F#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
+        filterCells = "A1:G#ROW#".replace("#ROW#", indexCount);
     }
 
     function getStoredBranschArray() {
@@ -303,9 +294,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                             },
                             {
                                 width: 60
-                            },
-                            {
-                                width: 100
                             },
                             {
                                 width: 110
@@ -369,7 +357,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                 Antal: result[i].cells["3"].value,
                 SenastePris: result[i].cells["4"].value.toFixed(2),
                 Valuta: result[i].cells["5"].value,
-                Marknadsvärde: result[i].cells["7"].value.toFixed(2)
+                Marknadsvärde: result[i].cells["6"].value.toFixed(2)
             });
         }
 
