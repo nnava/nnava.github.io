@@ -155,7 +155,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
             hide:function(e){
                 this.content.parent().css("visibility", "hidden");
             },
-            filter: "td:nth-child(9)", 
+            filter: "td:nth-child(10)", 
             position: "left",
             width: 200,
             content: function(e) {
