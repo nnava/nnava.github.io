@@ -36,10 +36,18 @@ define([], function() {
                        AND ISIN = "' + isin + '"');
     }
 
+    function getDividendSumForYear(isin, year) {
+        return alasql('SELECT VALUE SUM(utdelningaktiedecimal::NUMBER) \
+                       FROM StockDividendData \
+                       WHERE YEAR(utd_handlasutanutdelning) = ' + year + ' \
+                       AND ISIN = "' + isin + '"');
+    }
+
     return { 
         createStockDividendDataTable: createStockDividendDataTable,
         loadDataFromFileToTable: loadDataFromFileToTable,
         getUpcomingDividendsForYear: getUpcomingDividendsForYear,
-        getDividendTyp: getDividendTyp
+        getDividendTyp: getDividendTyp,
+        getDividendSumForYear: getDividendSumForYear
     };
 });

@@ -1,5 +1,5 @@
-define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './alasqlcurrencydata', './alasqllocalization'], 
-    function(alasqlportfoliodata, bankdataportfolio, alasqlstockdata, alasqlcurrencydata, alasqllocalization) {
+define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', './alasqlstockdata', './alasqlcurrencydata', './alasqllocalization'], 
+    function(alasqlportfoliodata, bankdataportfolio, bankdatadividend, alasqlstockdata, alasqlcurrencydata, alasqllocalization) {
 
     var spreadSheetData = [];
     var spreadSheetId;
@@ -13,12 +13,25 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
     const columnBransch = 2;
     const localStorageStocksBranschField = "spreadsheetstocksarray_bransch_ver1";
 
+    kendo.spreadsheet.defineFunction("CURRENTDIVIDENDSUM", function(callback, isin){
+        getCurrentDividendSum(isin, function(value){
+            callback(value);
+        });
+    }).argsAsync([
+        ["isin", "string"]
+    ]);
+
+    function getCurrentDividendSum(isin, callback) {
+        callback(0);
+        //callback(bankdatadividend.getCurrentDividendSum(isin));
+    }
+
     kendo.spreadsheet.defineFunction("PURCHASEVALUE", function(callback, isin){
         getPurchaseValue(isin, function(value){
             callback(value);
         });
     }).argsAsync([
-        [ "isin", "string" ]
+        ["isin", "string"]
     ]);
 
     function getPurchaseValue(isin, callback) {
@@ -30,7 +43,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             callback(value);
         });
     }).argsAsync([
-        [ "currency", "string" ]
+        ["currency", "string"]
     ]);
 
     function fetchCurrencyToUserCurrency(currency, callback) {
@@ -82,18 +95,19 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             var lastTradePriceOnly = results.row.LastTradePriceOnly;
             if(lastTradePriceOnly === "N/A") {
                 var link = "https://www.avanza.se" + alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
-                var queryYqlAvanzaTemplate = _.template("select * from html where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
-                
+                var queryYqlAvanzaTemplate = _.template("select * from htmlstring where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
+                var resturl = "https://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(queryYqlAvanzaTemplate({link:link})) + "&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+
                 $.ajax({
-                    url: yqlUrl,
+                    url: resturl,
                     async: true,
-                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'},
                     timeout: 10000
                 }).done(function(output) {
                     if(output == null) { callback(0); return; };
                     var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
                     if(yqlAvanzaResponse.query.count === 0) { callback(0); return; };
-                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.replace(",", ".")).toFixed(2);
+                    if(yqlAvanzaResponse.query.results.result == "") { callback(0); return; };
+                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.result.replace(",", ".")).toFixed(2);
 
                     stockLastTradePriceArray[symbol] = resultValue;
                     lastTradePriceOnly = resultValue;
@@ -128,7 +142,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
     }
 
     function setData() {
-
         var portfolioData = bankdataportfolio.getStocksInPortfolio();
 
         resetArrayValues();
@@ -152,6 +165,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                     value: "Senaste pris", textAlign: "center", bold: "true"
                 },
                 {
+                    value: "Direktavk.", textAlign: "center", bold: "true"
+                },
+                {
                     value: "Valuta", textAlign: "center", bold: "true"
                 },
                 {
@@ -168,7 +184,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOUSERCURRENCY(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "D#rowCount#*E#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
             var purchaseValueFormula = "=PURCHASEVALUE(B#rowCount#)".replace("#rowCount#", rowCount);
-            
+            var yieldFormula = "=CURRENTDIVIDENDSUM(B#rowCount#)*YFCURRENCYTOUSERCURRENCY(G#rowCount#)/E#rowCount#".replace(new RegExp('#rowCount#', 'g'), rowCount);
             var bransch = object.Bransch;
             var savedBransch = alasql('SELECT VALUE Bransch FROM ? WHERE ISIN = ?', [storedStocksBranschArray, object.ISIN]);
             if(savedBransch != null)
@@ -200,6 +216,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                         formula: lastpriceFormula, textAlign: "right", format: "#,0.00 kr"
                     },
                     {
+                        value: 0, textAlign: "right", format: "#,0.00 %"
+                    },
+                    {
                         value: object.Valuta, textAlign: "right"
                     },
                     {
@@ -212,7 +231,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
             indexCount++;
         });
 
-        var totalSumMarketValueFormula = "SUM(G2:H#LASTROW#)".replace("#LASTROW#", indexCount);
+        var totalSumMarketValueFormula = "SUM(H2:H#LASTROW#)".replace("#LASTROW#", indexCount);
         spreadSheetData.push({
             index: indexCount,
             cells: [
@@ -229,10 +248,13 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                     index: 3
                 },
                 {
-                    index: 4, value: "Totalt:", textAlign: "right", bold: "true"
+                    index: 4
                 },
                 {
-                    index: 5
+                    index: 5, value: "Totalt:", textAlign: "right", bold: "true"
+                },
+                {
+                    index: 6
                 },
                 {
                     formula: totalSumMarketValueFormula, format: "#,0.00 kr"
@@ -241,8 +263,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
         });
 
         // Merge cells, to show totaltext
-        mergedCellsArray.push(("E#ROW#:F#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
-        filterCells = "A1:G#ROW#".replace("#ROW#", indexCount);
+        mergedCellsArray.push(("F#ROW#:G#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
+        filterCells = "A1:H#ROW#".replace("#ROW#", indexCount);
     }
 
     function getStoredBranschArray() {
@@ -290,7 +312,10 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                                 width: 90
                             },
                             {
-                                width: 100
+                                width: 110
+                            },
+                            {
+                                width: 110
                             },
                             {
                                 width: 60
@@ -357,7 +382,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './alasqlstockdata', './
                 Antal: result[i].cells["3"].value,
                 SenastePris: result[i].cells["4"].value.toFixed(2),
                 Valuta: result[i].cells["5"].value,
-                Marknadsvärde: result[i].cells["6"].value.toFixed(2)
+                Marknadsvärde: result[i].cells["7"].value.toFixed(2)
             });
         }
 

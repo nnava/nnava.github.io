@@ -1,5 +1,10 @@
 define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstockdividenddata', './dateperiod'], function(alasqlavanza, alasqlnordnet, alasqlstockdata, alasqlstockdividenddata, dateperiod) {
 
+    var currentYear = new Date().getFullYear();
+
+    function getCurrentDividendSum(isin) {
+        return alasqlstockdividenddata.getDividendSumForYear(isin, currentYear).toFixed(2);
+    }
 
     function getTotalDividend(startPeriod, endPeriod, isTaxChecked) {
         var resultNordnetTotal = alasqlnordnet.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
@@ -28,8 +33,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
     
     function getVärdepapperDividendData(startPeriod, endPeriod, resultVärdepapper, isTaxChecked) {
     
-        alasql('CREATE TABLE IF NOT EXISTS DivStackedCumulativeVardepapperValues \
-        ([Värdepapper] NVARCHAR(100), Month INT, Belopp DECIMAL);');
+        alasql('CREATE TABLE IF NOT EXISTS DivStackedCumulativeVardepapperValues ([Värdepapper] NVARCHAR(100), Month INT, Belopp DECIMAL);');
         alasql('TRUNCATE TABLE DivStackedCumulativeVardepapperValues');
         
         var datesInPeriod = dateperiod.getDateRange(startPeriod, endPeriod);
@@ -176,6 +180,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
         getTotalDividend: getTotalDividend,
         getReceivedDividendCurrentYearToDate: getReceivedDividendCurrentYearToDate,
         getDividendAll: getDividendAll,
-        getDividendMonthSumBelopp: getDividendMonthSumBelopp
+        getDividendMonthSumBelopp: getDividendMonthSumBelopp,
+        getCurrentDividendSum: getCurrentDividendSum
     };
 });
