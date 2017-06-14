@@ -13,6 +13,20 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
     const columnBransch = 2;
     const localStorageStocksBranschField = "spreadsheetstocksarray_bransch_ver1";
 
+    kendo.spreadsheet.defineFunction("CALCDIVIDE", function(callback, numerator, denominator){
+        calculateDivision(numerator, denominator, function(value){
+            callback(value);
+        });
+    }).argsAsync([
+        ["numerator", "number"],
+        ["denominator", "number"]
+    ]);
+
+    function calculateDivision(numerator, denominator, callback) {
+        if(numerator == 0) { callback(0); return; }
+        callback(numerator/denominator);
+    }
+
     kendo.spreadsheet.defineFunction("CURRENTDIVIDENDSUM", function(callback, isin){
         getCurrentDividendSum(isin, function(value){
             callback(value);
@@ -22,8 +36,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
     ]);
 
     function getCurrentDividendSum(isin, callback) {
-        callback(0);
-        //callback(bankdatadividend.getCurrentDividendSum(isin));
+        callback(bankdatadividend.getCurrentDividendSum(isin));
     }
 
     kendo.spreadsheet.defineFunction("PURCHASEVALUE", function(callback, isin){
@@ -184,7 +197,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOUSERCURRENCY(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "D#rowCount#*E#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
             var purchaseValueFormula = "=PURCHASEVALUE(B#rowCount#)".replace("#rowCount#", rowCount);
-            var yieldFormula = "=CURRENTDIVIDENDSUM(B#rowCount#)*YFCURRENCYTOUSERCURRENCY(G#rowCount#)/E#rowCount#".replace(new RegExp('#rowCount#', 'g'), rowCount);
+            var yieldFormula = "=CALCDIVIDE((CURRENTDIVIDENDSUM(B#rowCount#)*YFCURRENCYTOUSERCURRENCY(G#rowCount#)), E#rowCount#)".replace(new RegExp('#rowCount#', 'g'), rowCount);
             var bransch = object.Bransch;
             var savedBransch = alasql('SELECT VALUE Bransch FROM ? WHERE ISIN = ?', [storedStocksBranschArray, object.ISIN]);
             if(savedBransch != null)
@@ -381,7 +394,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 Bransch: bransch,
                 Antal: result[i].cells["3"].value,
                 SenastePris: result[i].cells["4"].value.toFixed(2),
-                Valuta: result[i].cells["5"].value,
+                Valuta: result[i].cells["6"].value,
                 Marknadsvärde: result[i].cells["7"].value.toFixed(2)
             });
         }
