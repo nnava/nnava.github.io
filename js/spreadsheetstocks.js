@@ -229,7 +229,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                         formula: lastpriceFormula, textAlign: "right", format: "#,0.00 kr"
                     },
                     {
-                        value: 0, textAlign: "right", format: "#,0.00 %"
+                        formula: yieldFormula, textAlign: "right", format: "#,0.00 %"
                     },
                     {
                         value: object.Valuta, textAlign: "right"
