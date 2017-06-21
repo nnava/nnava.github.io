@@ -76,63 +76,63 @@ define(['./alasqlavanza', './alasqlnordnet', './applocalization', './alasqlportf
     }
 
     function createAvanzaDemoData() {
-        alasql('INSERT INTO AvanzaData VALUES (200, 1650, "2017-01-26", 2017, 1, "SE0000936478", "ISK", 8.25, "Utdelning", "SEK", "Intrum Justitia");');
-
-        alasql('INSERT INTO AvanzaData VALUES (10, -3005, "2016-11-30", 2016, 11, "SE0005936713", "ISK", 300, "Köp", "SEK", "Akelius Residential Pref");');
-        alasql('INSERT INTO AvanzaData VALUES (100, -90000, "2015-05-30", 2015, 5, "US4781601046", "KF", 100.00, "Köp", "SEK", "Johnson & Johnson");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-11-30", 2016, 11, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1890, "2016-10-28", 2016, 10, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-10-28", 2016, 10, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Sälj", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Sälj", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 10000, "2016-09-15", 2016, 9, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 40000, "2016-06-15", 2016, 6, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 50000, "2016-03-15", 2016, 3, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 60000, "2016-01-15", 2016, 1, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 10000, "2016-01-15", 2016, 1, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (200, 1650, "2016-04-26", 2016, 4, "SE0000936478", "ISK", 8.25, "Utdelning", "SEK", "Intrum Justitia");');
-        alasql('INSERT INTO AvanzaData VALUES (250, -165.53, "2016-03-11", 2016, 3, "US2910111044", "KF", 0, "Utländsk källskatt 15%", "SEK", "Utländsk källskatt");');
-        alasql('INSERT INTO AvanzaData VALUES (250, 1436.91, "2016-03-11", 2016, 3, "US2910111044", "KF", 3.97, "Utdelning", "SEK", "Emerson Electric Co");');
-        alasql('INSERT INTO AvanzaData VALUES (300, 2925, "2016-05-10", 2016, 5, "SE0000106270", "ISK", 9.75, "Utdelning", "SEK", "Hennes & Mauritz B");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 1250, "2016-05-09", 2016, 5, "SE0005704053", "ISK", 12.5, "Utdelning", "SEK", "SAS PREF");');
-        alasql('INSERT INTO AvanzaData VALUES (500, 2500, "2016-05-09", 2016, 5, "SE0005936713", "ISK", 5, "Utdelning", "SEK", "Akelius Residential Pref");');
-        alasql('INSERT INTO AvanzaData VALUES (300, 1575, "2016-03-30", 2016, 3, "SE0000120784", "ISK", 5.25, "Utdelning", "SEK", "SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (170, 465.8, "2016-03-10", 2016, 3, "US9047677045", "KF", 2.74, "Utdelning", "SEK", "Unilever PLC");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 500, "2016-01-05", 2016, 1, "SE0006593927", "ISK", 5, "Utdelning", "SEK", "Klövern pref");');
-        alasql('INSERT INTO AvanzaData VALUES (110, 550, "2016-04-04", 2016, 4, "SE0006593927", "ISK", 5, "Utdelning", "SEK", "Klövern pref");');
-        alasql('INSERT INTO AvanzaData VALUES (110, 550, "2016-07-04", 2016, 7, "SE0006593927", "ISK", 5, "Utdelning", "SEK", "Klövern pref");');
-        alasql('INSERT INTO AvanzaData VALUES (110, 550, "2016-10-04", 2016, 10, "SE0006593927", "ISK", 5, "Utdelning", "SEK", "Klövern pref");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 950, "2016-04-11", 2016, 4, "SE0000190134", "ISK", 9.5, "Utdelning", "SEK", "Beijer Alma B");');
-        alasql('INSERT INTO AvanzaData VALUES (230, 1150, "2016-04-11", 2016, 4, "SE0000107203", "ISK", 5, "Utdelning", "SEK", "Industrivärden C");');
-        alasql('INSERT INTO AvanzaData VALUES (80, 272.8, "2016-11-28", 2016, 11, "US40414L1098", "KF", 3.41, "Utdelning", "SEK", "HCP Inc");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 490, "2016-04-11", 2016, 4, "SE0000379190", "ISK", 4.9, "Utdelning", "SEK", "Castellum");');
+        // 2017
+        alasql('INSERT INTO AvanzaData VALUES (200, 1650, "2017-01-26", 2017, 1, "SE0000936478", "ISK", 8.25, "Utdelning", 0, "SEK", "Intrum Justitia");');
+        // 2016
+        alasql('INSERT INTO AvanzaData VALUES (10, -3005, "2016-11-30", 2016, 11, "SE0005936713", "ISK", 300, "Köp", 4, "SEK", "Akelius Residential Pref");');
+        alasql('INSERT INTO AvanzaData VALUES (100, -90000, "2015-05-30", 2015, 5, "US4781601046", "KF", 100.00, "Köp", 67, "SEK", "Johnson & Johnson");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-11-30", 2016, 11, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1890, "2016-10-28", 2016, 10, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-10-28", 2016, 10, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1880, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Sälj", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2016-09-19", 2016, 9, "SE0000107401", "ISK", 313.2, "Sälj", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 10000, "2016-09-15", 2016, 9, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 40000, "2016-06-15", 2016, 6, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 50000, "2016-03-15", 2016, 3, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 60000, "2016-01-15", 2016, 1, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 10000, "2016-01-15", 2016, 1, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (200, 1650, "2016-04-26", 2016, 4, "SE0000936478", "ISK", 8.25, "Utdelning", 0, "SEK", "Intrum Justitia");');
+        alasql('INSERT INTO AvanzaData VALUES (250, -165.53, "2016-03-11", 2016, 3, "US2910111044", "KF", 0, "Utländsk källskatt 15%", 0, "SEK", "Utländsk källskatt");');
+        alasql('INSERT INTO AvanzaData VALUES (250, 1436.91, "2016-03-11", 2016, 3, "US2910111044", "KF", 3.97, "Utdelning", 0, "SEK", "Emerson Electric Co");');
+        alasql('INSERT INTO AvanzaData VALUES (300, 2925, "2016-05-10", 2016, 5, "SE0000106270", "ISK", 9.75, "Utdelning", 0, "SEK", "Hennes & Mauritz B");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 1250, "2016-05-09", 2016, 5, "SE0005704053", "ISK", 12.5, "Utdelning", 0, "SEK", "SAS PREF");');
+        alasql('INSERT INTO AvanzaData VALUES (500, 2500, "2016-05-09", 2016, 5, "SE0005936713", "ISK", 5, "Utdelning", 0, "SEK", "Akelius Residential Pref");');
+        alasql('INSERT INTO AvanzaData VALUES (300, 1575, "2016-03-30", 2016, 3, "SE0000120784", "ISK", 5.25, "Utdelning", 0, "SEK", "SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (170, 465.8, "2016-03-10", 2016, 3, "US9047677045", "KF", 2.74, "Utdelning", 0, "SEK", "Unilever PLC");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 500, "2016-01-05", 2016, 1, "SE0006593927", "ISK", 5, "Utdelning", 0, "SEK", "Klövern pref");');
+        alasql('INSERT INTO AvanzaData VALUES (110, 550, "2016-04-04", 2016, 4, "SE0006593927", "ISK", 5, "Utdelning", 0, "SEK", "Klövern pref");');
+        alasql('INSERT INTO AvanzaData VALUES (110, 550, "2016-07-04", 2016, 7, "SE0006593927", "ISK", 5, "Utdelning", 0, "SEK", "Klövern pref");');
+        alasql('INSERT INTO AvanzaData VALUES (110, 550, "2016-10-04", 2016, 10, "SE0006593927", "ISK", 5, "Utdelning", 0, "SEK", "Klövern pref");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 950, "2016-04-11", 2016, 4, "SE0000190134", "ISK", 9.5, "Utdelning", 0, "SEK", "Beijer Alma B");');
+        alasql('INSERT INTO AvanzaData VALUES (230, 1150, "2016-04-11", 2016, 4, "SE0000107203", "ISK", 5, "Utdelning", 0, "SEK", "Industrivärden C");');
+        alasql('INSERT INTO AvanzaData VALUES (80, 272.8, "2016-11-28", 2016, 11, "US40414L1098", "KF", 3.41, "Utdelning", 0, "SEK", "HCP Inc");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 490, "2016-04-11", 2016, 4, "SE0000379190", "ISK", 4.9, "Utdelning", 0, "SEK", "Castellum");');
 
         // 2015
-        alasql('INSERT INTO AvanzaData VALUES (100, -36530, "2015-05-30", 2015, 5, "US9047677045", "KF", 39.54, "Köp", "SEK", "Unilever PLC");');
-        alasql('INSERT INTO AvanzaData VALUES (2050, -205000, "2015-05-30", 2015, 5, "SE0000379190", "ISK", 100, "Köp", "SEK", "Castellum");');
-        alasql('INSERT INTO AvanzaData VALUES (950, -142700, "2015-05-30", 2015, 5, "SE0000107203", "ISK", 150.2, "Köp", "SEK", "Industrivärden C");');
-        alasql('INSERT INTO AvanzaData VALUES (400, -116010, "2015-05-30", 2015, 5, "SE0000106270", "ISK", 290, "Köp", "SEK", "Hennes & Mauritz B");');
-        alasql('INSERT INTO AvanzaData VALUES (700, -182010, "2015-05-30", 2015, 5, "SE0000936478", "ISK", 260, "Köp", "SEK", "Intrum Justitia");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1879, "2015-05-30", 2015, 5, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1879, "2015-04-19", 2015, 4, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, -1879, "2015-03-19", 2015, 3, "SE0000107401", "ISK", 313.2, "Köp", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2015-02-19", 2015, 2, "SE0000107401", "ISK", 313.2, "Sälj", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2015-01-19", 2015, 1, "SE0000107401", "ISK", 313.2, "Sälj", "SEK", "Investor A");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 1250, "2015-11-09", 2015, 11, "SE0005704053", "ISK", 12.5, "Utdelning", "SEK", "SAS PREF");');
-        alasql('INSERT INTO AvanzaData VALUES (500, 2500, "2016-11-09", 2015, 11, "SE0005936713", "ISK", 5, "Utdelning", "SEK", "Akelius Residential Pref");');
-        alasql('INSERT INTO AvanzaData VALUES (200, 1000, "2015-03-30", 2015, 3, "SE0000120784", "ISK", 5, "Utdelning", "SEK", "SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (150, 384, "2015-03-10", 2015, 3, "US9047677045", "KF", 2.56, "Utdelning", "SEK", "Unilever PLC");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 1000, "2015-09-15", 2015, 9, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 20000, "2015-05-15", 2015, 5, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 20000, "2015-05-15", 2015, 5, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (0, 10000, "2015-01-15", 2015, 1, "-", "ISK", 0, "Insättning", "SEK", "Direktinsättning från SEB");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 900, "2015-04-11", 2015, 4, "SE0000190134", "ISK", 9, "Utdelning", "SEK", "Beijer Alma B");');
-        alasql('INSERT INTO AvanzaData VALUES (100, 625, "2015-04-11", 2015, 4, "SE0000107203", "ISK", 6.25, "Utdelning", "SEK", "Industrivärden C");');
-        alasql('INSERT INTO AvanzaData VALUES (80, 248.8, "2015-11-28", 2015, 11, "US40414L1098", "KF", 3.11, "Utdelning", "SEK", "HCP Inc");');
-        alasql('INSERT INTO AvanzaData VALUES (10, 49, "2015-04-11", 2015, 4, "SE0000379190", "ISK", 4.9, "Utdelning", "SEK", "Castellum");');
-
+        alasql('INSERT INTO AvanzaData VALUES (100, -36530, "2015-05-30", 2015, 5, "US9047677045", "KF", 39.54, "Köp", 21, "SEK", "Unilever PLC");');
+        alasql('INSERT INTO AvanzaData VALUES (2050, -205000, "2015-05-30", 2015, 5, "SE0000379190", "ISK", 100, "Köp", 55, "SEK", "Castellum");');
+        alasql('INSERT INTO AvanzaData VALUES (950, -142700, "2015-05-30", 2015, 5, "SE0000107203", "ISK", 150.2, "Köp", 53, "SEK", "Industrivärden C");');
+        alasql('INSERT INTO AvanzaData VALUES (400, -116010, "2015-05-30", 2015, 5, "SE0000106270", "ISK", 290, "Köp", 39, "SEK", "Hennes & Mauritz B");');
+        alasql('INSERT INTO AvanzaData VALUES (700, -182010, "2015-05-30", 2015, 5, "SE0000936478", "ISK", 260, "Köp", 45, "SEK", "Intrum Justitia");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1879, "2015-05-30", 2015, 5, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1879, "2015-04-19", 2015, 4, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, -1879, "2015-03-19", 2015, 3, "SE0000107401", "ISK", 313.2, "Köp", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2015-02-19", 2015, 2, "SE0000107401", "ISK", 313.2, "Sälj", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (6, 1825, "2015-01-19", 2015, 1, "SE0000107401", "ISK", 313.2, "Sälj", 3, "SEK", "Investor A");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 1250, "2015-11-09", 2015, 11, "SE0005704053", "ISK", 12.5, "Utdelning", 0, "SEK", "SAS PREF");');
+        alasql('INSERT INTO AvanzaData VALUES (500, 2500, "2016-11-09", 2015, 11, "SE0005936713", "ISK", 5, "Utdelning", 0, "SEK", "Akelius Residential Pref");');
+        alasql('INSERT INTO AvanzaData VALUES (200, 1000, "2015-03-30", 2015, 3, "SE0000120784", "ISK", 5, "Utdelning", 0, "SEK", "SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (150, 384, "2015-03-10", 2015, 3, "US9047677045", "KF", 2.56, "Utdelning", 0, "SEK", "Unilever PLC");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 1000, "2015-09-15", 2015, 9, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 20000, "2015-05-15", 2015, 5, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 20000, "2015-05-15", 2015, 5, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (0, 10000, "2015-01-15", 2015, 1, "-", "ISK", 0, "Insättning", 0, "SEK", "Direktinsättning från SEB");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 900, "2015-04-11", 2015, 4, "SE0000190134", "ISK", 9, "Utdelning", 0, "SEK", "Beijer Alma B");');
+        alasql('INSERT INTO AvanzaData VALUES (100, 625, "2015-04-11", 2015, 4, "SE0000107203", "ISK", 6.25, "Utdelning", 0, "SEK", "Industrivärden C");');
+        alasql('INSERT INTO AvanzaData VALUES (80, 248.8, "2015-11-28", 2015, 11, "US40414L1098", "KF", 3.11, "Utdelning", 0, "SEK", "HCP Inc");');
+        alasql('INSERT INTO AvanzaData VALUES (10, 49, "2015-04-11", 2015, 4, "SE0000379190", "ISK", 4.9, "Utdelning", 0, "SEK", "Castellum");');
     }
 
     function createTables() {

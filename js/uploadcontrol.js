@@ -114,7 +114,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     applocalization.loadLanguage("se");
 
                     alasql('INSERT INTO AvanzaData \
-                    SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, ISIN, Konto, Kurs, [Typ av transaktion], Valuta, [Värdepapperbeskrivning] FROM CSV(?, {separator:";"})', [readerResultString]);
+                    SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, ISIN, Konto, Kurs, [Typ av transaktion], Courtage, Valuta, [Värdepapperbeskrivning] FROM CSV(?, {separator:";"})', [readerResultString]);
                     alasql('INSERT INTO AvanzaPortfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                     alasql('INSERT INTO Portfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    

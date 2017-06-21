@@ -1,4 +1,4 @@
-define(['./alasqlstockdata', './avanzacourtagecalculator'], function(alasqlstockdata, avanzacourtagecalculator) {
+define(['./alasqlstockdata'], function(alasqlstockdata) {
     
     function createDataTable() {
         alasql('CREATE TABLE IF NOT EXISTS AvanzaData (  \
@@ -11,6 +11,7 @@ define(['./alasqlstockdata', './avanzacourtagecalculator'], function(alasqlstock
                 Konto NVARCHAR(100), \
                 Kurs DECIMAL, \
                 [Typ av transaktion] NVARCHAR(100), \
+                Courtage INT, \
                 Valuta NVARCHAR(10), \
                 [Värdepapperbeskrivning] NVARCHAR(100)); \
                 \
@@ -348,71 +349,18 @@ define(['./alasqlstockdata', './avanzacourtagecalculator'], function(alasqlstock
     }
 
     function getCourtageSumBuy(year) {
-
-        var result = alasql('SELECT FIRST(ISIN) AS [ISIN] \
+        return alasql('SELECT VALUE SUM(Courtage::NUMBER) \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE Year = ' + year + ' AND [Typ av transaktion] = "Köp" \
-                       GROUP BY ISIN');
-                
-        var totalCourtage = 0;
-        result.forEach(function(object) {
-            if(object == null) return;
-            if(object.ISIN == null) return;
-
-            var isin = object.ISIN;
-            var objectCurrency = alasqlstockdata.getVärdepapperHandlas(isin);         
-            if(objectCurrency !== "SEK" && (isin.startsWith("SE") == false)) return;
-
-            var resultTransactions = alasql('SELECT Antal, Kurs, Belopp \
-                       FROM AvanzaData \
-                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE [Typ av transaktion] = "Köp" AND Year = ' + year + ' AND [ISIN] = "' + isin + '"');
-
-            resultTransactions.forEach(function(object) {
-                if(Number.isInteger(object.Antal) == false) return;                
-                if(object.Belopp === "-") return;
-
-                totalCourtage += avanzacourtagecalculator.calculateBuy(object.Antal, object.Kurs, object.Belopp);
-            });
-            
-        });
-
-        return totalCourtage;
+                       WHERE Year = ' + year + ' AND [Typ av transaktion] = "Köp"');
     }
 
     function getCourtageSumSell(year) {
-
-        var result = alasql('SELECT FIRST(ISIN) AS [ISIN] \
+        return alasql('SELECT VALUE SUM(Courtage::NUMBER) \
                        FROM AvanzaData \
                        INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE Year = ' + year + ' AND [Typ av transaktion] = "Sälj" \
-                       GROUP BY ISIN');
-                
-        var totalCourtage = 0;
-        result.forEach(function(object) {
-            if(object == null) return;
-            if(object.ISIN == null) return;
-
-            var isin = object.ISIN;
-            var objectCurrency = alasqlstockdata.getVärdepapperHandlas(isin);         
-            if(objectCurrency !== "SEK" && (isin.startsWith("SE") == false)) return;
-
-            var resultTransactions = alasql('SELECT Antal, Kurs, Belopp \
-                       FROM AvanzaData \
-                       INNER JOIN AvanzaPortfolio ON AvanzaPortfolio.Konto = AvanzaData.Konto \
-                       WHERE [Typ av transaktion] = "Sälj" AND Year = ' + year + ' AND [ISIN] = "' + isin + '"');
-
-            resultTransactions.forEach(function(object) {
-                if(Number.isInteger(object.Antal) == false) return;
-                if(object.Belopp === "-") return;
-
-                totalCourtage += avanzacourtagecalculator.calculateSell(object.Antal, object.Kurs, object.Belopp);
-            });
-            
-        });
-
-        return totalCourtage;
+                       WHERE Year = ' + year + ' AND [Typ av transaktion] = "Sälj"');
+        
     }
 
     function getReturnedTaxYearSumBelopp(year) {

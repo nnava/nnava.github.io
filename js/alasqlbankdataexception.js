@@ -10,7 +10,7 @@ define([], function() {
 
     function addAvanzaRowsStocksSpecial() {
         alasql('INSERT INTO AvanzaData \
-                SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "US02079K1079" AS ISIN, Konto, Kurs, "Köp" AS [Typ av transaktion], Valuta, "Alphabet Inc Class C" AS [Värdepapperbeskrivning] FROM AvanzaData \
+                SELECT Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "US02079K1079" AS ISIN, Konto, Kurs, "Köp" AS [Typ av transaktion], Courtage, Valuta, "Alphabet Inc Class C" AS [Värdepapperbeskrivning] FROM AvanzaData \
                 WHERE Datum = "2015-05-13" AND [Värdepapperbeskrivning] = "GOOG.O" AND ISIN = "US38259P7069" AND [Typ av transaktion] = "Köp"');
 
         alasql('DELETE FROM AvanzaData \
@@ -48,7 +48,7 @@ define([], function() {
 
     function insertAvanzaDataILStockInfo(companyName, isin, ILsymbol) {
         alasql('INSERT INTO AvanzaData \
-                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "' + isin + '" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Valuta, "' + companyName + '" AS [Värdepapperbeskrivning] FROM AvanzaData \
+                SELECT -Antal AS Antal, Belopp, Datum, YEAR(Datum) AS Year, MONTH(Datum) AS Month, "' + isin + '" AS ISIN, Konto, Kurs, "Utdelning" AS [Typ av transaktion], Courtage, Valuta, "' + companyName + '" AS [Värdepapperbeskrivning] FROM AvanzaData \
                 WHERE [Värdepapperbeskrivning] = "' + ILsymbol + '" AND [Typ av transaktion] = "Sälj"');  
 
         alasql('DELETE FROM AvanzaData \
