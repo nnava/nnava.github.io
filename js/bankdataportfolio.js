@@ -81,18 +81,20 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
             var lastTradePriceOnly = results.row.LastTradePriceOnly;
             if(lastTradePriceOnly === "N/A") {
                 var link = "https://www.avanza.se" + alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
-                var queryYqlAvanzaTemplate = _.template("select * from html where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
-                
+                console.log(link);
+                var queryYqlAvanzaTemplate = _.template("select * from htmlstring where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
+                var resturl = "https://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(queryYqlAvanzaTemplate({link:link})) + "&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+
                 $.ajax({
-                    url: yqlUrl,
+                    url: resturl,
                     async: true,
-                    data: {q: queryYqlAvanzaTemplate({link:link}), format: 'json'},
                     timeout: 10000
                 }).done(function(output) {
                     if(output == null) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
                     var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
                     if(yqlAvanzaResponse.query.count === 0) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
-                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.replace(",", ".")).toFixed(2);
+                    if(yqlAvanzaResponse.query.results.result == "") { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
+                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.result.replace(",", ".")).toFixed(2);
 
                     lastTradePriceOnly = (resultValue*currencyValue);
                     alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, lastTradePriceOnly);
