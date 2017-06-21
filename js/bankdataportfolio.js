@@ -81,7 +81,6 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
             var lastTradePriceOnly = results.row.LastTradePriceOnly;
             if(lastTradePriceOnly === "N/A") {
                 var link = "https://www.avanza.se" + alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
-                console.log(link);
                 var queryYqlAvanzaTemplate = _.template("select * from htmlstring where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
                 var resturl = "https://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(queryYqlAvanzaTemplate({link:link})) + "&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
 
