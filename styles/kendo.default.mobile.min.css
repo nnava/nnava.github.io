@@ -1,5 +1,5 @@
 /** 
- * Kendo UI v2017.2.504 (http://www.telerik.com/kendo-ui)                                                                                                                                               
+ * Kendo UI v2017.2.621 (http://www.telerik.com/kendo-ui)                                                                                                                                               
  * Copyright 2017 Telerik AD. All rights reserved.                                                                                                                                                      
  *                                                                                                                                                                                                      
  * Kendo UI commercial licenses may be obtained at                                                                                                                                                      
