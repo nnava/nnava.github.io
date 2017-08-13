@@ -7,7 +7,8 @@ define([], function() {
                 typ STRING, \
                 utdelningaktiedecimal DECIMAL,\
                 utd_handlasutanutdelning DATE, \
-                utd_deklarerad STRING); \
+                utd_deklarerad STRING, \
+                utv DECIMAL); \
                 \
                 CREATE INDEX isinIndex ON StockDividendData(ISIN); \
         ');
@@ -17,13 +18,13 @@ define([], function() {
         var resultCount = alasql('SELECT VALUE COUNT(*) FROM StockDividendData');
         if(resultCount == 0) {
             alasql("SELECT * FROM JSON('stockdividenddata.json')",[],function(jsonResult){
-                alasql('INSERT INTO StockDividendData SELECT isin AS ISIN, cur AS handlas, typ, utddec AS utdelningaktiedecimal, utddat AS utd_handlasutanutdelning, utddek AS utd_deklarerad FROM ?', [jsonResult]);
+                alasql('INSERT INTO StockDividendData SELECT isin AS ISIN, cur AS handlas, typ, utddec AS utdelningaktiedecimal, utddat AS utd_handlasutanutdelning, utddek AS utd_deklarerad, utv FROM ?', [jsonResult]);
             });
         }
     };
 
     function getUpcomingDividendsForYear(year, today, isin) {
-        return alasql('SELECT typ, utdelningaktiedecimal, MONTH(utd_handlasutanutdelning) AS [Månad], utd_handlasutanutdelning, utd_deklarerad \
+        return alasql('SELECT typ, utdelningaktiedecimal, MONTH(utd_handlasutanutdelning) AS [Månad], utd_handlasutanutdelning, utd_deklarerad, utv \
                        FROM StockDividendData \
                        WHERE YEAR(utd_handlasutanutdelning) = ' + year + ' AND utd_handlasutanutdelning >= "' + today + '" \
                        AND ISIN = "' + isin + '"');
@@ -34,6 +35,18 @@ define([], function() {
                        FROM StockDividendData \
                        WHERE utd_handlasutanutdelning = "' + utd_handlasutanutdelning + '" \
                        AND ISIN = "' + isin + '"');
+    }
+
+    function getUtv(utd_handlasutanutdelning, year, isin) {
+        var utv = alasql('SELECT VALUE utv \
+                       FROM StockDividendData \
+                       WHERE MONTH(utd_handlasutanutdelning) = ' + utd_handlasutanutdelning + ' AND YEAR(utd_handlasutanutdelning) = ' + year + ' \
+                       AND ISIN = "' + isin + '"');
+
+        if(utv == 0 || utv == null)
+            return 0;
+
+        return parseFloat(utv.replace(',', '.')).toFixed(2);
     }
 
     function getDividendSumForYear(isin, year) {
@@ -48,6 +61,7 @@ define([], function() {
         loadDataFromFileToTable: loadDataFromFileToTable,
         getUpcomingDividendsForYear: getUpcomingDividendsForYear,
         getDividendTyp: getDividendTyp,
-        getDividendSumForYear: getDividendSumForYear
+        getDividendSumForYear: getDividendSumForYear,
+        getUtv: getUtv
     };
 });

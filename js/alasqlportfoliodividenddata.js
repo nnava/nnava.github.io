@@ -46,7 +46,8 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
                                                           belopp,
                                                           isDividendReceived,
                                                           land,
-                                                          stockDividendDataObject.utd_deklarerad);
+                                                          stockDividendDataObject.utd_deklarerad,
+                                                          stockDividendDataObject.utv);
                 resultForReturn.push(newObject);
             });
             
@@ -58,6 +59,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
             if(receivedDividendDataObject.ISIN == null) return;
 
             var utdelningaktieMedValuta = (receivedDividendDataObject.Utdelningaktiedecimal + " " + receivedDividendDataObject.Valuta).replace(".", ",");
+            var utv = alasqlstockdividenddata.getUtv(receivedDividendDataObject.Månad, currentYear, receivedDividendDataObject.ISIN);
             var newObject = createStockDividendObject(receivedDividendDataObject.Värdepapper, 
                                                         receivedDividendDataObject.Antal, 
                                                         receivedDividendDataObject.ISIN,
@@ -71,7 +73,8 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
                                                         receivedDividendDataObject.Belopp,
                                                         true,
                                                         receivedDividendDataObject.Land,
-                                                        "J");
+                                                        "J",
+                                                        utv);
             resultForReturn.push(newObject);
         });
         
@@ -79,9 +82,9 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
                        FIRST(ISIN) AS ISIN, FIRST(Typ) AS Typ, FIRST(Utdelningaktiedecimal) AS Utdelningaktiedecimal, \
                        FIRST(UtdelningaktieValuta) AS UtdelningaktieValuta, FIRST([Månad]) AS [Månad], \
                        FIRST(Utdelningsdag) AS Utdelningsdag, FIRST(Valuta) AS Valuta, FIRST(ValutaKurs) AS ValutaKurs, FIRST(Utdelningmottagen) AS Utdelningmottagen, \
-                       FIRST(Land) AS Land, SUM(Belopp::NUMBER) AS Belopp, FIRST(UtdelningDeklarerad) AS UtdelningDeklarerad \
+                       FIRST(Land) AS Land, SUM(Belopp::NUMBER) AS Belopp, FIRST(UtdelningDeklarerad) AS UtdelningDeklarerad, FIRST(Utv) AS Utv \
                        FROM ? \
-                       GROUP BY [Värdepapper], ISIN, Typ, Utdelningaktiedecimal, UtdelningaktieValuta, Utdelningsdag, Valuta, ValutaKurs, Utdelningmottagen, Land', [resultForReturn]);
+                       GROUP BY [Värdepapper], ISIN, Typ, Utdelningaktiedecimal, UtdelningaktieValuta, Utdelningsdag, Valuta, ValutaKurs, Utdelningmottagen, Land, UtdelningDeklarerad, Utv', [resultForReturn]);
     }
 
     function getPortfolioDividendsYearMonthValues(year) {                
@@ -137,7 +140,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
         return värdepapperDividendDataValues;
     }
 
-    function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, valutakurs, belopp, utdelningmottagen, land, utd_deklarerad) {
+    function createStockDividendObject(värdepapper, antal, isin, typ, utdelningaktiedecimal, utdelningaktievaluta, månad, utdelningsdag, valuta, valutakurs, belopp, utdelningmottagen, land, utd_deklarerad, utv) {
         var newObject = new Object();
         newObject.Värdepapper = värdepapper;
         newObject.Antal = parseInt(antal);
@@ -153,6 +156,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
         newObject.Utdelningmottagen = utdelningmottagen;
         newObject.Land = land;
         newObject.UtdelningDeklarerad = utd_deklarerad;
+        newObject.Utv = utv;
         return newObject;
     }
 

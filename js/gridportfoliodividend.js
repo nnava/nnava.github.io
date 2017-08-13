@@ -32,7 +32,8 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
                 Valuta: entry.Valuta,
                 ValutaKurs: entry.ValutaKurs,
                 Land: land,
-                UtdelningDeklarerad: entry.UtdelningDeklarerad
+                UtdelningDeklarerad: entry.UtdelningDeklarerad,
+                Utv: entry.Utv
             });
 
             id++;
@@ -125,8 +126,9 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
                 { field: "Name", title: "Värdepapper", template: "<div class='gridportfolio-country-picture' style='background-image: url(/styles/images/#:data.Land#.png);'></div><div class='gridportfolio-country-name'>#: Name #</div>", width: "150px", aggregates: ["count"], footerTemplate: "Totalt antal förväntade utdelningar: #=count# st", groupFooterTemplate: gridNameGroupFooterTemplate },
                 { field: "Utdelningsdatum", title: "Utd/Handl. utan utd", format: "{0:yyyy-MM-dd}", width: "75px" },
                 { field: "Typ", title: "Typ", width: "70px" },
-                { field: "Antal", title: "Antal", format: "{0} st", width: "45px" },
+                { field: "Antal", title: "Antal", format: "{0} st", width: "40px" },
                 { field: "Utdelningsbelopp", title: "Utdelning/aktie", width: "60px" }, 
+                { title: "Utv.", template: '<span class="#= gridPortfolioDividendDivChangeClass(data) #"></span>', width: "15px" }, 
                 { field: "Utdelningtotal", title: "Belopp", width: "110px", format: "{0:n2} kr", aggregates: ["sum"], footerTemplate: gridUtdelningtotalFooterTemplate, groupFooterTemplate: gridUtdelningtotalGroupFooterTemplate },
                 { title: "", template: '<span class="k-icon k-i-info" style="#= gridPortfolioDividendInfoVisibility(data) #"></span>', width: "15px" }
             ],
@@ -146,6 +148,11 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
             }
         });
 
+        addTooltipForColumnFxInfo(grid, gridId);
+        addTooltipForColumnUtvInfo(grid, gridId);
+    }
+
+    function addTooltipForColumnUtvInfo(grid, gridId) {
         $(gridId).kendoTooltip({
             show: function(e){
                 if(this.content.text().length > 1){
@@ -155,7 +162,30 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
             hide:function(e){
                 this.content.parent().css("visibility", "hidden");
             },
-            filter: "td:nth-child(10)", 
+            filter: "td:nth-child(9)", 
+            position: "left",
+            width: 200,
+            content: function(e) {
+                var dataItem = grid.dataItem(e.target.closest("tr"));
+                if(dataItem == null || e.target[0].parentElement.className == "k-group-footer" || dataItem.Utv == 0) return "";
+
+                var content = "Utdelningsutveckling jmf fg utdelning: " + dataItem.Utv.replace('.', ',') + " %";
+                return content
+            }
+        }).data("kendoTooltip");
+    }
+
+    function addTooltipForColumnFxInfo(grid, gridId) {
+        $(gridId).kendoTooltip({
+            show: function(e){
+                if(this.content.text().length > 1){
+                    this.content.parent().css("visibility", "visible");
+                }
+            },
+            hide:function(e){
+                this.content.parent().css("visibility", "hidden");
+            },
+            filter: "td:nth-child(11)", 
             position: "left",
             width: 200,
             content: function(e) {
@@ -166,6 +196,15 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
                 return content
             }
         }).data("kendoTooltip");
+    }
+
+    window.gridPortfolioDividendDivChangeClass = function gridPortfolioDividendDivChangeClass(data) {
+        if(data.Utv == 0 || data.Utv == null) 
+            return "hidden";
+        else if(data.Utv > 0) 
+            return "k-icon k-i-arrow-up";
+        else 
+            return "k-icon k-i-arrow-down";
     }
 
     window.gridPortfolioDividendInfoVisibility = function gridPortfolioDividendInfoVisibility(data) {
