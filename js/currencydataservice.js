@@ -8,9 +8,8 @@ define(['./alasqllocalization', './money.min'], function(alasqllocalization, mon
 
         currencyArray.forEach(function(currency) {
             if(userCurrency == currency) return;
-            $.getJSON("http://api.fixer.io/latest?base=" + currency, getCurrencyData)
+            $.getJSON("https://api.fixer.io/latest?base=" + currency, getCurrencyData)
         });
-
     }
 
     var getCurrencyData = function(data) {
