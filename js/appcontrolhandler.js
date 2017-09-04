@@ -115,7 +115,7 @@ define(['./chartdonutexpenses',
 
     function loadCurrencyData() {
         alasqlcurrencydata.createCurrencyDataTable();
-        currencydataservice.fillCurrencyDataFromYahooFinance();
+        currencydataservice.fillCurrencyData();
     }
 
     function loadChartDividendStackedCumulative() {

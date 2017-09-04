@@ -20,7 +20,7 @@ define([], function() {
         var resultCount = alasql('SELECT VALUE COUNT(*) FROM StockMarketLinkData');
         if(resultCount == 0) {
             alasql("SELECT * FROM JSON('stockmarketlinkdata.json')",[],function(jsonResult) {
-                alasql('INSERT INTO StockMarketLinkData SELECT isin AS ISIN, link AS Link, btype AS BankTyp FROM ?', [jsonResult]);
+                alasql('INSERT INTO StockMarketLinkData SELECT I AS ISIN, L AS Link, B AS BankTyp FROM ?', [jsonResult]);
             });
         }
     };

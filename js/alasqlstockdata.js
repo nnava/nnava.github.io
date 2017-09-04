@@ -20,7 +20,7 @@ define([], function() {
     function loadDataFromFileToTable() {
         alasql('TRUNCATE TABLE StockData');
         alasql("SELECT * FROM JSON('stockdata.json')",[],function(jsonResult){
-            alasql('INSERT INTO StockData SELECT namn, kort AS kortnamn, yahoo AS yahoosymbol, link AS azalink, isin, markn AS marknad, cat AS bransch, cur AS handlas, land FROM ?', [jsonResult]);
+            alasql('INSERT INTO StockData SELECT N AS namn, K AS kortnamn, Y AS yahoosymbol, LI AS azalink, I AS isin, M AS marknad, CA AS bransch, CU AS handlas, LA = land FROM ?', [jsonResult]);
         });
     };
 

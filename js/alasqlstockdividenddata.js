@@ -18,7 +18,7 @@ define([], function() {
         var resultCount = alasql('SELECT VALUE COUNT(*) FROM StockDividendData');
         if(resultCount == 0) {
             alasql("SELECT * FROM JSON('stockdividenddata.json')",[],function(jsonResult){
-                alasql('INSERT INTO StockDividendData SELECT isin AS ISIN, cur AS handlas, typ, utddec AS utdelningaktiedecimal, utddat AS utd_handlasutanutdelning, utddek AS utd_deklarerad, utv FROM ?', [jsonResult]);
+                alasql('INSERT INTO StockDividendData SELECT I AS ISIN, C AS handlas, T as typ, U1 AS utdelningaktiedecimal, U2 AS utd_handlasutanutdelning, U3 AS utd_deklarerad, U4 AS utv FROM ?', [jsonResult]);
             });
         }
     };
