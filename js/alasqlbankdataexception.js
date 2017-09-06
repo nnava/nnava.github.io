@@ -44,6 +44,7 @@ define([], function() {
         insertAvanzaDataILStockInfo("KappAhl", "SE0001630880", "KAHL IL");
         insertAvanzaDataILStockInfo("Sandvik", "SE0000667891", "SAND SR1");
         insertAvanzaDataILStockInfo("Sandvik", "SE0000667891", "SAND IL");
+        insertAvanzaDataILStockInfo("Tethys Oil", "SE0009161185", "TETY IL");
     }
 
     function insertAvanzaDataILStockInfo(companyName, isin, ILsymbol) {
@@ -82,6 +83,7 @@ define([], function() {
         insertNordnetDataILStockInfo("EOLU B", "SE0007075056", "EOLU IL B");
         insertNordnetDataILStockInfo("SAND", "SE0000667891", "SAND SR1");
         insertNordnetDataILStockInfo("SAND", "SE0000667891", "SAND IL");
+        insertNordnetDataILStockInfo("TETY", "SE0009161185", "TETY IL");
     }
 
     function insertNordnetDataILStockInfo(symbol, isin, ILsymbol) {
