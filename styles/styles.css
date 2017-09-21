@@ -98,7 +98,7 @@ span.k-loading-text
     background-color: #428bca;
 }
 
-.k-button.k-state-active, .k-button:active {
+.k-button-group .k-button.k-state-active, .k-button-group .k-button:active, .k-button-group>input[type=checkbox]:checked+.k-button, .k-button-group>input[type=radio]:checked+.k-button {
     background-color: #428bca;
 }
 

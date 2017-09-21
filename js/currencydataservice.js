@@ -13,8 +13,6 @@ define(['./alasqllocalization', './money.min'], function(alasqllocalization, mon
     }
 
     var getCurrencyData = function(data) {
-        console.log(data.base, data.rates[userCurrency]);
-                 
         alasql('INSERT INTO CurrencyData VALUES ("' + data.base + '", ' + data.rates[userCurrency] + ');');
     }
 
