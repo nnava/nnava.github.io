@@ -1,5 +1,5 @@
-define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata', './portfoliocontrolhandler', './alasqlcustomfunctions', './portfoliodistributioncontrolhandler'], 
-     function(windowportfoliodistributionterms, alasqlstockmarketlinkdata, uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata, portfolioControlHandler, alasqlcustomfunctions, portfoliodistributioncontrolhandler) {
+define(['./dividendcontrolhandler', './windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './uploadcontrol', './appcontrolhandler', './appcookies', './monthstaticvalues', './alasqlstockdata', './demodata', './portfoliocontrolhandler', './alasqlcustomfunctions', './portfoliodistributioncontrolhandler'], 
+     function(dividendControlHandler, windowportfoliodistributionterms, alasqlstockmarketlinkdata, uploadControl, appControlHandler, appCookies, monthstaticvalues, alasqlstockdata, demodata, portfolioControlHandler, alasqlcustomfunctions, portfoliodistributioncontrolhandler) {
 
     var monthsInput = monthstaticvalues.getMonthInputs();
     var today = new Date().toISOString().slice(0, 10);
@@ -32,6 +32,9 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
                     loadWindowDistributionTerms();
                     showWindowDistributionTerms();
                 }
+            }
+            else if (e.delegateTarget.hash === "#dividend") {
+                runLoadDividendDataOnce();
             }
 
             resizeObjects();
@@ -66,6 +69,16 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
                 executed = true;
                 $("#btnLoadSpreadsheetPortfolio").kendoButton().data("kendoButton").enable(true);
                 portfolioControlHandler.loadSpreadsheetWithProgress();
+            }
+        };
+    })();
+
+    var runLoadDividendDataOnce = (function() {
+        var executed = false;
+        return function () {
+            if (!executed) {
+                executed = true;
+                dividendControlHandler.loadGridDividend();
             }
         };
     })();
@@ -184,6 +197,11 @@ define(['./windowportfoliodistributionterms', './alasqlstockmarketlinkdata', './
         var gridPortfolioDistribution = $("#gridPortfolioDistribution").data('kendoGrid');
         if(gridPortfolioDistribution) {
             gridPortfolioDistribution.resize();
+        }
+
+        var gridDividend = $("#gridDividend").data('kendoGrid');
+        if(gridDividend) {
+            gridDividend.resize();
         }
     }
 

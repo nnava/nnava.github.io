@@ -83,7 +83,8 @@
             </a>
             <li class="active"><a data-toggle="tab" href="#home">Hem</a></li>
             <li><a data-toggle="tab" href="#portfolio">Portföljöversikt</a></li>
-            <li><a data-toggle="tab" href="#portfoliodistribution">Portföljfördelning</a></li>            
+            <li><a data-toggle="tab" href="#portfoliodistribution">Portföljfördelning</a></li>
+            <li><a data-toggle="tab" href="#dividend">Utdelningsdata</a></li>
             <li><a data-toggle="tab" href="#faq">FAQ</a></li>
         </ul>
 
@@ -907,6 +908,17 @@
 
                 </div>
             </div>
+            <div id="dividend" class="tab-pane fade">
+                <div class="container-fluid">
+                    <div class="row" id="gridDividendContent">
+                        <div class="col-md-12">
+                            <div class="panel-body">
+                                <div id="gridDividend"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="faq" class="tab-pane fade">
                 <br/>
                 <div class="container-fluid">
@@ -1102,6 +1114,22 @@ $.each(e.files, function (index, value) {
                             </div>
                         </div>
 
+                        <div class="panel panel-default">
+                            <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question7">
+                                <h4 class="panel-title">
+                                    <a href="#" class="ing">F: Jag får inte antal aktier i portföljöversikten att stämma med min portfölj, varför?</a>
+                                </h4>
+                            </div>
+                            <div id="question7" class="panel-collapse collapse" style="height: 0px;">
+                                <div class="panel-body-clean">
+                                    <h5><span class="label label-primary">Svar</span></h5>
+
+                                    <p>För att kunna beräkna antal så behöver nnava hela din transaktionshistorik. Börja därför med att kontrollera att du har exporterat transaktionsdata från din första affär fram till idag. 
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>    
             </div>
@@ -1112,7 +1140,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 251;
+            var versionNumber = 253;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber
