@@ -20,7 +20,7 @@ define([], function() {
     function addAvanzaRowsForDividend() {
         insertAvanzaDataILStockInfo("NetEnt B", "SE0008212971", "NET IL B");
         insertAvanzaDataILStockInfo("Creades A", "SE0004390516", "CRED IL A");
-        insertAvanzaDataILStockInfo("SECTRA B", "SE0008613970", "SECT IL B");
+        insertAvanzaDataILStockInfo("SECTRA B", "SE0010133819", "SECT IL B");
         insertAvanzaDataILStockInfo("Betsson B", "SE0008242358", "BETS IL B");
         insertAvanzaDataILStockInfo("Kinnevik B", "SE0000164626", "KINV IL B");
         insertAvanzaDataILStockInfo("Björn Borg", "SE0008242002", "BORG IL");
@@ -59,7 +59,7 @@ define([], function() {
     function addNordnetRowsForDividend() {
         insertNordnetDataILStockInfo("NET B", "SE0008212971", "NET IL B");
         insertNordnetDataILStockInfo("CRED A", "SE0004390516", "CRED IL A");
-        insertNordnetDataILStockInfo("SECT B", "SE0008613970", "SECT IL B");
+        insertNordnetDataILStockInfo("SECT B", "SE0010133819", "SECT IL B");
         insertNordnetDataILStockInfo("BETS B", "SE0008242358", "BETS IL B");
         insertNordnetDataILStockInfo("KINV B", "SE0000164626", "KINV IL B");
         insertNordnetDataILStockInfo("BORG", "SE0008242002", "BORG IL");
