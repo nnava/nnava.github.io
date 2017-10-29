@@ -763,6 +763,15 @@
                             </div>
                         </div>
 
+                        <div id="divPortfolioDividendPeriod" class="row-fluid">
+                            <div class="col-md-6">
+                                <h4>Välj år</h4>
+                                <p>
+                                    <input id="dropdownPortfolioDividendPeriod" style="width: 90px" />
+                                </p>
+                            </div>
+                        </div>
+
                         <div class="row-fluid">
                             <div class="col-md-12">
                                 <div class="panel panel-default">
@@ -793,7 +802,7 @@
                                     <div class="panel-body">
                                         <div class="chart-wrap" style="height: 100%; position: relative;">
                                             <div id="chartDividendStackedCumulativePortfolio" style="height: 100%;"></div>
-                                            <div class="chart-loading"></div>
+                                            <div class="chart-portfolio-loading"></div>
                                         </div>                                            
                                     </div>
                                 </div>
@@ -1140,7 +1149,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 253;
+            var versionNumber = 254;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

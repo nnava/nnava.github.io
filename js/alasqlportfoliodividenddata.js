@@ -1,7 +1,6 @@
 define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata', './bankdatadividend', './alasqlcurrencydata', './alasqllocalization'], 
     function(alasqlstockdividenddata, alasqlstockdata, alasqlportfoliodata, bankdatadividend, alasqlcurrencydata, alasqllocalization) {
 
-    var currentYear = new Date().getFullYear();
     var today = new Date().toISOString().slice(0, 10);
 
     function getPortfolioDividends(year) {
@@ -13,7 +12,7 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
             if(portfolioObject == null) return;
             if(portfolioObject.Antal == null) return;
 
-            var stockUpcomingDividendData = alasqlstockdividenddata.getUpcomingDividendsForYear(currentYear, today, portfolioObject.ISIN);
+            var stockUpcomingDividendData = alasqlstockdividenddata.getUpcomingDividendsForYear(year, today, portfolioObject.ISIN);
             stockUpcomingDividendData.forEach(function(stockDividendDataObject) {
                 if(stockDividendDataObject == null) return;
                 if(stockDividendDataObject.utd_handlasutanutdelning == null) return;
@@ -53,13 +52,13 @@ define(['./alasqlstockdividenddata', './alasqlstockdata', './alasqlportfoliodata
             
         });
 
-        var receivedDividendData = bankdatadividend.getReceivedDividendCurrentYearToDate(currentYear, today);
+        var receivedDividendData = bankdatadividend.getReceivedDividendCurrentYearToDate(year, today);
         receivedDividendData.forEach(function(receivedDividendDataObject) {
             if(receivedDividendDataObject == null) return;
             if(receivedDividendDataObject.ISIN == null) return;
 
             var utdelningaktieMedValuta = (receivedDividendDataObject.Utdelningaktiedecimal + " " + receivedDividendDataObject.Valuta).replace(".", ",");
-            var utv = alasqlstockdividenddata.getUtv(receivedDividendDataObject.Månad, currentYear, receivedDividendDataObject.ISIN);
+            var utv = alasqlstockdividenddata.getUtv(receivedDividendDataObject.Månad, year, receivedDividendDataObject.ISIN);
             var newObject = createStockDividendObject(receivedDividendDataObject.Värdepapper, 
                                                         receivedDividendDataObject.Antal, 
                                                         receivedDividendDataObject.ISIN,

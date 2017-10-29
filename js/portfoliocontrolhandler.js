@@ -8,7 +8,8 @@ define(['./spreadsheetstocks',
         './gridportfoliodividend',
         './alasqlstockdividenddata',
         './chartdividendstackedcumulativeportfolio',
-        './schedulerportfoliodividend'], 
+        './schedulerportfoliodividend',
+        './dropdownportfoliodividendperiod'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
@@ -20,7 +21,8 @@ define(['./spreadsheetstocks',
      gridPortfolioDividend,
      alasqlStockDividendData,
      chartDividendStackedCumulativePortfolio,
-     schedulerPortfolioDividend) {
+     schedulerPortfolioDividend,
+     dropdownPortfolioDividendPeriod) {
 
     function loadSpreadsheetWithProgress() {
         kendo.ui.progress($(document.body), true);
@@ -32,6 +34,25 @@ define(['./spreadsheetstocks',
             loadSpreadsheetStocks();
             kendo.ui.progress($(document.body), false);
         }, 10);
+    }
+
+    function loadDropdownPortfolioDividendPeriod() {
+        dropdownPortfolioDividendPeriod.setDropdownId('#dropdownPortfolioDividendPeriod');
+        dropdownPortfolioDividendPeriod.setDropdownData();
+        dropdownPortfolioDividendPeriod.loadDropdown();
+
+        $("#dropdownPortfolioDividendPeriod").data("kendoDropDownList").bind("change", dropDownListPortfolioDividendPeriod_Change);
+    }
+
+    function dropDownListPortfolioDividendPeriod_Change(e) {
+        kendo.ui.progress($(".chart-portfolio-loading"), true);
+
+        setTimeout(function(){ 
+            loadChartDividendStackedCumulativePortfolio();
+            kendo.ui.progress($(".chart-portfolio-loading"), false);
+            loadGridPortfolioDividend();
+            loadSchedulerPortfolioDividend();
+        });
     }
 
     function loadDropdownDonutPortfolioAllocationSelectSort() {
@@ -90,20 +111,26 @@ define(['./spreadsheetstocks',
     }
 
     function loadGridPortfolioDividend() {
+        var year = dropdownPortfolioDividendPeriod.getValue();
+
         gridPortfolioDividend.setId("#gridPortfolioDividend");
-        gridPortfolioDividend.setData();
+        gridPortfolioDividend.setData(year);
         gridPortfolioDividend.load();
     }
 
-    function loadChartDividendStackedCumulativePortfolio() {       
+    function loadChartDividendStackedCumulativePortfolio() {     
+        var year = dropdownPortfolioDividendPeriod.getValue();
+
         chartDividendStackedCumulativePortfolio.setChartId('#chartDividendStackedCumulativePortfolio');
-        chartDividendStackedCumulativePortfolio.setChartData();
+        chartDividendStackedCumulativePortfolio.setChartData(year);
         chartDividendStackedCumulativePortfolio.loadChart();
     }
 
     function loadSchedulerPortfolioDividend() {
+        var year = dropdownPortfolioDividendPeriod.getValue();
+
         schedulerPortfolioDividend.setId("#schedulerPortfolioDividend");
-        schedulerPortfolioDividend.setData();
+        schedulerPortfolioDividend.setData(year);
         schedulerPortfolioDividend.load();
     }
 
@@ -150,6 +177,7 @@ define(['./spreadsheetstocks',
     function loadControls() {
         $('#chartPortfolioContent').attr("class", "contentportfolio-wrapper");
 
+        loadDropdownPortfolioDividendPeriod();
         initBtnToTop();
         loadSchedulerPortfolioDividend();
         initChartDividendStackedCumulativePortfolioSettingBtnGroup();

@@ -5,21 +5,22 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
     var schedulerId;
     var months = monthstaticvalues.getMonthWithLettersValues();
     var colorsArray = colors.getColorArray();
-    var currentYear = new Date().getFullYear();
+    var selectedYear = new Date().getFullYear();
     var today = new Date().toISOString().slice(0, 10);
 
     function setId(fieldId) {
         schedulerId = fieldId;
     }
 
-    function setData() {
+    function setData(year) {
+        selectedYear = year;
 
         var data = [];
         var värdepapperArray = [];
         var id = 0;
         var colorArrayId = 0;
         
-        var result = alasqlportfoliodividenddata.getPortfolioDividends(currentYear);
+        var result = alasqlportfoliodividenddata.getPortfolioDividends(selectedYear);
         resourceData = [];
 
         result.forEach(function(entry) {
@@ -58,7 +59,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
     var CustomAgenda = kendo.ui.AgendaView.extend({    
         endDate: function() {
             var startDate = kendo.ui.AgendaView.fn.endDate.call(this);
-            var yearLastDate = new Date(new Date().getFullYear(), 11, 31)
+            var yearLastDate = new Date(selectedYear, 11, 31)
             var dayCountToLastDayOfYear = Math.floor((yearLastDate - startDate) / 86400000);
 
             return kendo.date.addDays(startDate, dayCountToLastDayOfYear);
@@ -67,7 +68,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
 
     function load() {
         var today = new Date().toISOString().slice(0, 10);
-        var yearFirstDayDate = new Date(new Date().getFullYear(), 0, 1);
+        var yearFirstDayDate = new Date(selectedYear, 0, 1);
 
         if($(schedulerId).data('kendoScheduler')) {
             $(schedulerId).data('kendoScheduler').destroy();
@@ -116,7 +117,7 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './colors', './i
         $(".exportics").on("click", function(){
             var calEntry = new icsFormatter();
 
-            var result = alasql('SELECT * FROM ? WHERE [Utdelningsdag] >= "' + today + '"', [alasqlportfoliodividenddata.getPortfolioDividends(currentYear)]);
+            var result = alasql('SELECT * FROM ? WHERE [Utdelningsdag] >= "' + today + '"', [alasqlportfoliodividenddata.getPortfolioDividends(selectedYear)]);
             result.forEach(function(entry) {
                 if(entry == null) return;
 

@@ -5,17 +5,18 @@ define(['./alasqlportfoliodividenddata', './colors', './monthstaticvalues'], fun
     var selectedYear = 0;
     var colorArray = colors.getColorArray();
     var months = monthstaticvalues.getMonthValues();
-    var currentYear = new Date().getFullYear();
+    var selectedYear = new Date().getFullYear();
     var localStorageSeriesDefaultField = "chartdividendstackedcumulativeportfolio_seriesdefault";
 
     function setChartId(fieldId) {
         chartId = fieldId;
     }
 
-    function setChartData() {
+    function setChartData(year) {
+        selectedYear = year;
         chartData = [];
 
-        var dividendData = alasqlportfoliodividenddata.getPortfolioDividendsYearMonthValues(currentYear);
+        var dividendData = alasqlportfoliodividenddata.getPortfolioDividendsYearMonthValues(selectedYear);
         var totalYearDividend = 0;
         dividendData.forEach(function(entry) {
             entry.data.forEach(function(dataObject) {

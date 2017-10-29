@@ -4,14 +4,15 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
     var gridId;
     var months = monthstaticvalues.getMonthWithLettersValues();
     var currentMonth = new Date().getMonth();
-    var currentYear = new Date().getFullYear();
+    var selectedYear = new Date().getFullYear();
 
     function setId(fieldId) {
         gridId = fieldId;
     }
 
-    function setData() {
-        var result = alasqlportfoliodividenddata.getPortfolioDividends(currentYear);
+    function setData(year) {
+        selectedYear = year;
+        var result = alasqlportfoliodividenddata.getPortfolioDividends(selectedYear);
         var data = [];
         var id = 0;
 
@@ -258,19 +259,19 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
     }
 
     function gridUtdelningtotalFooterTemplate(e) {
-        var startPeriod = dateperiod.getStartOfYear((currentYear -1));
-        var endPeriod = dateperiod.getEndOfYear((currentYear -1));
+        var startPeriod = dateperiod.getStartOfYear((selectedYear -1));
+        var endPeriod = dateperiod.getEndOfYear((selectedYear -1));
         var isTaxChecked = $('#checkboxTax').is(":checked");
 
-        var currentYearTotalNumeric = e.Utdelningtotal.sum;
-        var currentYearTotal = kendo.toString(currentYearTotalNumeric, 'n2') + " kr";
+        var selectedYearTotalNumeric = e.Utdelningtotal.sum;
+        var selectedYearTotal = kendo.toString(selectedYearTotalNumeric, 'n2') + " kr";
         var lastYearTotalNumeric = bankdatadividend.getTotalDividend(startPeriod, endPeriod, isTaxChecked);
         var lastYearTotal = kendo.toString(lastYearTotalNumeric, 'n2') + " kr";
-        var growthValueNumeric = calculateGrowthChange(currentYearTotalNumeric, lastYearTotalNumeric);
+        var growthValueNumeric = calculateGrowthChange(selectedYearTotalNumeric, lastYearTotalNumeric);
         var growthValue = kendo.toString(growthValueNumeric, 'n2').replace(".", ",") + "%";
-        var spanChange = buildSpanChangeArrow(currentYearTotalNumeric, lastYearTotalNumeric);
+        var spanChange = buildSpanChangeArrow(selectedYearTotalNumeric, lastYearTotalNumeric);
 
-        return "Totalt förväntat belopp: " + currentYearTotal + " " + spanChange + growthValue + " (" + lastYearTotal + ")";     
+        return "Totalt förväntat belopp: " + selectedYearTotal + " " + spanChange + growthValue + " (" + lastYearTotal + ")";     
     }
 
     function gridUtdelningtotalGroupFooterTemplate(e) {
@@ -280,25 +281,25 @@ define(['./alasqlportfoliodividenddata', './monthstaticvalues', './bankdatadivid
 
         var groupMonthValue = months.indexOf(groupNameValue);
         var isTaxChecked = $('#checkboxTax').is(":checked");
-        var lastYearValueNumeric = bankdatadividend.getDividendMonthSumBelopp((currentYear -1), (groupMonthValue +1), isTaxChecked);
-        var currentYearValueNumeric = e.Utdelningtotal.sum; 
+        var lastYearValueNumeric = bankdatadividend.getDividendMonthSumBelopp((selectedYear -1), (groupMonthValue +1), isTaxChecked);
+        var selectedYearValueNumeric = e.Utdelningtotal.sum; 
         var lastYearValue = kendo.toString(lastYearValueNumeric, 'n2') + " kr";
-        var currentYearValue = kendo.toString(currentYearValueNumeric, 'n2') + " kr";
+        var selectedYearValue = kendo.toString(selectedYearValueNumeric, 'n2') + " kr";
         var monthName = groupNameValue.substring(3, groupNameValue.length).toLowerCase();
-        var spanChange = buildSpanChangeArrow(currentYearValueNumeric, lastYearValueNumeric);
-        var growthValueNumeric = calculateGrowthChange(currentYearValueNumeric, lastYearValueNumeric);
+        var spanChange = buildSpanChangeArrow(selectedYearValueNumeric, lastYearValueNumeric);
+        var growthValueNumeric = calculateGrowthChange(selectedYearValueNumeric, lastYearValueNumeric);
         var growthValue = kendo.toString(growthValueNumeric, 'n2').replace(".", ",") + "%";
 
         if(months.includes(groupNameValue)) {
             if(currentMonth <= groupMonthValue) {
-                return "Förväntat belopp " + monthName + ": " + currentYearValue + " " + spanChange + growthValue + " (" + lastYearValue + ")";
+                return "Förväntat belopp " + monthName + ": " + selectedYearValue + " " + spanChange + growthValue + " (" + lastYearValue + ")";
             }
             else {
-                return "Erhållet belopp " + monthName + ": " + currentYearValue + " " + spanChange + growthValue +  " (" + lastYearValue + ")";
+                return "Erhållet belopp " + monthName + ": " + selectedYearValue + " " + spanChange + growthValue +  " (" + lastYearValue + ")";
             }   
         }
         else {
-            return "Förväntat belopp " + groupNameValue + ": " +  currentYearValue + " " + spanChange + growthValue +  " (" + lastYearValue + ")";
+            return "Förväntat belopp " + groupNameValue + ": " +  selectedYearValue + " " + spanChange + growthValue +  " (" + lastYearValue + ")";
         }     
     }
 

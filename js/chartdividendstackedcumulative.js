@@ -108,8 +108,7 @@ define(['./bankdatadividend', './colors', './monthstaticvalues', './dateperiod']
             },
             render: function(e) {
                 // Clear up the loading indicator for this chart
-                var loading = $(".chart-loading", e.sender.element.parent());
-                kendo.ui.progress(loading, false);
+                kendo.ui.progress($(".chart-portfolio-loading"), false);
             },  
             categoryAxis: {
                 categories: months,
