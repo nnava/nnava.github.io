@@ -8,10 +8,10 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
     var filterCells;
     var stockLastTradePriceArray = [];
     var skipRunningFunctions = false;
-    const yqlUrl = 'https://query.yahooapis.com/v1/public/yql';
-    const historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
     const columnBransch = 2;
+    const columnSenastePris = 4;
     const localStorageStocksBranschField = "spreadsheetstocksarray_bransch_ver1";
+    const localStorageStocksSenastePrisField = "spreadsheetstocksarray_senastepris_ver1";
 
     kendo.spreadsheet.defineFunction("CALCDIVIDE", function(callback, numerator, denominator){
         calculateDivision(numerator, denominator, function(value){
@@ -71,79 +71,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         callback(currencyValue);
     }
 
-    kendo.spreadsheet.defineFunction("YFLASTPRICE", function(callback, symbol){
-        fetchLastTradePriceOnly(symbol, 0, function(value){
-            callback(value);
-        });
-    }).argsAsync([
-        [ "symbol", "string" ]
-    ]);
-
-    function fetchLastTradePriceOnly(symbol, retryNumber, callback) {
-
-        if(skipRunningFunctions) return;
-
-        var queryTemplate = _.template("select * from csv where url='" + historicalUrl + "?s=<%= symbol %>&f=l1' and columns='LastTradePriceOnly'");
-
-        $.ajax({
-            url: yqlUrl,
-            data: {q: queryTemplate({symbol:symbol}), format: 'json'},
-            timeout: 10000
-        }).done(function(output) {
-            var response = _.isString(output) ? JSON.parse(output) : output;
-            var results = response.query.results;
-            if(results == null) {
-                if(stockLastTradePriceArray[symbol]) { callback(stockLastTradePriceArray[symbol]); return; };
-
-                if(retryNumber < 4){
-                    retryNumber++;
-                    setTimeout(function(){ fetchLastTradePriceOnly(symbol, retryNumber, callback); }, 50);
-                    return;
-                }
-
-                callback(0); 
-                return;
-            }
-
-            var lastTradePriceOnly = results.row.LastTradePriceOnly;
-            if(lastTradePriceOnly === "N/A") {
-                var link = "https://www.avanza.se" + alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
-                var queryYqlAvanzaTemplate = _.template("select * from htmlstring where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
-                var resturl = "https://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(queryYqlAvanzaTemplate({link:link})) + "&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
-
-                $.ajax({
-                    url: resturl,
-                    async: true,
-                    timeout: 10000
-                }).done(function(output) {
-                    if(output == null) { callback(0); return; };
-                    var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
-                    if(yqlAvanzaResponse.query.count === 0) { callback(0); return; };
-                    if(yqlAvanzaResponse.query.results.result == "") { callback(0); return; };
-                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.result.replace(",", ".")).toFixed(2);
-
-                    stockLastTradePriceArray[symbol] = resultValue;
-                    lastTradePriceOnly = resultValue;
-                    callback(resultValue);
-                    return;
-
-                }).fail(function(err) {
-                    console.log(err.responseText);
-                    callback(0);
-                    return;
-                }); 
-            } else {
-
-                stockLastTradePriceArray[symbol] = lastTradePriceOnly;
-                callback(lastTradePriceOnly);
-            }
-
-        }).fail(function(err) {
-            console.log(err.responseText);
-            callback(0);
-        }); 
-    }
-
     function setSpreadsheetId(fieldId) {
         spreadSheetId = fieldId;
     }
@@ -191,10 +118,10 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         
         var rowCount = 2;
         var indexCount = 1;
-        var storedStocksBranschArray = getStoredBranschArray();
+        var storedStocksBranschArray = getStoredArray(localStorageStocksBranschField);
+        var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
         portfolioData.forEach(function(object) {
 
-            var lastpriceFormula = "=YFLASTPRICE(\"#symbol#\")*YFCURRENCYTOUSERCURRENCY(\"#FX#\")".replace("#symbol#", object.YahooSymbol).replace("#FX#", object.Valuta);
             var marketValueFormula = "D#rowCount#*E#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
             var purchaseValueFormula = "=PURCHASEVALUE(B#rowCount#)".replace("#rowCount#", rowCount);
             var yieldFormula = "=CALCDIVIDE((CURRENTDIVIDENDSUM(B#rowCount#)*YFCURRENCYTOUSERCURRENCY(G#rowCount#)), E#rowCount#)".replace(new RegExp('#rowCount#', 'g'), rowCount);
@@ -202,6 +129,11 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             var savedBransch = alasql('SELECT VALUE Bransch FROM ? WHERE ISIN = ?', [storedStocksBranschArray, object.ISIN]);
             if(savedBransch != null)
                 bransch = savedBransch;
+
+            var senastePris = 0;
+            var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, object.ISIN]);
+            if(savedSenastePris != null)
+                senastePris = savedSenastePris;
 
             spreadSheetData.push({
                 index: indexCount,
@@ -226,7 +158,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                         value: object.Antal, format: "#,0"
                     },
                     {
-                        formula: lastpriceFormula, textAlign: "right", format: "#,0.00 kr"
+                        value: senastePris, textAlign: "right", format: "#,0.00 kr"
                     },
                     {
                         formula: yieldFormula, textAlign: "right", format: "#,0.00 %"
@@ -280,8 +212,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         filterCells = "A1:H#ROW#".replace("#ROW#", indexCount);
     }
 
-    function getStoredBranschArray() {
-        var data = JSON.parse(localStorage.getItem(localStorageStocksBranschField));
+    function getStoredArray(fieldId) {
+        var data = JSON.parse(localStorage.getItem(fieldId));
         if(data == null) return [];
         return data;
     }
@@ -352,11 +284,13 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
     }
 
     function onChange(arg) {        
-        if(arg.range._ref.bottomRight.col === columnBransch) {
+        if(arg.range._ref.bottomRight.col === columnBransch ||
+            arg.range._ref.bottomRight.col === columnSenastePris) {
             var spreadsheet = $(spreadSheetId).data("kendoSpreadsheet");
             var spreadsheetDataJson = spreadsheet.toJSON();
             var result = spreadsheetDataJson.sheets["0"].rows;
-            var data = [];
+            var dataBransch = [];
+            var dataSenastePris = [];
 
             for(var i = 1; i < result.length; i++)
             {
@@ -364,10 +298,13 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 if(i == (result.length -1)) break;
                 var isin = result[i].cells["1"].value
                 var bransch = result[i].cells["2"].value;
+                var senastepris = result[i].cells["4"].value;
 
-                data.push({ ISIN: isin, Bransch: bransch });                
+                dataBransch.push({ ISIN: isin, Bransch: bransch });
+                dataSenastePris.push({ ISIN: isin, SenastePris: senastepris });               
             }
-            localStorage.setItem(localStorageStocksBranschField, JSON.stringify(data));
+            localStorage.setItem(localStorageStocksBranschField, JSON.stringify(dataBransch));
+            localStorage.setItem(localStorageStocksSenastePrisField, JSON.stringify(dataSenastePris));
         }
     }
 
