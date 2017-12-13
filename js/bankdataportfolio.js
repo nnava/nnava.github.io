@@ -1,8 +1,6 @@
 define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcurrencydata', './alasqlstockdata', './alasqlportfoliodata'], 
     function(alasqlavanza, alasqlnordnet, alasqllocalization, alasqlcurrencydata, alasqlstockdata, alasqlportfoliodata) {
 
-    var yqlUrl = 'https://query.yahooapis.com/v1/public/yql';
-    var historicalUrl = 'http://finance.yahoo.com/d/quotes.csv';
     var stockLastTradePriceArray = [];
 
     function getStocksInPortfolio() {
@@ -11,6 +9,12 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
         var result = avanzaData.concat(nordnetData);
 
         return alasql('SELECT [Värdepapper], ISIN, Valuta, Bransch, YahooSymbol, SUM(Antal::NUMBER) AS Antal FROM ? GROUP BY [Värdepapper], ISIN, Valuta, Bransch, YahooSymbol ORDER BY UPPER([Värdepapper])', [result]);    
+    }
+
+    function getStoredArray(fieldId) {
+        var data = JSON.parse(localStorage.getItem(fieldId));
+        if(data == null) return [];
+        return data;
     }
 
     function getPortfolioDistributionData() {
@@ -53,66 +57,23 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                 currencyValue = alasqlcurrencydata.getCurrencyExchangeRateValue(item.Valuta);
             };
 
-            saveLastTradePriceOnly(item.YahooSymbol, currencyValue, 1);
+            saveLastTradePriceOnly(item.YahooSymbol, currencyValue);
         }
     }
 
-    function saveLastTradePriceOnly(symbol, currencyValue, retryNumber) {
-        var queryTemplate = _.template("select * from csv where url='" + historicalUrl + "?s=<%= symbol %>&f=l1' and columns='LastTradePriceOnly'");
+    function saveLastTradePriceOnly(symbol, currencyValue) {
+        $.get('https://cors.io/?https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
+            var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
-        $.ajax({
-            url: yqlUrl,
-            data: {q: queryTemplate({symbol:symbol}), format: 'json'},
-            timeout: 10000
-        }).done(function(output) {
-            var response = _.isString(output) ? JSON.parse(output) : output;
-            var results = response.query.results;
-            if(results == null) {
-                if(retryNumber < 4) {
-                    retryNumber++;
-                    setTimeout(function(){ saveLastTradePriceOnly(symbol, currencyValue, retryNumber); }, 50);
-                    return;
-                }
-
+            if(responseData["0"] == null || responseData["0"].l == null || responseData.searchresults != null) {
                 alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
                 return;
             }
 
-            var lastTradePriceOnly = results.row.LastTradePriceOnly;
-            if(lastTradePriceOnly === "N/A") {
-                var link = "https://www.avanza.se" + alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
-                var queryYqlAvanzaTemplate = _.template("select * from htmlstring where url='<%= link %>' and xpath='//span[@class=\"lastPrice SText bold\"]//span[@class=\"pushBox roundCorners3\"]/text()'");
-                var resturl = "https://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(queryYqlAvanzaTemplate({link:link})) + "&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
-
-                $.ajax({
-                    url: resturl,
-                    async: true,
-                    timeout: 10000
-                }).done(function(output) {
-                    if(output == null) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
-                    var yqlAvanzaResponse = _.isString(output) ? JSON.parse(output) : output;
-                    if(yqlAvanzaResponse.query.count === 0) { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
-                    if(yqlAvanzaResponse.query.results.result == "") { alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0); return; };
-                    var resultValue = parseFloat(yqlAvanzaResponse.query.results.result.replace(",", ".")).toFixed(2);
-
-                    lastTradePriceOnly = (resultValue*currencyValue);
-                    alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, lastTradePriceOnly);
-                    return;
-
-                }).fail(function(err) {
-                    console.log(err.responseText);
-                    alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
-                    return;
-                }); 
-            } else {
-                lastTradePriceOnly = (lastTradePriceOnly*currencyValue);
-                alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, lastTradePriceOnly);
-            }
-
-        }).fail(function(err) {
-            console.log(err.responseText);
-            alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
-        }); 
+            var resultValue = parseFloat(responseData["0"].l).toFixed(2);
+            var calulatedValue = resultValue * currencyValue;
+            alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
+        })
     }
 
     function getPurchaseValue(isin) {
