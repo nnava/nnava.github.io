@@ -3,7 +3,10 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqlstockdata', './alasqlstock
     var currentYear = new Date().getFullYear();
 
     function getCurrentDividendSum(isin) {
-        return alasqlstockdividenddata.getDividendSumForYear(isin, currentYear).toFixed(2);
+        var value = alasqlstockdividenddata.getDividendSumForYear(isin, currentYear).toFixed(2);
+        if(value == 0)
+            value = alasqlstockdividenddata.getDividendSumForYear(isin, currentYear - 1).toFixed(2);
+        return value;
     }
 
     function getTotalDividend(startPeriod, endPeriod, isTaxChecked) {

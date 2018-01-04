@@ -1,13 +1,13 @@
 {
-  "name": "Aktierapport",
+  "name": "aktierapport",
   "version": "1.0.0",
-  "description": "Aktierapport",
+  "description": "Nordnet/Avanza charts",
   "scripts": {
     "lite": "lite-server –port 1337",
     "start": "npm run lite"
   },
   "author": "lill4ekonomen",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "lite-server": "^1.3.1"
   }
