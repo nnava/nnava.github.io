@@ -66,8 +66,29 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
             var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
             if(responseData["0"] == null || responseData["0"].l == null || responseData.searchresults != null) {
-                alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
-                return;
+                var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
+
+                if(avanzaLink == "-") {
+                    alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
+                    return;
+                }
+
+                $.get('https://cors.io/?' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(data, "text/html");
+                    var spanLastPrice = doc.getElementsByClassName('lastPrice SText bold');
+
+                    if(spanLastPrice["0"] == null || spanLastPrice["0"].childNodes["0"] == null) {
+                        alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
+                        return;
+                    }
+
+                    var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
+                    var calulatedValue = resultValue * currencyValue;
+                    alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
+                    return;
+                })
             }
 
             var resultValue = parseFloat(responseData["0"].l.replace(',', '')).toFixed(2);
