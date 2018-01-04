@@ -62,7 +62,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
     }
 
     function saveLastTradePriceOnly(symbol, currencyValue) {
-        $.get('https://cors.io/?https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
+        $.get('https://proxy-sauce.glitch.me/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
             var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
             if(responseData["0"] == null || responseData["0"].l == null || responseData.searchresults != null) {
@@ -73,7 +73,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                     return;
                 }
 
-                $.get('https://cors.io/?' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+                $.get('https://proxy-sauce.glitch.me/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
 
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(data, "text/html");
@@ -88,13 +88,13 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                     var calulatedValue = resultValue * currencyValue;
                     alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
                     return;
-                })
+                }, "text" );
             }
 
             var resultValue = parseFloat(responseData["0"].l.replace(',', '')).toFixed(2);
             var calulatedValue = resultValue * currencyValue;
             alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
-        })
+        }, "text" );
     }
 
     function getPurchaseValue(isin) {

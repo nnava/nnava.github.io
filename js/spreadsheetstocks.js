@@ -90,7 +90,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         var sheet = spreadsheet.activeSheet();
         
         
-        $.get('https://cors.io/?https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
+        $.get('https://proxy-sauce.glitch.me/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
             var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
             if(responseData["0"] == null || responseData["0"].l == null || responseData.searchresults != null) {
@@ -109,7 +109,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                     return;
                 }
 
-                $.get('https://cors.io/?' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+                $.get('https://proxy-sauce.glitch.me/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
 
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(data, "text/html");
@@ -133,7 +133,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                     sheet.range(xCell).background("lightgreen");
                     callback(resultValue);
                     return;
-                })
+                }, "text" );
             }
 
             var resultValue = parseFloat(responseData["0"].l.replace(',', '')).toFixed(2);
@@ -142,7 +142,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             callback(resultValue);
             return;
 
-        }).fail(function(err) {
+        }, "text" ).fail(function(err) {
             var senastePris = 0;
             var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);
             if(savedSenastePris != null) {
