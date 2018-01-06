@@ -93,7 +93,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         $.get('https://proxy-sauce.glitch.me/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
             var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
-            if(data.length < 1000) {
+            if(data.length < 1000 || responseData["0"] == null || responseData["0"].l == null) {
                 var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
 
                 if(avanzaLink == "-") {

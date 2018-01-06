@@ -65,7 +65,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
         $.get('https://proxy-sauce.glitch.me/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
             var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
-            if(data.length < 1000) {
+            if(data.length < 1000 || responseData["0"] == null || responseData["0"].l == null) {
                 var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
 
                 if(avanzaLink == "-") {
@@ -94,8 +94,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                 var resultValue = parseFloat(responseData["0"].l.replace(',', '')).toFixed(2);
                 var calulatedValue = resultValue * currencyValue;
                 alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
-            }
-            
+            }            
         }, "text" );
     }
 
