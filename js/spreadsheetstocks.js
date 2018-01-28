@@ -40,6 +40,42 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         callback(bankdatadividend.getCurrentDividendSum(isin));
     }
 
+    kendo.spreadsheet.defineFunction("GETCURRENTAZAOWNERCOUNT", function(callback, symbol){
+        getCurrentAZAOwnerCount(symbol, function(value){
+            callback(value);
+        });
+    }).argsAsync([
+        ["symbol", "string"]
+    ]);
+
+    function getCurrentAZAOwnerCount(symbol, callback) {
+        var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
+        if (avanzaLink == '-') {
+            callback(0);
+            return;
+        }
+
+        $.get('https://proxy-sauce.glitch.me/https://www.avanza.se' + avanzaLink, function(data, status) {
+
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(data, "text/html");
+            var infoTableRight = doc.getElementsByClassName('border XSText rightAlignText noMarginTop highlightOnHover thickBorderBottom noTopBorder');
+            
+            try {
+                var resultValue = 0;
+                if(infoTableRight[1].children.length == 10)
+                    resultValue = parseInt(infoTableRight[1].children[9].innerText.replace(/\s/g, ""));
+                else 
+                    resultValue = parseInt(infoTableRight[1].children[23].innerText.replace(/\s/g, ""));
+                
+                callback(resultValue);
+            } catch (e) {
+                callback(0);
+                return;
+            }            
+        }, "text" );
+    }
+
     kendo.spreadsheet.defineFunction("PURCHASEVALUE", function(callback, isin){
         getPurchaseValue(isin, function(value){
             callback(value);
@@ -109,7 +145,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                     return;
                 }
 
-                $.get('https://proxy-sauce.glitch.me/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+                $.get('https://proxy-sauce.glitch.me/https://www.avanza.se' + avanzaLink, function(data, status) {
 
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(data, "text/html");
@@ -196,6 +232,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                     value: "Valuta", textAlign: "center", bold: "true"
                 },
                 {
+                    value: "Antal ägare AZA", textAlign: "center", bold: "true"
+                },
+                {
                     value: "Marknadsvärde", textAlign: "center", bold: "true"
                 }
             ]
@@ -210,6 +249,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             var marketValueFormula = "D#rowCount#*E#rowPrice#".replace("#rowCount#", rowCount).replace("#rowPrice#", rowCount);
             var purchaseValueFormula = "=PURCHASEVALUE(B#rowCount#)".replace("#rowCount#", rowCount);
             var yieldFormula = "=CALCDIVIDE((CURRENTDIVIDENDSUM(B#rowCount#)*YFCURRENCYTOUSERCURRENCY(G#rowCount#)), E#rowCount#)".replace(new RegExp('#rowCount#', 'g'), rowCount);
+            var azaOwnerCountFormula = "=GETCURRENTAZAOWNERCOUNT(\"#symbol#\")".replace("#symbol#", object.YahooSymbol);
             var bransch = object.Bransch;
             var savedBransch = alasql('SELECT VALUE Bransch FROM ? WHERE ISIN = ?', [storedStocksBranschArray, object.ISIN]);
             if(savedBransch != null)
@@ -247,6 +287,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                         value: object.Valuta, textAlign: "right"
                     },
                     {
+                        formula: azaOwnerCountFormula, format: "#,0"
+                    },
+                    {
                         formula: marketValueFormula, format: "#,0.00 kr"
                     }
                 ]
@@ -256,7 +299,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             indexCount++;
         });
 
-        var totalSumMarketValueFormula = "SUM(H2:H#LASTROW#)".replace("#LASTROW#", indexCount);
+        var totalSumMarketValueFormula = "SUM(I2:I#LASTROW#)".replace("#LASTROW#", indexCount);
         spreadSheetData.push({
             index: indexCount,
             cells: [
@@ -276,10 +319,13 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                     index: 4
                 },
                 {
-                    index: 5, value: "Totalt:", textAlign: "right", bold: "true"
+                    index: 5
                 },
                 {
-                    index: 6
+                    index: 6, value: "Totalt:", textAlign: "right", bold: "true"
+                },
+                {
+                    index: 7
                 },
                 {
                     formula: totalSumMarketValueFormula, format: "#,0.00 kr"
@@ -288,8 +334,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         });
 
         // Merge cells, to show totaltext
-        mergedCellsArray.push(("F#ROW#:G#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
-        filterCells = "A1:H#ROW#".replace("#ROW#", indexCount);
+        mergedCellsArray.push(("G#ROW#:H#ROW#").replace("#ROW#", rowCount).replace("#ROW#", rowCount));
+        filterCells = "A1:I#ROW#".replace("#ROW#", indexCount);
     }
 
     function getStoredArray(fieldId) {
@@ -344,6 +390,9 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                             },
                             {
                                 width: 60
+                            },
+                            {
+                                width: 110
                             },
                             {
                                 width: 110
@@ -412,7 +461,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 Antal: result[i].cells["3"].value,
                 SenastePris: result[i].cells["4"].value.toFixed(2),
                 Valuta: result[i].cells["6"].value,
-                Marknadsvärde: result[i].cells["7"].value.toFixed(2)
+                Marknadsvärde: result[i].cells["8"].value.toFixed(2)
             });
         }
 
