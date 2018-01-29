@@ -9,7 +9,8 @@ define(['./spreadsheetstocks',
         './alasqlstockdividenddata',
         './chartdividendstackedcumulativeportfolio',
         './schedulerportfoliodividend',
-        './dropdownportfoliodividendperiod'], 
+        './dropdownportfoliodividendperiod',
+        './chartdonutportfoliovalueazaowner'], 
      function(
      spreadsheetStocks,
      chartDonutPortfolioAllocation,
@@ -22,7 +23,8 @@ define(['./spreadsheetstocks',
      alasqlStockDividendData,
      chartDividendStackedCumulativePortfolio,
      schedulerPortfolioDividend,
-     dropdownPortfolioDividendPeriod) {
+     dropdownPortfolioDividendPeriod,
+     chartDonutPortfolioValueAzaOwner) {
 
     function loadSpreadsheetWithProgress() {
         kendo.ui.progress($(document.body), true);
@@ -102,6 +104,12 @@ define(['./spreadsheetstocks',
         chartDonutPortfolioCurrency.setChartId('#chartDonutPortfolioCurrency');
         chartDonutPortfolioCurrency.setChartData();
         chartDonutPortfolioCurrency.loadChart();
+    }
+
+    function loadChartDonutportfolioValueAzaOwner() {       
+        chartDonutPortfolioValueAzaOwner.setChartId('#chartDonutportfolioValueAzaOwner');
+        chartDonutPortfolioValueAzaOwner.setChartData();
+        chartDonutPortfolioValueAzaOwner.loadChart();
     }
 
     function loadTreeMapPortfolioCurrency() {
@@ -190,6 +198,7 @@ define(['./spreadsheetstocks',
         loadSpangridportfoliodividendinfo();
         loadGridPortfolioDividend();
         loadChartDividendStackedCumulativePortfolio();
+        loadChartDonutportfolioValueAzaOwner();
         enableExportButtons();
     }
 

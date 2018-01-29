@@ -193,6 +193,7 @@ define(['./dividendcontrolhandler', './windowportfoliodistributionterms', './ala
         kendo.resize($('#chartFunnelPortfolioIndustry'));
         kendo.resize($('#chartRadarPortfolioIndustry'));
         kendo.resize($('#chartDividendStackedCumulativePortfolio'));
+        kendo.resize($('#chartDonutportfolioValueAzaOwner'));
 
         var gridPortfolioDistribution = $("#gridPortfolioDistribution").data('kendoGrid');
         if(gridPortfolioDistribution) {
@@ -481,7 +482,10 @@ define(['./dividendcontrolhandler', './windowportfoliodistributionterms', './ala
                 break;  
             case "chartDividendStackedCumulativePortfolio" :
                 chartFilename = "portföljöversikt_erhållnaförväntade_utdelningar";
-                break;                            
+                break;   
+            case "chartDonutportfolioValueAzaOwner" :
+                chartFilename = "portföljöversikt_antalägare_avanza_marknadsvärde";
+                break;                                         
             default:
                 chartFilename = "NOTFOUND";
         }

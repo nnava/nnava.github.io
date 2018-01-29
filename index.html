@@ -752,6 +752,34 @@
                             </div>
                             <div class="col-md-4"></div>
                         </div>
+
+                        <div class="row-fluid">
+                            <div class="col-md-12 top15">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading clearfix">
+                                    <h4 class="panel-title pull-left" style="padding-top: 7.5px;">Fördelning antal ägare Avanza/Marknadsvärde</h4>
+                                        <div class="btn-group pull-right">
+                                            <button id="btn-chartDonutportfolioValueAzaOwnerToPdf" type="button" class="k-button btn-xs k-primary export-chartToPdf exportportfolio-chartToPdf" title="Till PDF"><span class="k-icon k-i-file-pdf"></span> Till PDF</button>
+                                            <button id="btn-chartDonutportfolioValueAzaOwnerToSvg" type="button" class="k-button btn-xs k-primary export-chartToSvg exportportfolio-chartToSvg" title="Till SVG"><span class="k-icon k-i-image"></span> Till SVG</button>
+                                            <button id="btn-chartDonutportfolioValueAzaOwnerToImg" type="button" class="k-button btn-xs k-primary export-chartToImg exportportfolio-chartToImg" title="Till PNG"><span class="k-icon k-i-image"></span> Till PNG</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="chartDonutportfolioValueAzaOwner" style="height: 100%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4 text-center">
+                                <button type="button" class="btn btn-default btn-sm btnToTop">
+                                    <span class="glyphicon glyphicon-chevron-up"></span> Till toppen
+                                </button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
                     
                         <div class="row-fluid">
                             <div class="col-md-12">
@@ -1149,7 +1177,7 @@ $.each(e.files, function (index, value) {
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/underscore-min.js"></script>
         <script type="text/javascript">
-            var versionNumber = 263;
+            var versionNumber = 264;
             var require = {
                 waitSeconds: 15,
                 urlArgs : "bust="+ versionNumber

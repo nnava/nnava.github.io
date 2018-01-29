@@ -8,6 +8,7 @@ define([], function() {
                 Antal INT, \
                 SenastePris DECIMAL, \
                 Valuta STRING, \
+                [AvanzaAntalÄgare] INT, \
                 [Marknadsvärde] DECIMAL); \
                 CREATE INDEX isinIndex ON PortfolioData(ISIN); \
         ');
@@ -66,7 +67,7 @@ define([], function() {
     function saveDataToTable(data) {
         createPortfolioDataTable();
         alasql('TRUNCATE TABLE PortfolioData');
-        alasql('INSERT INTO PortfolioData SELECT [Värdepapper], ISIN, Bransch, Antal, SenastePris, Valuta, [Marknadsvärde] FROM ?', [data]);
+        alasql('INSERT INTO PortfolioData SELECT [Värdepapper], ISIN, Bransch, Antal, SenastePris, Valuta, [AvanzaAntalÄgare], [Marknadsvärde] FROM ?', [data]);
     }
 
     function updatePortfolioDistributionNewWeightPercentageRow(ID, newWeightPercentage) {
@@ -145,6 +146,37 @@ define([], function() {
         return alasql('SELECT [Bransch] AS [name], SUM([Marknadsvärde]::NUMBER) AS [value] FROM PortfolioData GROUP BY [Bransch]' + sortExpression);
     }
 
+    function getPortfolioValueAZAOwnerCount() {
+        var result = alasql('SELECT [AvanzaAntalÄgare], [Marknadsvärde] AS [value] FROM PortfolioData');
+        var returnData = [];
+        result.forEach(function(entry) {
+            if(entry == null) return;
+            if(entry.AvanzaAntalÄgare == null) return;
+
+            returnData.push({ 
+                "category": getAZAOwnerCountCategory(entry.AvanzaAntalÄgare),
+                "value": parseInt(entry.value)
+            });
+        });
+
+        return returnData;
+    }
+
+    function getAZAOwnerCountCategory(avanzaAntalÄgare) {
+        if(avanzaAntalÄgare == 0)
+            return "N/A";
+        else if(avanzaAntalÄgare > 10000)
+            return "> 10 000";
+        else if(avanzaAntalÄgare < 10000 && avanzaAntalÄgare > 1000)
+            return "1 000 - 10 000";
+        else if(avanzaAntalÄgare < 1000 && avanzaAntalÄgare > 100)
+            return "100 - 1 000";
+        else if(avanzaAntalÄgare < 100 && avanzaAntalÄgare > 10)
+            return "10 - 100";
+        else
+            return "< 10";
+    }
+
     return { 
         createPortfolioDataTable: createPortfolioDataTable,
         createPortfolioLastPriceDataTable: createPortfolioLastPriceDataTable,
@@ -165,6 +197,7 @@ define([], function() {
         updatePortfolioDistributionNewLatestPriceRow: updatePortfolioDistributionNewLatestPriceRow,
         updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow: updatePortfolioDistributionCalculatedValuesWithNewLatestPriceRow,
         updatePortfolioLastPriceRow: updatePortfolioLastPriceRow,
-        getPortfolioDistributionDataNewWeight: getPortfolioDistributionDataNewWeight
+        getPortfolioDistributionDataNewWeight: getPortfolioDistributionDataNewWeight,
+        getPortfolioValueAZAOwnerCount: getPortfolioValueAZAOwnerCount 
     };
 });

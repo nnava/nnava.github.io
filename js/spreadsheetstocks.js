@@ -461,6 +461,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 Antal: result[i].cells["3"].value,
                 SenastePris: result[i].cells["4"].value.toFixed(2),
                 Valuta: result[i].cells["6"].value,
+                AvanzaAntalÄgare: result[i].cells["7"].value,
                 Marknadsvärde: result[i].cells["8"].value.toFixed(2)
             });
         }
