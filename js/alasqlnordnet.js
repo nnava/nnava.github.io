@@ -114,7 +114,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getDividendAll(addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         return alasql('SELECT FIRST(YEAR([Bokföringsdag])) AS Year, SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
@@ -135,7 +135,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                                 FIRST(REPLACE(Antal, " ", "")) AS Antal, LAST(Kurs) AS Kurs, MONTH(FIRST([Bokföringsdag])) AS [Månad], \
                                 SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                                 FROM NordnetData \
-                                WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT") \
+                                WHERE (Transaktionstyp = "UTDELNING" OR Transaktionstyp = "MAK UTDELNING" OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT") \
                                 AND YEAR([Bokföringsdag]) = ' + year + ' AND [Bokföringsdag] <= "' + today + '" \
                                 AND Konto = "' + portfolioObject.Konto + '" AND ISIN != "" \
                                 GROUP BY ISIN, MONTH([Bokföringsdag])');
@@ -185,7 +185,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        FROM NordnetData \
                        JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' AND MONTH([Bokföringsdag]) = ' + month + ' \
-                       AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT")');
+                       AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT")');
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -211,7 +211,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        FROM NordnetData \
                        JOIN NordnetPortfolio USING Konto, Konto \
                        WHERE YEAR([Bokföringsdag]) = ' + year + ' \
-                       AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT")');
+                       AND (Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT")');
 
         var belopp = JSON.parse(JSON.stringify(result));
         if(belopp["0"].Belopp == null) return 0;
@@ -234,7 +234,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getTotalDividend(startPeriod, endPeriod, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT"';
  
         var result = alasql('SELECT SUM(REPLACE(Belopp, " ", "")::NUMBER) AS Belopp \
                        FROM NordnetData \
@@ -250,7 +250,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getVardepapperTotalDividend(startPeriod, endPeriod, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         var result = alasql('SELECT FIRST([ISIN]) AS [ISIN], FIRST([Värdepapper]) AS [name], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [belopp] \
                        FROM NordnetData \
@@ -320,7 +320,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
     function getVärdepapperDividend(year, month, addTaxToSum) {
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "MAK UTL KUPSKATT"';
+            taxSqlWhere = ' OR Transaktionstyp = "UTL KUPSKATT" OR Transaktionstyp = "TYSK SOL SKATT UTD" OR Transaktionstyp = "MAK UTL KUPSKATT"';
 
         return alasql('SELECT FIRST([ISIN]) AS [ISIN], SUM(REPLACE(Belopp, " ", "")::NUMBER) AS [Belopp] \
                        FROM NordnetData \
