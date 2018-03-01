@@ -62,7 +62,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
     }
 
     function saveLastTradePriceOnly(symbol, currencyValue) {
-        $.get('https://proxy-sauce.glitch.me/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
+        $.get('https://free-cors-proxy.herokuapp.com/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
             var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
 
             if(data.length < 1000 || responseData["0"] == null || responseData["0"].l == null) {
@@ -73,7 +73,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                     return;
                 }
 
-                $.get('https://proxy-sauce.glitch.me/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+                $.get('https://free-cors-proxy.herokuapp.com/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
 
                     var parser = new DOMParser();
                     var doc = parser.parseFromString(data, "text/html");
