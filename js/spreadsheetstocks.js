@@ -123,61 +123,47 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
         if(skipRunningFunctions) return;
 
         var spreadsheet = $(spreadSheetId).data("kendoSpreadsheet");
-        var sheet = spreadsheet.activeSheet();
+        var sheet = spreadsheet.activeSheet();        
         
-        
-        $.get('https://free-cors-proxy.herokuapp.com/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
-            var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
+        var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
 
-            if(data.length < 1000 || responseData["0"] == null || responseData["0"].l == null) {
-                var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
-
-                if(avanzaLink == "-") {
-                    var senastePris = 0;
-                    var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
-                    var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);
-                    if(savedSenastePris != null) {
-                        stockLastTradePriceArray[symbol] = savedSenastePris;
-                        senastePris = savedSenastePris;
-                    }
-                    sheet.range(xCell).background("lightyellow");
-                    callback(senastePris);
-                    return;
-                }
-
-                $.get('https://free-cors-proxy.herokuapp.com/https://www.avanza.se' + avanzaLink, function(data, status) {
-
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(data, "text/html");
-                    var spanLastPrice = doc.getElementsByClassName('lastPrice SText bold');
-
-                    if(spanLastPrice["0"] == null || spanLastPrice["0"].childNodes["0"] == null) {
-                        var senastePris = 0;
-                        var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
-                        var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);
-                        if(savedSenastePris != null) {
-                            stockLastTradePriceArray[symbol] = savedSenastePris;
-                            senastePris = savedSenastePris;
-                        }
-                        sheet.range(xCell).background("lightyellow");
-                        callback(senastePris);
-                        return;
-                    }
-
-                    var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
-                    stockLastTradePriceArray[symbol] = resultValue;
-                    sheet.range(xCell).background("lightgreen");
-                    callback(resultValue);
-                    return;
-                }, "text" );
+        if(avanzaLink == "-") {
+            var senastePris = 0;
+            var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
+            var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);
+            if(savedSenastePris != null) {
+                stockLastTradePriceArray[symbol] = savedSenastePris;
+                senastePris = savedSenastePris;
             }
-            else {
-                var resultValue = parseFloat(responseData["0"].l.replace(',', '')).toFixed(2);
-                stockLastTradePriceArray[symbol] = resultValue;
-                sheet.range(xCell).background("lightgreen");
-                callback(resultValue);
+            sheet.range(xCell).background("lightyellow");
+            callback(senastePris);
+            return;
+        }
+
+        $.get('https://free-cors-proxy.herokuapp.com/https://www.avanza.se' + avanzaLink, function(data, status) {
+
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(data, "text/html");
+            var spanLastPrice = doc.getElementsByClassName('lastPrice SText bold');
+
+            if(spanLastPrice["0"] == null || spanLastPrice["0"].childNodes["0"] == null) {
+                var senastePris = 0;
+                var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
+                var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);
+                if(savedSenastePris != null) {
+                    stockLastTradePriceArray[symbol] = savedSenastePris;
+                    senastePris = savedSenastePris;
+                }
+                sheet.range(xCell).background("lightyellow");
+                callback(senastePris);
                 return;
             }
+
+            var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
+            stockLastTradePriceArray[symbol] = resultValue;
+            sheet.range(xCell).background("lightgreen");
+            callback(resultValue);
+            return;
         }, "text" ).fail(function(err) {
             var senastePris = 0;
             var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);

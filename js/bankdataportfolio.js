@@ -62,39 +62,28 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
     }
 
     function saveLastTradePriceOnly(symbol, currencyValue) {
-        $.get('https://free-cors-proxy.herokuapp.com/https://finance.google.com/finance?q=' + symbol + '&output=json', function(data, status) {
-            var responseData = _.isString(data) ? JSON.parse(data.replace("//", "")) : data;
+        var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
 
-            if(data.length < 1000 || responseData["0"] == null || responseData["0"].l == null) {
-                var avanzaLink = alasqlstockdata.getAzaLinkFromYahooSymbol(symbol);
+        if(avanzaLink == "-") {
+            alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
+            return;
+        }
 
-                if(avanzaLink == "-") {
-                    alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
-                    return;
-                }
+        $.get('https://free-cors-proxy.herokuapp.com/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
 
-                $.get('https://free-cors-proxy.herokuapp.com/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(data, "text/html");
+            var spanLastPrice = doc.getElementsByClassName('lastPrice SText bold');
 
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(data, "text/html");
-                    var spanLastPrice = doc.getElementsByClassName('lastPrice SText bold');
-
-                    if(spanLastPrice["0"] == null || spanLastPrice["0"].childNodes["0"] == null) {
-                        alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
-                        return;
-                    }
-
-                    var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
-                    var calulatedValue = resultValue * currencyValue;
-                    alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
-                    return;
-                }, "text" );
+            if(spanLastPrice["0"] == null || spanLastPrice["0"].childNodes["0"] == null) {
+                alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, 0);
+                return;
             }
-            else {
-                var resultValue = parseFloat(responseData["0"].l.replace(',', '')).toFixed(2);
-                var calulatedValue = resultValue * currencyValue;
-                alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
-            }            
+
+            var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
+            var calulatedValue = resultValue * currencyValue;
+            alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
+            return;
         }, "text" );
     }
 
