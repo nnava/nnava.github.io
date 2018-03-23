@@ -55,7 +55,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             return;
         }
 
-        $.get('http://cors.hyoo.ru/https://www.avanza.se' + avanzaLink, function(data, status) {
+        $.get('https://thingproxy.freeboard.io/fetch/https://www.avanza.se' + avanzaLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
@@ -73,7 +73,10 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 callback(0);
                 return;
             }            
-        }, "text" );
+        }, "text").fail(function(err) {
+            callback(0);
+            return;
+        });
     }
 
     kendo.spreadsheet.defineFunction("PURCHASEVALUE", function(callback, isin){
@@ -141,7 +144,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             return;
         }
 
-        $.get('http://cors.hyoo.ru/https://www.avanza.se' + avanzaLink, function(data, status) {
+        $.get('https://thingproxy.freeboard.io/fetch/https://www.avanza.se' + avanzaLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
@@ -166,7 +169,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             sheet.range(xCell).background("lightgreen");
             return;
         }, "text").fail(function(err) {
-            console.log(symbol, 'failade');
             var senastePris = 0;
             var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
             var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);

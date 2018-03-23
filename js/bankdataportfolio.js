@@ -69,7 +69,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
             return;
         }
 
-        $.get('http://cors.hyoo.ru/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
+        $.get('https://thingproxy.freeboard.io/fetch/' + 'https://www.avanza.se' + avanzaLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
