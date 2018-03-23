@@ -55,7 +55,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
             return;
         }
 
-        $.get('https://free-cors-proxy.herokuapp.com/https://www.avanza.se' + avanzaLink, function(data, status) {
+        $.get('http://cors.hyoo.ru/https://www.avanza.se' + avanzaLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
@@ -120,8 +120,6 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
 
     function fetchLastTradePriceOnly(symbol, isin, xCell, callback) {
 
-        if(skipRunningFunctions) return;
-
         var spreadsheet = $(spreadSheetId).data("kendoSpreadsheet");
         var sheet = spreadsheet.activeSheet();        
         
@@ -135,12 +133,15 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 stockLastTradePriceArray[symbol] = savedSenastePris;
                 senastePris = savedSenastePris;
             }
-            sheet.range(xCell).background("lightyellow");
             callback(senastePris);
+            try {
+                sheet.range(xCell).background("lightyellow");
+            }
+            catch (err) { }
             return;
         }
 
-        $.get('https://free-cors-proxy.herokuapp.com/https://www.avanza.se' + avanzaLink, function(data, status) {
+        $.get('http://cors.hyoo.ru/https://www.avanza.se' + avanzaLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
@@ -154,26 +155,27 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                     stockLastTradePriceArray[symbol] = savedSenastePris;
                     senastePris = savedSenastePris;
                 }
-                sheet.range(xCell).background("lightyellow");
                 callback(senastePris);
+                sheet.range(xCell).background("lightyellow");
                 return;
             }
 
             var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
             stockLastTradePriceArray[symbol] = resultValue;
-            sheet.range(xCell).background("lightgreen");
             callback(resultValue);
+            sheet.range(xCell).background("lightgreen");
             return;
-        }, "text" ).fail(function(err) {
+        }, "text").fail(function(err) {
+            console.log(symbol, 'failade');
             var senastePris = 0;
+            var storedStocksSenastePrisArray = getStoredArray(localStorageStocksSenastePrisField);
             var savedSenastePris =  alasql('SELECT VALUE SenastePris FROM ? WHERE ISIN = ?', [storedStocksSenastePrisArray, isin]);
             if(savedSenastePris != null) {
                 stockLastTradePriceArray[symbol] = savedSenastePris;
                 senastePris = savedSenastePris;
             }
-            
-            sheet.range(xCell).background("lightyellow");
             callback(senastePris);
+            sheet.range(xCell).background("lightyellow");
             return;
         });
     }
