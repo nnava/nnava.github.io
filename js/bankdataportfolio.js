@@ -80,7 +80,7 @@ define(['./alasqlavanza', './alasqlnordnet', './alasqllocalization', './alasqlcu
                 return;
             }
 
-            var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(',', '.')).toFixed(2);
+            var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(/\s/g,'').replace(',', '.')).toFixed(2);
             var calulatedValue = resultValue * currencyValue;
             alasqlportfoliodata.insertPortfolioLastPriceRow(symbol, calulatedValue);
             return;
