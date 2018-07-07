@@ -36,8 +36,6 @@ define(['./alasqllocalization'], function(alasqllocalization) {
             var currencyName = doc.getElementsByClassName('MText noMargin fLeft')["0"].innerText.substring(0, 3);
             var resultValue = parseFloat(spanLastPrice["0"].childNodes["0"].innerText.replace(/\s/g,'').replace(',', '.')).toFixed(2);
 
-            console.log(currencyName, resultValue);
-      
             alasql('INSERT INTO CurrencyData VALUES ("' + currencyName + '", ' + resultValue + ');');
         }, "text" );
 
