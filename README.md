@@ -13,4 +13,3 @@ Licenses:
 * JSZip (http://stuartk.com/jszip)
 * Underscore.js (http://underscorejs.org)
 * date-fns (https://github.com/date-fns/date-fns)
-* Money.js / fx (https://github.com/openexchangerates/money.js/)
