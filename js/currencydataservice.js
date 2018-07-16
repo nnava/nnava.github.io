@@ -28,7 +28,7 @@ define(['./alasqllocalization'], function(alasqllocalization) {
 
     function fetchInsertCurrencyDataForLink(currencyLink) {
                
-        $.get('https://thingproxy.freeboard.io/fetch/' + currencyLink, function(data, status) {
+        $.get('https://cors.io/?' + currencyLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
