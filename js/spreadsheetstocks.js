@@ -346,7 +346,7 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                 theme: "bootstrap",
                 change: onChange,
                 toolbar: {
-                    home: [ ["cut", "copy", "paste"] ], 
+                    home: [ ["cut", "copy", "paste"], "exportAs" ], 
                     insert: [[ "addRowBelow", "addRowAbove" ]], 
                     data: false 
                 },
@@ -389,16 +389,8 @@ define(['./alasqlportfoliodata', './bankdataportfolio', './bankdatadividend', '.
                             }
                         ]
                     }
-                ],
-                excelExport: function(e) {
-             	    var customFileName = $(".k-spreadsheet-window").find(".k-textbox").val();
-            	    e.workbook.fileName = customFileName;
-                }
+                ]
             });
-            $(".k-button-icon > .k-i-file-excel").parent().on("click", function () {
-                $(".k-spreadsheet-window").find(".k-textbox").val("Portföljöversikt");
-            });
-
         }, 100);
     }
 
