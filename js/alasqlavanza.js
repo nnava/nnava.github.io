@@ -240,6 +240,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
             var resultName = resultNameQuery();
 
+            if(resultName.length == 0) return;
+
             newVardepapperObject.Värdepapper = resultName["0"].Värdepapperbeskrivning;
             newVardepapperObject.Belopp = object.Belopp;
 
@@ -273,6 +275,8 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        WHERE [ISIN] = "' + object.name + '" AND [Värdepapperbeskrivning] != "Utländsk källskatt" AND [Typ av transaktion] != "Prelskatt utdelningar"');
 
             var resultName = avanzaVardepapperQuery();
+
+            if(resultName.length == 0) return;
 
             var taxValue = 0;
             if(addTaxToSum) {
