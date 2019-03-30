@@ -215,7 +215,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
 
         var taxSqlWhere = '';
         if(addTaxToSum)
-            taxSqlWhere = ' OR [Typ av transaktion] = "Utländsk källskatt 15%" OR [Typ av transaktion] = "Utländsk källskatt 27%"';
+            taxSqlWhere = ' OR [Typ av transaktion] = "Utländsk källskatt 15%" OR [Typ av transaktion] = "Utländsk källskatt 15%. rättelse" OR [Typ av transaktion] = "Utländsk källskatt 27%" OR [Typ av transaktion] = "Utländsk källskatt 27%. rättelse"';
 
         var resultQuery = alasql.compile('SELECT FIRST([ISIN]) AS [ISIN], SUM(Belopp::NUMBER) AS [Belopp] \
                        FROM AvanzaData \
@@ -225,7 +225,7 @@ define(['./alasqlstockdata'], function(alasqlstockdata) {
                        GROUP BY ISIN');
 
         var result = resultQuery();
-                
+
         var resultForReturn = [];
         result.forEach(function(object) {
 
