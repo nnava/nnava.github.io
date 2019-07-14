@@ -28,7 +28,7 @@ define(['./alasqllocalization'], function(alasqllocalization) {
 
     function fetchInsertCurrencyDataForLink(currencyLink) {
                
-        $.get('https://cors.io/?' + currencyLink, function(data, status) {
+        $.get('https://cors-anywhere.herokuapp.com/' + currencyLink, function(data, status) {
 
             var parser = new DOMParser();
             var doc = parser.parseFromString(data, "text/html");
