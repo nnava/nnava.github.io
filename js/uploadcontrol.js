@@ -119,7 +119,7 @@ define(['./papaparse.min', './appcontrolhandler', './alasqlavanza', './alasqlnor
                     alasql('INSERT INTO Portfolio SELECT DISTINCT Konto FROM CSV(?, {separator:";"})', [readerResultString]);
                 }                    
                 else {
-                    var isFileNordnetNorway = readerResultString.startsWith("Id;Bokføringsdag;Handelsdag");
+                    var isFileNordnetNorway = readerResultString.startsWith("Id\tBokføringsdag\tHandelsdag");
                     
                     if(isFileNordnetNorway) {
                         applocalization.loadLanguage("no");
